@@ -1,0 +1,211 @@
+"use client";
+
+import { createContext, useContext, useReducer, useCallback, type ReactNode } from "react";
+
+export type Jurisdiction = "us" | "ghana" | "nigeria";
+export type MessageRole = "user" | "assistant" | "system";
+
+export interface Message {
+  id: string;
+  role: MessageRole;
+  content: string;
+  timestamp: Date;
+  citations?: Citation[];
+}
+
+export interface Citation {
+  id: string;
+  title: string;
+  source: string;
+  url?: string;
+  snippet: string;
+}
+
+export interface ChatSession {
+  id: string;
+  title: string;
+  messages: Message[];
+  jurisdiction: Jurisdiction;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface ChatState {
+  sessions: ChatSession[];
+  currentSessionId: string | null;
+  isTyping: boolean;
+  error: string | null;
+}
+
+type ChatAction =
+  | { type: "SET_CURRENT_SESSION"; payload: string | null }
+  | { type: "ADD_SESSION"; payload: ChatSession }
+  | { type: "DELETE_SESSION"; payload: string }
+  | { type: "ADD_MESSAGE"; payload: { sessionId: string; message: Message } }
+  | { type: "UPDATE_MESSAGE"; payload: { sessionId: string; messageId: string; content: string } }
+  | { type: "SET_TYPING"; payload: boolean }
+  | { type: "SET_ERROR"; payload: string | null }
+  | { type: "LOAD_SESSIONS"; payload: ChatSession[] };
+
+const initialState: ChatState = {
+  sessions: [],
+  currentSessionId: null,
+  isTyping: false,
+  error: null,
+};
+
+function chatReducer(state: ChatState, action: ChatAction): ChatState {
+  switch (action.type) {
+    case "SET_CURRENT_SESSION":
+      return { ...state, currentSessionId: action.payload };
+    case "ADD_SESSION":
+      return { ...state, sessions: [action.payload, ...state.sessions] };
+    case "DELETE_SESSION":
+      return {
+        ...state,
+        sessions: state.sessions.filter((s) => s.id !== action.payload),
+        currentSessionId: state.currentSessionId === action.payload ? null : state.currentSessionId,
+      };
+    case "ADD_MESSAGE":
+      return {
+        ...state,
+        sessions: state.sessions.map((session) =>
+          session.id === action.payload.sessionId
+            ? { ...session, messages: [...session.messages, action.payload.message], updatedAt: new Date() }
+            : session
+        ),
+      };
+    case "UPDATE_MESSAGE":
+      return {
+        ...state,
+        sessions: state.sessions.map((session) =>
+          session.id === action.payload.sessionId
+            ? {
+                ...session,
+                messages: session.messages.map((msg) =>
+                  msg.id === action.payload.messageId ? { ...msg, content: action.payload.content } : msg
+                ),
+              }
+            : session
+        ),
+      };
+    case "SET_TYPING":
+      return { ...state, isTyping: action.payload };
+    case "SET_ERROR":
+      return { ...state, error: action.payload };
+    case "LOAD_SESSIONS":
+      return { ...state, sessions: action.payload };
+    default:
+      return state;
+  }
+}
+
+interface ChatContextValue extends ChatState {
+  currentSession: ChatSession | null;
+  createSession: (jurisdiction: Jurisdiction) => ChatSession;
+  deleteSession: (sessionId: string) => void;
+  sendMessage: (content: string) => Promise<void>;
+  setCurrentSession: (sessionId: string | null) => void;
+  clearError: () => void;
+}
+
+const ChatContext = createContext<ChatContextValue | null>(null);
+
+export function ChatProvider({ children }: { children: ReactNode }) {
+  const [state, dispatch] = useReducer(chatReducer, initialState);
+
+  const currentSession = state.sessions.find((s) => s.id === state.currentSessionId) || null;
+
+  const createSession = useCallback((jurisdiction: Jurisdiction): ChatSession => {
+    const session: ChatSession = {
+      id: crypto.randomUUID(),
+      title: `Chat ${new Date().toLocaleDateString()}`,
+      messages: [],
+      jurisdiction,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    dispatch({ type: "ADD_SESSION", payload: session });
+    dispatch({ type: "SET_CURRENT_SESSION", payload: session.id });
+    return session;
+  }, []);
+
+  const deleteSession = useCallback((sessionId: string) => {
+    dispatch({ type: "DELETE_SESSION", payload: sessionId });
+  }, []);
+
+  const setCurrentSession = useCallback((sessionId: string | null) => {
+    dispatch({ type: "SET_CURRENT_SESSION", payload: sessionId });
+  }, []);
+
+  const sendMessage = useCallback(async (content: string) => {
+    if (!state.currentSessionId) return;
+
+    const userMessage: Message = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content,
+      timestamp: new Date(),
+    };
+
+    dispatch({ type: "ADD_MESSAGE", payload: { sessionId: state.currentSessionId, message: userMessage } });
+    dispatch({ type: "SET_TYPING", payload: true });
+    dispatch({ type: "SET_ERROR", payload: null });
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId: state.currentSessionId,
+          message: content,
+          jurisdiction: state.sessions.find((s) => s.id === state.currentSessionId)?.jurisdiction || "us",
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to send message");
+
+      const data = await response.json();
+
+      const assistantMessage: Message = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: data.response,
+        timestamp: new Date(),
+        citations: data.citations,
+      };
+
+      dispatch({ type: "ADD_MESSAGE", payload: { sessionId: state.currentSessionId, message: assistantMessage } });
+    } catch (error) {
+      dispatch({ type: "SET_ERROR", payload: error instanceof Error ? error.message : "Failed to send message" });
+    } finally {
+      dispatch({ type: "SET_TYPING", payload: false });
+    }
+  }, [state.currentSessionId, state.sessions]);
+
+  const clearError = useCallback(() => {
+    dispatch({ type: "SET_ERROR", payload: null });
+  }, []);
+
+  return (
+    <ChatContext.Provider
+      value={{
+        ...state,
+        currentSession,
+        createSession,
+        deleteSession,
+        sendMessage,
+        setCurrentSession,
+        clearError,
+      }}
+    >
+      {children}
+    </ChatContext.Provider>
+  );
+}
+
+export function useChat() {
+  const context = useContext(ChatContext);
+  if (!context) throw new Error("useChat must be used within ChatProvider");
+  return context;
+}
