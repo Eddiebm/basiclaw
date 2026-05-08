@@ -6,3 +6,7 @@ dist/
 .DS_Store
 *.pem
 .env
+.env.local
+.env.production
+pnpm-lock.yaml
+--store-dir/

@@ -1,110 +1,121 @@
 import { NextRequest, NextResponse } from "next/server";
-
-interface Message {
-  id: string;
-  role: "user" | "assistant" | "system";
-  content: string;
-  timestamp: string;
-}
-
-interface ChatRequest {
-  sessionId: string;
-  message: string;
-  jurisdiction: "us" | "ghana" | "nigeria";
-  history?: Message[];
-}
+import type { Jurisdiction } from "@/store/chat-context";
 
 const JURISDICTION_CONTEXT = {
   us: {
     name: "United States",
     legalSystem: "Common Law (Federal & State)",
-    description: "Based on case law, statutes, and constitutional principles"
+    description: "Based on case law, statutes, and constitutional principles",
+    prompt: `You are a legal information assistant specializing in United States law. You provide clear, accurate information about legal concepts, rights, and processes in the US legal system. You should:
+- Explain constitutional rights and their origins
+- Discuss federal vs. state jurisdiction
+- Reference key Supreme Court decisions when relevant
+- Clarify procedural aspects of US courts
+- Always include a disclaimer that this is educational information, not legal advice
+- Be clear about the distinction between federal and state laws`,
   },
   ghana: {
     name: "Ghana",
-    legalSystem: "Mixed Common Law & Customary",
-    description: "Combines English common law with customary law and statutes"
+    legalSystem: "Mixed Common Law and Customary Law",
+    description: "Combines English common law with traditional customary law",
+    prompt: `You are a legal information assistant specializing in Ghanaian law. You provide clear, accurate information about legal concepts, rights, and processes in Ghana. You should:
+- Explain fundamental human rights under the 1992 Constitution
+- Discuss the distinction between common law and customary law
+- Reference relevant Ghanaian statutes and case law
+- Clarify the court system structure
+- Always include a disclaimer that this is educational information, not legal advice
+- Be sensitive to the role of traditional authorities in dispute resolution`,
   },
   nigeria: {
     name: "Nigeria",
     legalSystem: "Common Law (Federal System)",
-    description: "Follows English common law with Islamic law in northern states"
-  }
-};
-
-const LEGAL_TOPICS = {
-  us: [
-    "Constitutional Rights", "Criminal Law", "Civil Rights", "Family Law",
-    "Contract Law", "Property Law", "Immigration", "Employment Law",
-    "Consumer Protection", "Traffic Violations"
-  ],
-  ghana: [
-    "Constitutional Rights", "Inheritance", "Land Law", "Family Law",
-    "Criminal Law", "Commercial Law", "Environmental Law", "Customary Law"
-  ],
-  nigeria: [
-    "Constitutional Rights", "Sharia Law", "Family Law", "Criminal Law",
-    "Property Law", "Oil & Gas Law", "Corporate Law", "Immigration"
-  ]
-};
-
-const SAMPLE_RESPONSES: Record<string, string[]> = {
-  default: [
-    "This is an educational response about legal concepts. For specific legal advice, please consult a licensed attorney in your jurisdiction.",
-    "Legal information is complex and varies by jurisdiction. A qualified lawyer can provide guidance tailored to your specific situation.",
-    "Understanding your rights is important. While I can provide general information, only a lawyer can give legal advice for your case."
-  ]
+    description: "Based on English common law with federal and state variations",
+    prompt: `You are a legal information assistant specializing in Nigerian law. You provide clear, accurate information about legal concepts, rights, and processes in Nigeria. You should:
+- Explain fundamental rights under the 1999 Constitution (as amended)
+- Discuss federal vs. state jurisdiction
+- Reference relevant Nigerian statutes and case law
+- Clarify the court system from Magistrate to Supreme Court
+- Always include a disclaimer that this is educational information, not legal advice
+- Address both civil and criminal law distinctions`,
+  },
 };
 
 export async function POST(request: NextRequest) {
   try {
-    const body: ChatRequest = await request.json();
-    const { message, jurisdiction, history = [] } = body;
+    const body = await request.json();
+    const { message, jurisdiction = "us", sessionId } = body as {
+      message: string;
+      jurisdiction: Jurisdiction;
+      sessionId: string;
+    };
 
-    // Simulate AI processing delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    // Build context-aware response
-    const jurContext = JURISDICTION_CONTEXT[jurisdiction] || JURISDICTION_CONTEXT.us;
-    const topics = LEGAL_TOPICS[jurisdiction] || LEGAL_TOPICS.us;
-
-    // Simple keyword detection for demo
-    const lowerMessage = message.toLowerCase();
-    let response = "";
-
-    if (lowerMessage.includes("rights") || lowerMessage.includes("constitution")) {
-      response = `In the ${jurContext.name} legal system (${jurContext.legalSystem}), constitutional rights are foundational. ${jurContext.description}. Key rights typically include due process, equal protection, and freedom of expression. However, specific rights and their interpretations vary by case law and statute.`;
-    } else if (lowerMessage.includes("contract") || lowerMessage.includes("agreement")) {
-      response = `Contract law in ${jurContext.name} requires essential elements: offer, acceptance, consideration, and mutual intent. ${jurContext.description}. Verbal contracts can be enforceable, but written contracts provide stronger evidence. Consult a lawyer for specific contract disputes.`;
-    } else if (lowerMessage.includes("family") || lowerMessage.includes("divorce") || lowerMessage.includes("custody")) {
-      response = `Family law in ${jurContext.name} covers marriage, divorce, child custody, and support. ${jurContext.description}. Family courts handle these matters, and outcomes depend on specific circumstances and jurisdiction. Legal representation is strongly recommended.`;
-    } else if (lowerMessage.includes("criminal") || lowerMessage.includes("arrest") || lowerMessage.includes("police")) {
-      response = `Criminal procedure in ${jurContext.name} varies by jurisdiction level. ${jurContext.description}. You have rights including the right to remain silent, right to attorney, and protection from unreasonable search. If arrested, exercise your rights and seek legal counsel immediately.`;
-    } else if (lowerMessage.includes("property") || lowerMessage.includes("land") || lowerMessage.includes("housing")) {
-      response = `Property law in ${jurContext.name} governs ownership, transfers, and disputes. ${jurContext.description}. Property rights can be affected by zoning, easements, and local regulations. Legal advice is essential for significant property transactions.`;
-    } else {
-      // General educational response
-      const samples = SAMPLE_RESPONSES.default;
-      response = `In ${jurContext.name} (${jurContext.legalSystem}), legal matters can be complex. ${jurContext.description}.\n\nKey legal topics in ${jurContext.name}: ${topics.slice(0, 5).join(", ")}.\n\nFor specific legal advice tailored to your situation, please consult a licensed attorney in ${jurContext.name}.`;
+    if (!message || typeof message !== "string") {
+      return NextResponse.json(
+        { error: "Message is required" },
+        { status: 400 }
+      );
     }
 
-    // Return mock response with citations
-    return NextResponse.json({
-      response,
-      citations: [
-        {
-          id: crypto.randomUUID(),
-          title: `Legal Information - ${jurContext.name}`,
-          source: `${jurContext.name} Legal System`,
-          snippet: `${jurContext.legalSystem}: ${jurContext.description}`
-        }
-      ]
+    const jurisdictionInfo = JURISDICTION_CONTEXT[jurisdiction] || JURISDICTION_CONTEXT.us;
+
+    const messages = [
+      {
+        role: "system",
+        content: jurisdictionInfo.prompt,
+      },
+      {
+        role: "user",
+        content: message,
+      },
+    ];
+
+    const apiKey = process.env.OPENROUTER_API_KEY;
+
+    if (!apiKey) {
+      return NextResponse.json({
+        response: `I understand you're asking about ${jurisdictionInfo.name} law. However, the AI service is not configured properly. Please ensure the OpenRouter API key is set.\n\nFor educational purposes regarding ${jurisdictionInfo.name} (${jurisdictionInfo.legalSystem}): ${jurisdictionInfo.description}`,
+        citations: [],
+      });
+    }
+
+    const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app",
+        "X-Title": "BasicLaw - Legal Information Assistant",
+      },
+      body: JSON.stringify({
+        model: "deepseek/deepseek-r1:free",
+        messages,
+        max_tokens: 1500,
+        temperature: 0.7,
+      }),
     });
 
+    if (!openRouterResponse.ok) {
+      const errorData = await openRouterResponse.text();
+      console.error("OpenRouter API error:", errorData);
+      return NextResponse.json(
+        { error: "Failed to get response from AI service" },
+        { status: 500 }
+      );
+    }
+
+    const data = await openRouterResponse.json();
+    const assistantResponse = data.choices?.[0]?.message?.content ||
+                             data.choices?.[0]?.text ||
+                             "I apologize, but I couldn't generate a response. Please try again.";
+
+    return NextResponse.json({
+      response: assistantResponse,
+      citations: [],
+    });
   } catch (error) {
     console.error("Chat API error:", error);
     return NextResponse.json(
-      { error: "Failed to process message" },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }
