@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, FileText, Trash2, Download, Maximize2, X, FileSpreadsheet, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Navigation } from "@/components/sections/Navigation";
 import { Button } from "@/components/ui/Button";
 
 interface Document {
@@ -114,6 +115,8 @@ export default function DocumentsPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Navigation />
+
       <header className="border-b">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold mb-2">Document Understanding</h1>

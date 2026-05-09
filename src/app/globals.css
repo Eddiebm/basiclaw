@@ -22,6 +22,24 @@
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
+
+  /* CSS variables for components */
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+  --card: var(--color-card);
+  --card-foreground: var(--color-card-foreground);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-foreground);
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-secondary-foreground);
+  --muted: var(--color-muted);
+  --muted-foreground: var(--color-muted-foreground);
+  --accent: var(--color-accent);
+  --accent-foreground: var(--color-accent-foreground);
+  --destructive: var(--color-destructive);
+  --destructive-foreground: var(--color-destructive-foreground);
+  --border: var(--color-border);
+  --ring: var(--color-ring);
 }
 
 .dark {
@@ -42,14 +60,32 @@
   --color-border: oklch(0.25 0.02 250);
   --color-ring: oklch(0.7 0.2 250);
   --color-link: oklch(0.7 0.2 250);
+
+  /* Dark mode CSS variables */
+  --background: var(--color-background);
+  --foreground: var(--color-foreground);
+  --card: var(--color-card);
+  --card-foreground: var(--color-card-foreground);
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-primary-foreground);
+  --secondary: var(--color-secondary);
+  --secondary-foreground: var(--color-secondary-foreground);
+  --muted: var(--color-muted);
+  --muted-foreground: var(--color-muted-foreground);
+  --accent: var(--color-accent);
+  --accent-foreground: var(--color-accent-foreground);
+  --destructive: var(--color-destructive);
+  --destructive-foreground: var(--color-destructive-foreground);
+  --border: var(--color-border);
+  --ring: var(--color-ring);
 }
 
-* { border-color: var(--color-border); }
-body { background-color: var(--color-background); color: var(--color-foreground); }
+* { border-color: var(--border); }
+body { background-color: var(--background); color: var(--foreground); }
 ::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: var(--color-background); }
-::-webkit-scrollbar-thumb { background: var(--color-muted-foreground); border-radius: 5px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-foreground); }
-:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
-::selection { background: var(--color-primary); color: var(--color-primary-foreground); }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { background: var(--muted-foreground); border-radius: 5px; }
+::-webkit-scrollbar-thumb:hover { background: var(--foreground); }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+::selection { background: var(--primary); color: var(--primary-foreground); }
 html { scroll-behavior: smooth; }

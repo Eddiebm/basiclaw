@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, PlayCircle, Award, CheckCircle2, Lock, ChevronRight, Trophy, Target, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Navigation } from "@/components/sections/Navigation";
 import { Button } from "@/components/ui/Button";
 import { Progress } from "@/components/ui/Progress";
 
@@ -109,7 +110,8 @@ export default function LearnPage() {
   if (selectedCourse) {
     return (
       <div className="min-h-screen bg-background">
-        <header className="border-b sticky top-0 bg-background/95 backdrop-blur z-10">
+        <Navigation />
+        <header className="border-b sticky top-16 bg-background/95 backdrop-blur z-10">
           <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
             <Button variant="ghost" onClick={() => setSelectedCourse(null)}>
               ← Back
@@ -179,6 +181,8 @@ export default function LearnPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Navigation />
+
       <header className="border-b">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold mb-2">Law School</h1>
