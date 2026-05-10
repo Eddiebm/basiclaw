@@ -1,79 +1,56 @@
 import { NextRequest, NextResponse } from "next/server";
-import type { Jurisdiction } from "@/store/chat-context";
+import { getCountry } from "@/lib/jurisdictions";
+import { LEGAL_SYSTEM_LABELS } from "@/data/types";
 
-const JURISDICTION_CONTEXT = {
-  us: {
-    name: "United States",
-    legalSystem: "Common Law (Federal & State)",
-    description: "Based on case law, statutes, and constitutional principles",
-    prompt: `You are a legal information assistant specializing in United States law. You provide clear, accurate information about legal concepts, rights, and processes in the US legal system. You should:
-- Explain constitutional rights and their origins
-- Discuss federal vs. state jurisdiction
-- Reference key Supreme Court decisions when relevant
-- Clarify procedural aspects of US courts
-- Always include a disclaimer that this is educational information, not legal advice
-- Be clear about the distinction between federal and state laws`,
-  },
-  ghana: {
-    name: "Ghana",
-    legalSystem: "Mixed Common Law and Customary Law",
-    description: "Combines English common law with traditional customary law",
-    prompt: `You are a legal information assistant specializing in Ghanaian law. You provide clear, accurate information about legal concepts, rights, and processes in Ghana. You should:
-- Explain fundamental human rights under the 1992 Constitution
-- Discuss the distinction between common law and customary law
-- Reference relevant Ghanaian statutes and case law
-- Clarify the court system structure
-- Always include a disclaimer that this is educational information, not legal advice
-- Be sensitive to the role of traditional authorities in dispute resolution`,
-  },
-  nigeria: {
-    name: "Nigeria",
-    legalSystem: "Common Law (Federal System)",
-    description: "Based on English common law with federal and state variations",
-    prompt: `You are a legal information assistant specializing in Nigerian law. You provide clear, accurate information about legal concepts, rights, and processes in Nigeria. You should:
-- Explain fundamental rights under the 1999 Constitution (as amended)
-- Discuss federal vs. state jurisdiction
-- Reference relevant Nigerian statutes and case law
-- Clarify the court system from Magistrate to Supreme Court
-- Always include a disclaimer that this is educational information, not legal advice
-- Address both civil and criminal law distinctions`,
-  },
-};
+function buildSystemPrompt(code: string): { name: string; legalSystem: string; description: string; prompt: string } {
+  const country = getCountry(code) ?? getCountry("us")!;
+  const { constitution, languages, name, legalSystem } = country;
+  const legalSystemLabel = LEGAL_SYSTEM_LABELS[legalSystem];
+  const principles = constitution.keyPrinciples.join(", ");
+
+  return {
+    name,
+    legalSystem: legalSystemLabel,
+    description: constitution.summary,
+    prompt: `You are a legal information assistant specialising in ${name} (${legalSystemLabel}). The relevant constitutional framework is "${constitution.title}" (adopted ${constitution.yearAdopted}${constitution.yearLatestAmendment ? `, latest amendment ${constitution.yearLatestAmendment}` : ""}). Key constitutional principles you should be aware of: ${principles}. Official languages: ${languages.join(", ")}.
+
+When answering:
+- Use plain language a non-lawyer can understand. Avoid Latin and untranslated jargon.
+- Be specific to ${name} where the question is jurisdiction-sensitive. If the question involves another jurisdiction, say so and answer for ${name} unless the user asks otherwise.
+- Where relevant, cite the article or section of the constitution or a named statute. Do not invent citations.
+- For any topic where rules vary by sub-region (state, province, region), say so and recommend checking local rules.
+- Always end with a brief disclaimer: this is educational legal information, not legal advice, and the reader should consult a licensed lawyer in ${name} for their specific situation.
+- Refuse to draft documents intended for filing in court or to represent the reader. You may explain what such documents typically contain.`,
+  };
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { message, jurisdiction = "us", sessionId } = body as {
       message: string;
-      jurisdiction: Jurisdiction;
-      sessionId: string;
+      jurisdiction?: string;
+      sessionId?: string;
     };
 
+    void sessionId;
+
     if (!message || typeof message !== "string") {
-      return NextResponse.json(
-        { error: "Message is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
-    const jurisdictionInfo = JURISDICTION_CONTEXT[jurisdiction] || JURISDICTION_CONTEXT.us;
+    const jurisdictionInfo = buildSystemPrompt((jurisdiction || "us").toLowerCase());
 
     const messages = [
-      {
-        role: "system",
-        content: jurisdictionInfo.prompt,
-      },
-      {
-        role: "user",
-        content: message,
-      },
+      { role: "system", content: jurisdictionInfo.prompt },
+      { role: "user", content: message },
     ];
 
     const apiKey = process.env.OPENROUTER_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json({
-        response: `I understand you're asking about ${jurisdictionInfo.name} law. However, the AI service is not configured properly. Please ensure the OpenRouter API key is set.\n\nFor educational purposes regarding ${jurisdictionInfo.name} (${jurisdictionInfo.legalSystem}): ${jurisdictionInfo.description}`,
+        response: `I understand you're asking about ${jurisdictionInfo.name} law. However, the AI service is not configured properly. Please ensure the OPENROUTER_API_KEY environment variable is set.\n\nFor educational purposes regarding ${jurisdictionInfo.name} (${jurisdictionInfo.legalSystem}): ${jurisdictionInfo.description}`,
         citations: [],
       });
     }
@@ -84,13 +61,13 @@ export async function POST(request: NextRequest) {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
         "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app",
-        "X-Title": "BasicLaw - Legal Information Assistant",
+        "X-Title": "BasicLaw \u2014 Legal Information Assistant",
       },
       body: JSON.stringify({
-        model: "deepseek/deepseek-r1:free",
+        model: process.env.OPENROUTER_MODEL || "deepseek/deepseek-r1:free",
         messages,
         max_tokens: 1500,
-        temperature: 0.7,
+        temperature: 0.5,
       }),
     });
 
@@ -104,9 +81,10 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await openRouterResponse.json();
-    const assistantResponse = data.choices?.[0]?.message?.content ||
-                             data.choices?.[0]?.text ||
-                             "I apologize, but I couldn't generate a response. Please try again.";
+    const assistantResponse =
+      data.choices?.[0]?.message?.content ||
+      data.choices?.[0]?.text ||
+      "I apologise, but I couldn't generate a response. Please try again.";
 
     return NextResponse.json({
       response: assistantResponse,
@@ -114,9 +92,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Chat API error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { BookOpen, PlayCircle, Award, CheckCircle2, Lock, ChevronRight, Trophy, Target, Flame } from "lucide-react";
+import { BookOpen, PlayCircle, Award, CheckCircle2, Lock, ChevronRight, Trophy, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Navigation } from "@/components/sections/Navigation";
 import { Button } from "@/components/ui/Button";

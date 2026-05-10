@@ -11,7 +11,7 @@ export function TrustDisclaimer() {
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-6"><Shield className="h-8 w-8" /></div>
           <h2 className="text-3xl sm:text-4xl font-bold mb-6">Trust & Transparency</h2>
-          <p className="text-lg text-white/80 mb-8">BasicLaw is an educational platform, not a law firm. We help you understand legal concepts, but we don't provide legal advice or representation.</p>
+          <p className="text-lg text-white/80 mb-8">BasicLaw is an educational platform, not a law firm. We help you understand legal concepts, but we don&apos;t provide legal advice or representation.</p>
           <Separator className="bg-white/20 mx-auto mb-8 max-w-xs" />
           <div className="grid md:grid-cols-2 gap-6 text-left">
             <div className="p-6 rounded-xl bg-white/5">
@@ -19,7 +19,7 @@ export function TrustDisclaimer() {
               <ul className="space-y-2 text-sm text-white/80"><li>• Explain legal concepts in plain language</li><li>• Help you understand legal procedures</li><li>• Share educational resources</li><li>• Guide you to professional help when needed</li></ul>
             </div>
             <div className="p-6 rounded-xl bg-white/5">
-              <div className="flex items-center gap-3 mb-3"><AlertTriangle className="h-5 w-5 text-yellow-400" /><span className="font-semibold">What We Don't Do</span></div>
+              <div className="flex items-center gap-3 mb-3"><AlertTriangle className="h-5 w-5 text-yellow-400" /><span className="font-semibold">What We Don&apos;t Do</span></div>
               <ul className="space-y-2 text-sm text-white/80"><li>• Provide legal advice</li><li>• Represent you in court</li><li>• Guarantee outcomes</li><li>• Replace licensed attorneys</li></ul>
             </div>
           </div>

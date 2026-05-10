@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useReducer, useCallback, type ReactNode } from "react";
 
-export type Jurisdiction = "us" | "ghana" | "nigeria";
+export type Jurisdiction = string; // ISO alpha-2 code, lowercase
 export type MessageRole = "user" | "assistant" | "system";
 
 export interface Message {

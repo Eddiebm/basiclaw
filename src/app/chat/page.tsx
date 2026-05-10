@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Menu } from "lucide-react";
 import { Navigation } from "@/components/sections/Navigation";
 import { Button } from "@/components/ui/Button";
@@ -15,7 +15,9 @@ export default function ChatPage() {
       <Navigation />
 
       <div className="flex-1 flex">
-        <ChatSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <Suspense fallback={null}>
+          <ChatSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        </Suspense>
 
         <main className="flex-1 flex flex-col min-w-0">
           {/* Header */}

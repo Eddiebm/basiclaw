@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, FileText, Trash2, Download, Maximize2, X, FileSpreadsheet, AlertCircle, Loader2 } from "lucide-react";
+import { Upload, FileText, Trash2, Maximize2, X, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Navigation } from "@/components/sections/Navigation";
 import { Button } from "@/components/ui/Button";
@@ -39,18 +39,41 @@ const mockDocuments: Document[] = [
   },
 ];
 
-const acceptedTypes = {
-  "application/pdf": ["pdf"],
-  "application/msword": ["doc"],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ["docx"],
-  "text/plain": ["txt"],
-};
-
 export default function DocumentsPage() {
   const [documents, setDocuments] = useState<Document[]>(mockDocuments);
   const [dragActive, setDragActive] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const [processing, setProcessing] = useState(false);
+
+  const processFiles = useCallback((files: File[]) => {
+    setProcessing(true);
+    files.forEach((file) => {
+      const newDoc: Document = {
+        id: crypto.randomUUID(),
+        name: file.name,
+        size: `${Math.round(file.size / 1024)} KB`,
+        type: file.type,
+        uploadDate: new Date(),
+        status: "processing",
+      };
+      setDocuments((prev) => [...prev, newDoc]);
+
+      setTimeout(() => {
+        setDocuments((prev) =>
+          prev.map((d) =>
+            d.id === newDoc.id
+              ? {
+                  ...d,
+                  status: "ready",
+                  summary: "Document processed successfully. Key points extracted and summarized for easy understanding."
+                }
+              : d
+          )
+        );
+      }, 2000 + Math.random() * 1000);
+    });
+    setProcessing(false);
+  }, []);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -69,45 +92,14 @@ export default function DocumentsPage() {
 
     const files = Array.from(e.dataTransfer.files);
     processFiles(files);
-  }, []);
+  }, [processFiles]);
 
   const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
       processFiles(files);
     }
-  }, []);
-
-  const processFiles = (files: File[]) => {
-    setProcessing(true);
-    files.forEach((file) => {
-      const newDoc: Document = {
-        id: crypto.randomUUID(),
-        name: file.name,
-        size: `${Math.round(file.size / 1024)} KB`,
-        type: file.type,
-        uploadDate: new Date(),
-        status: "processing",
-      };
-      setDocuments((prev) => [...prev, newDoc]);
-
-      // Simulate processing
-      setTimeout(() => {
-        setDocuments((prev) =>
-          prev.map((d) =>
-            d.id === newDoc.id
-              ? {
-                  ...d,
-                  status: "ready",
-                  summary: "Document processed successfully. Key points extracted and summarized for easy understanding."
-                }
-              : d
-          )
-        );
-      }, 2000 + Math.random() * 1000);
-    });
-    setProcessing(false);
-  };
+  }, [processFiles]);
 
   const deleteDocument = (id: string) => {
     setDocuments((prev) => prev.filter((d) => d.id !== id));

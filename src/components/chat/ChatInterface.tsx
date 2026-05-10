@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, User, Bot, Copy, CheckCheck, ChevronDown } from "lucide-react";
+import { Send, User, Bot, Copy } from "lucide-react";
 import { useChat } from "@/store/chat-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
