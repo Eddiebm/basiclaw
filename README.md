@@ -25,22 +25,39 @@ BasicLaw turns the constitution and core rights of **every country in the world*
 
 ```bash
 npm install
-cp .env.example .env.local   # add OPENROUTER_API_KEY
+cp .env.example .env.local   # see Environment variables below
 npm run dev
 ```
+
+## Environment variables
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `OPENROUTER_API_KEY` | For live chat | Powers `/api/chat` via OpenRouter. Without it, the route returns a short constitutional fallback. |
+| `OPENROUTER_MODEL` | No | OpenRouter model id (default in code if unset). |
+| `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical base URL for SEO and OpenRouter `HTTP-Referer`. |
+| `RESEND_API_KEY` | No | If set with `LAWYER_LEADS_EMAIL` or `RESEND_FROM_EMAIL`, lawyer applications hit your inbox. |
+| `LAWYER_LEADS_EMAIL` | No | Recipient for `/api/lawyer-leads` emails; defaults to `RESEND_FROM_EMAIL`. |
+| `RESEND_FROM_EMAIL` | When emailing | Verified Resend sender (`Name <email@domain>`); also used as fallback recipient. |
+
+See `.env.example` for copy-paste stubs.
 
 ## Project structure
 
 ```
 src/
   app/
-    constitutions/             # the library (browse + per-country pages)
-    chat/                      # the legal assistant
-    documents/                 # document help
-    learn/                     # Law School
-    pricing/, faq/             # commercial + trust surfaces
-    api/chat/route.ts          # OpenRouter integration
+    [locale]/                  # next-intl locale segment (en, es, fr, ar, pt, hi, zh)
+    [locale]/constitutions/    # library browse + per-country pages
+    [locale]/chat/             # legal assistant
+    [locale]/documents/        # document help
+    [locale]/learn/            # Law School
+    [locale]/pricing/, faq/, audit/, find-a-lawyer/
+    api/chat/route.ts          # OpenRouter + constitution context
+    api/lawyer-leads/route.ts  # lawyer marketplace submissions (+ optional Resend)
     sitemap.ts, robots.ts, og/ # SEO surfaces
+  i18n/                        # routing, messages merge, middleware plugin path
+  messages/                    # locale JSON overlays
   components/
     constitutions/CountryBrowser.tsx
     sections/{Hero, Navigation, Footer, ...}
@@ -48,7 +65,7 @@ src/
     countries.ts               # all 195 countries + constitutions
     types.ts                   # legal-system / region taxonomy
   lib/
-    jurisdictions.ts           # search, group-by helpers
+    jurisdictions.ts           # search, group-by helpers, official sources
 ```
 
 ## Adding a country
