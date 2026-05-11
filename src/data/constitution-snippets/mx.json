@@ -1,0 +1,30 @@
+[
+  {
+    "id": "mx-human-rights-treaties",
+    "title": "Human rights & international treaties (educational summary)",
+    "articleRef": "Political Constitution of the United Mexican States (overview)",
+    "excerpt": "Educational summary: constitutional reforms have elevated human-rights standards, requiring authorities to apply international human rights treaties as the ‘parameter of interpretation’ alongside constitutional guarantees—implementation details still turn on courts and statutes.",
+    "keywords": ["human rights", "treaty", "international", "guarantees", "interpretation"]
+  },
+  {
+    "id": "mx-federal-model",
+    "title": "Federal model — states & federation (educational summary)",
+    "articleRef": "Mexican Constitution, federal provisions (overview)",
+    "excerpt": "Educational summary: Mexico is a federal republic; powers are divided among federal, state, and municipal levels. Civil and criminal law can vary by state in permitted domains, while federal authorities handle enumerated federal matters.",
+    "keywords": ["federal", "states", "municipal", "powers", "republic"]
+  },
+  {
+    "id": "mx-individual-guarantees",
+    "title": "Individual guarantees — amparo tradition (educational summary)",
+    "articleRef": "Constitution, guarantees (overview)",
+    "excerpt": "Educational summary: the Constitution protects individual guarantees (liberty, hearing, privacy, expression, etc.). The juicio de amparo is a historic remedy against laws or acts violating guarantees, subject to procedural rules and jurisprudence.",
+    "keywords": ["amparo", "guarantees", "hearing", "liberty", "remedy"]
+  },
+  {
+    "id": "mx-congress-lawmaking",
+    "title": "Congress & legislative power (educational summary)",
+    "articleRef": "Mexican Constitution, Congress (overview)",
+    "excerpt": "Educational summary: the Congress of the Union exercises federal legislative power through bicameral processes (with exceptions for certain resolutions). Checks between chambers and the executive shape how bills become law.",
+    "keywords": ["congress", "senate", "deputies", "legislation", "bill"]
+  }
+]

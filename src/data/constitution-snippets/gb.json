@@ -1,0 +1,30 @@
+[
+  {
+    "id": "gb-parliamentary-sovereignty",
+    "title": "Parliamentary sovereignty (educational summary)",
+    "articleRef": "UK constitutional conventions & statutes (overview)",
+    "excerpt": "Educational summary: a core UK principle is that Parliament can make or unmake any law. Political and legal practice also recognises rule-of-law constraints, human rights statutes, and devolution settlements that shape how powers are exercised in practice.",
+    "keywords": ["parliament", "sovereignty", "westminster", "statute", "law"]
+  },
+  {
+    "id": "gb-rule-of-law",
+    "title": "Rule of law (educational summary)",
+    "articleRef": "UK constitutional principle (overview)",
+    "excerpt": "Educational summary: the rule of law requires accessible, predictable law, independent courts, and government action within legal authority. It is not codified in a single UK ‘constitution’ document but is enforced through statutes and case law.",
+    "keywords": ["rule of law", "courts", "independent", "government", "legal authority"]
+  },
+  {
+    "id": "gb-hra-overview",
+    "title": "Human Rights Act 1998 — overview (educational summary)",
+    "articleRef": "Human Rights Act 1998 (overview)",
+    "excerpt": "Educational summary: the HRA gives effect in UK law to key ECHR rights and requires public authorities to act compatibly, with remedies in domestic courts. Declaration of incompatibility is a special parliamentary-focused remedy for primary legislation.",
+    "keywords": ["human rights", "hra", "echr", "convention", "public authority"]
+  },
+  {
+    "id": "gb-devolution",
+    "title": "Devolution — Scotland, Wales, Northern Ireland (educational summary)",
+    "articleRef": "Devolution statutes (overview)",
+    "excerpt": "Educational summary: legislative competence is devolved to institutions in Scotland, Wales, and Northern Ireland under specific statutes. Reserved and excepted matters remain primarily with Westminster; boundaries can be legally contested.",
+    "keywords": ["devolution", "scotland", "wales", "northern ireland", "reserved matters"]
+  }
+]

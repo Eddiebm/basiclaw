@@ -1,0 +1,37 @@
+[
+  {
+    "id": "us-amend-i-speech",
+    "title": "First Amendment — speech & assembly (educational summary)",
+    "articleRef": "U.S. Const. amend. I",
+    "excerpt": "Educational summary: the First Amendment limits Congress from restricting free speech, peaceful assembly, petition, and the free exercise of religion. Courts balance these rights against time/place/manner rules and narrow categories (e.g. true threats). Always check current Supreme Court doctrine and federal vs state application.",
+    "keywords": ["first amendment", "speech", "protest", "assembly", "religion", "expression", "press"]
+  },
+  {
+    "id": "us-amend-iv-search",
+    "title": "Fourth Amendment — searches & seizures (educational summary)",
+    "articleRef": "U.S. Const. amend. IV",
+    "excerpt": "Educational summary: the Fourth Amendment protects people from unreasonable searches and seizures and generally requires a warrant supported by probable cause, with many exceptions developed by courts (consent, exigent circumstances, automobile rules, etc.).",
+    "keywords": ["fourth amendment", "search", "warrant", "police", "privacy", "seizure", "probable cause"]
+  },
+  {
+    "id": "us-amend-v-due",
+    "title": "Fifth Amendment — due process & self-incrimination (educational summary)",
+    "articleRef": "U.S. Const. amend. V",
+    "excerpt": "Educational summary: the Fifth Amendment includes grand jury indictment (with exceptions), double jeopardy protections, due process of law, and the privilege against compelled self-incrimination in criminal cases. Civil and administrative contexts have different rules.",
+    "keywords": ["fifth amendment", "due process", "miranda", "self incrimination", "double jeopardy", "criminal"]
+  },
+  {
+    "id": "us-amend-xiv-equal",
+    "title": "Fourteenth Amendment — equal protection (educational summary)",
+    "articleRef": "U.S. Const. amend. XIV",
+    "excerpt": "Educational summary: the Fourteenth Amendment extends federal due process and equal protection constraints to the states and underpins much modern civil-rights law. Courts apply varying levels of scrutiny depending on the classification or right involved.",
+    "keywords": ["equal protection", "fourteenth amendment", "discrimination", "due process", "citizenship"]
+  },
+  {
+    "id": "us-art-ii-executive",
+    "title": "Article II — executive power (educational summary)",
+    "articleRef": "U.S. Const. art. II",
+    "excerpt": "Educational summary: Article II vests executive power in the President, including commander-in-chief authority, appointment powers (with Senate advice and consent for principal officers), and a duty to faithfully execute the laws—subject to separation-of-powers limits enforced by Congress and courts.",
+    "keywords": ["president", "executive", "article ii", "commander", "veto", "appointment"]
+  }
+]

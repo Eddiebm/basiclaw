@@ -1,0 +1,30 @@
+[
+  {
+    "id": "ng-fundamental-objectives",
+    "title": "Fundamental Objectives & Directive Principles (educational summary)",
+    "articleRef": "1999 Constitution, Chapter II (overview)",
+    "excerpt": "Educational summary: Chapter II sets broad state policy goals (political, economic, social, environmental). Many provisions are not directly enforceable in court as individual rights but guide interpretation and legislation—contrast with fundamental rights in Chapter IV.",
+    "keywords": ["directive principles", "objectives", "policy", "welfare", "environment"]
+  },
+  {
+    "id": "ng-fundamental-rights",
+    "title": "Fundamental Rights (educational summary)",
+    "articleRef": "1999 Constitution, Chapter IV (overview)",
+    "excerpt": "Educational summary: Chapter IV protects rights such as life, dignity, personal liberty, fair hearing, privacy, thought, expression, assembly, and freedom from discrimination in prescribed circumstances. Limitation clauses and derogations during emergencies matter in practice.",
+    "keywords": ["rights", "fundamental", "fair hearing", "liberty", "expression", "discrimination"]
+  },
+  {
+    "id": "ng-federal-structure",
+    "title": "Federal structure — federal vs state powers (educational summary)",
+    "articleRef": "1999 Constitution, federal provisions (overview)",
+    "excerpt": "Educational summary: Nigeria’s Constitution divides legislative powers among the federal government, states, and (where provided) local government areas. Exclusive and concurrent lists determine who can legislate on topics like security, commerce, and land.",
+    "keywords": ["federal", "state", "exclusive list", "concurrent", "legislative power"]
+  },
+  {
+    "id": "ng-judicature",
+    "title": "Judicature & Supreme Court (educational summary)",
+    "articleRef": "1999 Constitution, judiciary (overview)",
+    "excerpt": "Educational summary: the Constitution establishes the judiciary, culminating in the Supreme Court as final appellate authority on many matters, with powers of interpretation that can invalidate inconsistent laws or conduct.",
+    "keywords": ["supreme court", "appeal", "judiciary", "interpretation", "justice"]
+  }
+]

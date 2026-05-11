@@ -1,0 +1,30 @@
+[
+  {
+    "id": "br-fundamental-principles",
+    "title": "Fundamental principles of the Federative Republic (educational summary)",
+    "articleRef": "1988 Constitution, Title I (overview)",
+    "excerpt": "Educational summary: Brazil’s Constitution opens with sovereignty, citizenship, dignity of the human person, social values of labour and enterprise, and political pluralism. These principles guide interpretation of rights and state organisation.",
+    "keywords": ["sovereignty", "dignity", "citizenship", "principles", "federative"]
+  },
+  {
+    "id": "br-fundamental-rights",
+    "title": "Individual & collective rights (educational summary)",
+    "articleRef": "1988 Constitution, Title II (overview)",
+    "excerpt": "Educational summary: Title II enumerates rights and duties spanning life, liberty, equality, privacy, expression, assembly, political participation, workers’ protections, and social rights. Many clauses interact with ordinary legislation and programmes.",
+    "keywords": ["rights", "title ii", "expression", "workers", "equality", "privacy"]
+  },
+  {
+    "id": "br-federal-divisions",
+    "title": "Union, states, Federal District, municipalities (educational summary)",
+    "articleRef": "1988 Constitution, federal structure (overview)",
+    "excerpt": "Educational summary: legislative competences are divided among Union, states, DF, and municipalities with residual rules. Taxing powers and transfers are constitutionally structured, affecting public services and enforcement.",
+    "keywords": ["federal", "states", "municipal", "competence", "union"]
+  },
+  {
+    "id": "br-defenders",
+    "title": "Public Prosecutor’s Office & defence of legal order (educational summary)",
+    "articleRef": "1988 Constitution, MP (overview)",
+    "excerpt": "Educational summary: the Ministério Público has institutional roles promoting justice and defending diffuse and collective interests as defined by law, distinct from private prosecution or counsel functions.",
+    "keywords": ["ministerio publico", "prosecutor", "collective", "legal order"]
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "ca-charter-rights",
+    "title": "Canadian Charter of Rights and Freedoms — overview (educational summary)",
+    "articleRef": "Constitution Act, 1982, Part I (overview)",
+    "excerpt": "Educational summary: the Charter guarantees democratic, mobility, legal, equality, and language rights, among others. Section 1 allows ‘reasonable limits’ demonstrably justified in a free and democratic society; section 33 (notwithstanding) applies only to certain rights and for renewable periods.",
+    "keywords": ["charter", "rights", "freedoms", "section 1", "equality", "legal rights"]
+  },
+  {
+    "id": "ca-federalism",
+    "title": "Federal division of powers (educational summary)",
+    "articleRef": "Constitution Act, 1867 (overview)",
+    "excerpt": "Educational summary: sections 91–95 allocate law-making authority between Parliament and provincial legislatures (e.g. criminal law federal; property and civil rights provincial). Paramountcy resolves some conflicts when both validly legislate.",
+    "keywords": ["federal", "provincial", "division of powers", "paramountcy", "1867"]
+  },
+  {
+    "id": "ca-judicial-review",
+    "title": "Constitutional judicial review (educational summary)",
+    "articleRef": "Supreme Court of Canada role (overview)",
+    "excerpt": "Educational summary: Canadian courts may declare laws of no force or effect to the extent of inconsistency with the Charter or federalism provisions. Dialogue with legislatures can occur through re-legislation within constitutional bounds.",
+    "keywords": ["judicial review", "supreme court", "inconsistency", "charter"]
+  },
+  {
+    "id": "ca-aboriginal",
+    "title": "Aboriginal & treaty rights (educational summary)",
+    "articleRef": "Constitution Act, 1982, s. 35 (overview)",
+    "excerpt": "Educational summary: section 35 recognises and affirms existing Aboriginal and treaty rights, which are elaborated through negotiation, legislation, and litigation. Interpretation is highly fact- and nation-specific.",
+    "keywords": ["aboriginal", "treaty", "section 35", "indigenous", "rights"]
+  }
+]

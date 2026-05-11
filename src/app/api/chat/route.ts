@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import type { Country } from "@/data/types";
 import { getCountry, getSources } from "@/lib/jurisdictions";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
+import { formatSnippetsForPrompt, loadSnippetsForCountry, rankSnippetsForMessage } from "@/lib/constitution-snippets";
+
+const SNIPPET_TOP_K = 5;
 
 function isConstitutionRelatedQuestion(text: string): boolean {
   const s = text.toLowerCase();
@@ -21,7 +24,8 @@ function buildReferenceAppendix(country: Country): string {
     "Authorized source URLs:",
     urlLines || "(none on file — do not invent URLs)",
     "---",
-    "Citation rule: When referencing these materials, include markdown links like [short label](full URL) using ONLY URLs listed above.",
+    "Citation rule: Use markdown links [short label](full URL) **only** for URLs listed above (country sources).",
+    "For constitution snippets below (no URL), cite by **snippet title** and **snippet id** in plain text — do not invent links for snippets.",
   ].join("\n");
 }
 
@@ -41,22 +45,26 @@ function constitutionContextBlock(country: Country): string {
   ].join("\n\n");
 }
 
-function buildSystemPrompt(country: Country): { name: string; legalSystem: string; description: string; prompt: string } {
+function buildSystemPrompt(country: Country, snippetBlock: string): { name: string; legalSystem: string; description: string; prompt: string } {
   const { constitution, languages, name, legalSystem } = country;
   const legalSystemLabel = LEGAL_SYSTEM_LABELS[legalSystem];
   const principles = constitution.keyPrinciples.join(", ");
+
+  const snippetSection = snippetBlock ? `\n\n${snippetBlock}` : "";
 
   return {
     name,
     legalSystem: legalSystemLabel,
     description: constitution.summary,
     prompt: `You are a legal information assistant specialising in ${name} (${legalSystemLabel}). The relevant constitutional framework is "${constitution.title}" (adopted ${constitution.yearAdopted}${constitution.yearLatestAmendment ? `, latest amendment ${constitution.yearLatestAmendment}` : ""}). Key constitutional principles you should be aware of: ${principles}. Official languages: ${languages.join(", ")}.
+${snippetSection}
 
 When answering:
 - Use plain language a non-lawyer can understand. Avoid Latin and untranslated jargon.
 - Be specific to ${name} where the question is jurisdiction-sensitive. If the question involves another jurisdiction, say so and answer for ${name} unless the user asks otherwise.
 - Where relevant, cite the article or section of the constitution or a named statute. Do not invent citations.
-- Use markdown links [label](URL) only from the authorized URLs provided in the BasicLaw reference section — never fabricate links.
+- **Links:** Use markdown [label](URL) **only** for URLs that appear in the authorized source list in the BasicLaw reference section. Do not fabricate URLs.
+- **Snippets:** If you use an educational snippet, name its title and snippet id (no link). Never present snippet text as verbatim statute unless the snippet itself says it is quoted public-domain text.
 - For any topic where rules vary by sub-region (state, province, region), say so and recommend checking local rules.
 - Always end with a brief disclaimer: this is educational legal information, not legal advice, and the reader should consult a licensed lawyer in ${name} for their specific situation.
 - Refuse to draft documents intended for filing in court or to represent the reader. You may explain what such documents typically contain.`,
@@ -79,7 +87,11 @@ export async function POST(request: NextRequest) {
     }
 
     const country = getCountry((jurisdiction || "us").toLowerCase()) ?? getCountry("us")!;
-    const jurisdictionInfo = buildSystemPrompt(country);
+    const snippets = await loadSnippetsForCountry(country.code);
+    const ranked = rankSnippetsForMessage(message, country, snippets, SNIPPET_TOP_K);
+    const snippetBlock = formatSnippetsForPrompt(ranked);
+
+    const jurisdictionInfo = buildSystemPrompt(country, snippetBlock);
     const appendix = buildReferenceAppendix(country);
 
     let userContent = message;

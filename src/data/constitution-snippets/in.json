@@ -1,0 +1,30 @@
+[
+  {
+    "id": "in-preamble-values",
+    "title": "Preamble — constitutional values (educational summary)",
+    "articleRef": "Constitution of India, Preamble (overview)",
+    "excerpt": "Educational summary: the Preamble expresses sovereign democratic republic ideals and goals including justice, liberty, equality, and fraternity. Courts sometimes use it interpretively, but operative provisions are found in the articles that follow.",
+    "keywords": ["preamble", "sovereign", "republic", "justice", "equality", "liberty"]
+  },
+  {
+    "id": "in-fundamental-rights",
+    "title": "Fundamental Rights (Part III) — overview (educational summary)",
+    "articleRef": "Constitution of India, Part III (overview)",
+    "excerpt": "Educational summary: Part III guarantees enforceable rights (e.g. equality before law, freedoms of speech and association, protection of life and personal liberty, remedies via writ jurisdiction). Reasonable restrictions appear in several clauses.",
+    "keywords": ["fundamental rights", "writ", "article 19", "equality", "life", "liberty"]
+  },
+  {
+    "id": "in-directive-principles",
+    "title": "Directive Principles of State Policy (Part IV) (educational summary)",
+    "articleRef": "Constitution of India, Part IV (overview)",
+    "excerpt": "Educational summary: Part IV sets non-justiciable goals guiding governance (education, health, environment, workers’ interests). Courts may harmonise statutes with these principles where possible without violating fundamental rights.",
+    "keywords": ["directive principles", "part iv", "policy", "welfare", "governance"]
+  },
+  {
+    "id": "in-basic-structure",
+    "title": "Basic structure doctrine (educational summary)",
+    "articleRef": "Indian constitutional case law (overview)",
+    "excerpt": "Educational summary: judicial doctrine holds Parliament cannot amend away certain foundational features (e.g. democracy, rule of law, judicial review). Exact contours evolve through Supreme Court decisions—always check current holdings.",
+    "keywords": ["basic structure", "amendment", "judicial review", "supreme court", "democracy"]
+  }
+]

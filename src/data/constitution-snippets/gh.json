@@ -1,0 +1,30 @@
+[
+  {
+    "id": "gh-chapter5-rights",
+    "title": "Fundamental human rights & freedoms (educational summary)",
+    "articleRef": "1992 Constitution, Ch. 5 (overview)",
+    "excerpt": "Educational summary: Ghana’s 1992 Constitution entrenches fundamental rights and freedoms (with detailed articles on respect for human dignity, equality, liberty, fair trial, and expression). Many rights may be subject to limitations prescribed by law and compatible with democratic society—verify the exact article text.",
+    "keywords": ["rights", "freedoms", "dignity", "equality", "fair trial", "liberty", "chapter 5"]
+  },
+  {
+    "id": "gh-executive",
+    "title": "Executive branch — President & Council of State (educational summary)",
+    "articleRef": "1992 Constitution, executive provisions (overview)",
+    "excerpt": "Educational summary: executive authority is vested in the President, who is head of state and government, with ministers and civil service structures defined in the Constitution. Term limits and succession rules are constitutionally specified.",
+    "keywords": ["president", "executive", "government", "minister", "cabinet"]
+  },
+  {
+    "id": "gh-parliament",
+    "title": "Parliament — law-making (educational summary)",
+    "articleRef": "1992 Constitution, Parliament (overview)",
+    "excerpt": "Educational summary: Parliament holds legislative power to make laws for Ghana, subject to constitutional supremacy and judicial review. Standing orders and electoral rules shape how bills become law.",
+    "keywords": ["parliament", "legislature", "law", "mp", "bill"]
+  },
+  {
+    "id": "gh-judiciary",
+    "title": "Judiciary & judicial independence (educational summary)",
+    "articleRef": "1992 Constitution, judiciary (overview)",
+    "excerpt": "Educational summary: the Constitution establishes courts and safeguards judicial independence so disputes—including rights claims—are resolved impartially. Appeals and specialised tribunals may also exist by statute.",
+    "keywords": ["court", "judge", "judiciary", "justice", "appeal"]
+  }
+]

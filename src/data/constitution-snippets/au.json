@@ -1,0 +1,30 @@
+[
+  {
+    "id": "au-commonwealth-powers",
+    "title": "Commonwealth legislative powers (educational summary)",
+    "articleRef": "Commonwealth of Australia Constitution Act (overview)",
+    "excerpt": "Educational summary: the Constitution enumerates Commonwealth heads of power (trade and commerce, taxation, corporations, external affairs, etc.). Laws must fall within a head of power; otherwise states/territories may regulate residual matters.",
+    "keywords": ["commonwealth", "federal", "powers", "trade", "tax", "external affairs"]
+  },
+  {
+    "id": "au-separation-judiciary",
+    "title": "Chapter III courts & judicial power (educational summary)",
+    "articleRef": "Australian Constitution, Ch. III (overview)",
+    "excerpt": "Educational summary: federal judicial power is vested in courts defined by Chapter III, shaping which bodies may exercise it. State courts can exercise federal jurisdiction when invested by federal law within constitutional limits.",
+    "keywords": ["chapter iii", "judicial power", "high court", "federal court", "judiciary"]
+  },
+  {
+    "id": "au-implied-freedoms",
+    "title": "Implied freedom of political communication (educational summary)",
+    "articleRef": "Australian constitutional case law (overview)",
+    "excerpt": "Educational summary: High Court jurisprudence recognises an implied freedom of political communication as necessary for representative government. Laws burdening the freedom must pass a structured proportionality test as articulated in case law.",
+    "keywords": ["political communication", "implied freedom", "speech", "election", "representative government"]
+  },
+  {
+    "id": "au-states-residual",
+    "title": "States — residual law-making (educational summary)",
+    "articleRef": "State constitutions & Commonwealth Constitution (overview)",
+    "excerpt": "Educational summary: Australian states retain broad plenary legislative power subject to federal inconsistency where Commonwealth law is valid. Criminal, property, and contract law often remain primarily state-led.",
+    "keywords": ["states", "residual", "plenary", "inconsistency", "criminal law"]
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "id": "fr-1789-liberte",
+    "title": "1789 Declaration — liberty & law (educational summary)",
+    "articleRef": "Déclaration des droits de l'homme et du citoyen (overview)",
+    "excerpt": "Educational summary: the Declaration proclaims liberty consists in doing anything not injurious to others, with limits set by law. It also affirms equality before the law, presumption of innocence, and free communication of ideas within legal bounds.",
+    "keywords": ["declaration", "liberte", "droits", "equality", "law", "1789"]
+  },
+  {
+    "id": "fr-fifth-republic",
+    "title": "Fifth Republic — institutions (educational summary)",
+    "articleRef": "Constitution du 4 octobre 1958 (overview)",
+    "excerpt": "Educational summary: the 1958 Constitution establishes a strong executive (President and Government), a bicameral Parliament, an independent judiciary, and a Constitutional Council that reviews organic laws and election disputes per its competences.",
+    "keywords": ["fifth republic", "president", "government", "parliament", "conseil constitutionnel"]
+  },
+  {
+    "id": "fr-human-rights-constitution",
+    "title": "Constitutional block — rights & treaties (educational summary)",
+    "articleRef": "Constitution, preamble & related norms (overview)",
+    "excerpt": "Educational summary: rights instruments referenced in the constitutional bloc (including the 1789 Declaration and the 1946 Preamble’s social principles) influence constitutional review alongside later amendments and treaty commitments such as the ECHR.",
+    "keywords": ["preamble", "echr", "human rights", "constitutional block", "social"]
+  },
+  {
+    "id": "fr-separation-powers",
+    "title": "Separation of powers (educational summary)",
+    "articleRef": "1958 Constitution (overview)",
+    "excerpt": "Educational summary: legislative, executive, and judicial functions are separated with checks such as confidence votes, ordinances within limits, and judicial independence. Administrative courts form a distinct French tradition for public-law disputes.",
+    "keywords": ["separation", "executive", "judiciary", "administrative court", "checks"]
+  }
+]

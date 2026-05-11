@@ -1,0 +1,30 @@
+[
+  {
+    "id": "de-gg-human-dignity",
+    "title": "Grundgesetz — human dignity & inviolable rights (educational summary)",
+    "articleRef": "GG Art. 1 (overview)",
+    "excerpt": "Educational summary: Article 1 anchors human dignity and binds state authority to respect and protect fundamental rights. Rights are legally binding on legislature, executive, and judiciary, with mechanisms including constitutional complaint in appropriate cases.",
+    "keywords": ["dignity", "grundgesetz", "article 1", "fundamental rights", "menschenwürde"]
+  },
+  {
+    "id": "de-gg-liberty-rights",
+    "title": "Personal freedom & rule-of-law guarantees (educational summary)",
+    "articleRef": "GG Arts. 2–13 (overview)",
+    "excerpt": "Educational summary: the Basic Law protects life, personal freedom, equality before the law, faith and conscience, expression, assembly, privacy of correspondence, and property, each with statutory limits where expressly contemplated.",
+    "keywords": ["freiheit", "privacy", "expression", "equality", "property", "versammlung"]
+  },
+  {
+    "id": "de-federal-structure",
+    "title": "Federal order — Länder & Bund (educational summary)",
+    "articleRef": "GG federal provisions (overview)",
+    "excerpt": "Educational summary: Germany is a federal republic dividing competences between the Federation and the Länder. Exclusive, concurrent, and framework legislative powers determine who regulates topics like civil law, police law, and education.",
+    "keywords": ["federal", "länder", "bund", "kompetenz", "föderalismus"]
+  },
+  {
+    "id": "de-constitutional-court",
+    "title": "Federal Constitutional Court role (educational summary)",
+    "articleRef": "GG BVerfG provisions (overview)",
+    "excerpt": "Educational summary: the Federal Constitutional Court reviews statutes and official acts for compatibility with the Basic Law, including individual constitutional complaints. Its decisions shape the meaning of fundamental rights over time.",
+    "keywords": ["verfassungsgericht", "constitutional court", "review", "kompatibilität"]
+  }
+]
