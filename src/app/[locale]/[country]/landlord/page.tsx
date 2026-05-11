@@ -44,9 +44,9 @@ export default async function CountryLandlordPage({
 }: {
   params: Promise<RouteParams>;
 }) {
-  const { country: code } = await params;
+  const { locale, country: code } = await params;
   const country = getCountry(code);
   if (!country) notFound();
   const content = getTopicContent(country, "landlord");
-  return <TopicPage country={country} topic="landlord" content={content} />;
+  return <TopicPage country={country} topic="landlord" content={content} pageLocale={locale} />;
 }

@@ -1,7 +1,14 @@
 export type RiskGrade = "low" | "moderate" | "elevated" | "high" | "critical";
 
 /** General contract audit or a specialised preset */
-export type AuditType = "general" | "lease" | "employment" | "terms";
+export type AuditType =
+  | "general"
+  | "lease"
+  | "employment"
+  | "terms"
+  | "prenup"
+  | "divorce"
+  | "demand_letter";
 
 export interface AuditFlag {
   title: string;
@@ -48,6 +55,24 @@ export interface TermsStructuredFindings {
   liabilityCap: AuditFocusSlot;
 }
 
+export interface PrenupStructuredFindings {
+  financialDisclosure: AuditFocusSlot;
+  spousalSupport: AuditFocusSlot;
+  independentCounsel: AuditFocusSlot;
+}
+
+export interface DivorceStructuredFindings {
+  assetDivision: AuditFocusSlot;
+  custodyParenting: AuditFocusSlot;
+  supportAlimony: AuditFocusSlot;
+}
+
+export interface DemandLetterStructuredFindings {
+  factsAndTimeline: AuditFocusSlot;
+  reliefAndAmount: AuditFocusSlot;
+  deadlineAndTone: AuditFocusSlot;
+}
+
 export interface AuditReport {
   documentType: string;
   jurisdictionCode: string;
@@ -63,6 +88,9 @@ export interface AuditReport {
   leaseStructured?: LeaseStructuredFindings;
   employmentStructured?: EmploymentStructuredFindings;
   termsStructured?: TermsStructuredFindings;
+  prenupStructured?: PrenupStructuredFindings;
+  divorceStructured?: DivorceStructuredFindings;
+  demandLetterStructured?: DemandLetterStructuredFindings;
 }
 
 export const RISK_GRADE_LABEL: Record<RiskGrade, string> = {

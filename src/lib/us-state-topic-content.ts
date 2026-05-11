@@ -4,6 +4,8 @@ import { getTopicContent } from "@/lib/topic-content";
 import type { UsState, UsStateTopicSlug } from "@/data/us-states";
 
 export interface UsStateTopicSection {
+  /** Optional stable key for list rendering; country topic sections include ids from `getTopicContent`. */
+  id?: string;
   heading: string;
   body: string;
   bullets?: string[];
@@ -50,6 +52,7 @@ export function buildUsStateTopicContent(
     `We are expanding state-specific explainers for ${state.name}. For now, start with the federal overview below, then ask the assistant for ${state.name}-aware follow-ups.`;
 
   const stateLayer: UsStateTopicSection = {
+    id: "stateSnapshot",
     heading: `${state.name}-specific snapshot`,
     body: stateCardBody,
     bullets: state.notes
@@ -73,6 +76,7 @@ export function buildUsStateTopicContent(
       sections: [
         stateLayer,
         {
+          id: "employmentFederalState",
           heading: "Federal floor vs state overlays",
           body: `National statutes like the Fair Labor Standards Act set a floor for minimum wage and overtime in many jobs, but ${state.name} may set higher minimums, meal/rest break rules, paid leave, or stricter classification tests for independent contractors.`,
           bullets: [
@@ -82,10 +86,12 @@ export function buildUsStateTopicContent(
           ],
         },
         {
+          id: "employmentHandbooks",
           heading: "Handbooks, arbitration, and non-competes",
           body: `Employee handbooks and offer letters often sneak in arbitration clauses, IP assignment, moonlighting limits, and restrictive covenants. Enforceability of non-competes in ${state.name} is fact- and statute-specific and changes with legislation and court decisions.`,
         },
         {
+          id: "employmentIfWrong",
           heading: "If something goes wrong",
           body: `Document timelines, keep pay stubs and schedules, and identify the right agency: often a state labour commissioner or human-rights commission in parallel with federal EEOC pathways. Deadlines are short — licensed employment counsel in ${state.name} is the safest route for strategy.`,
         },

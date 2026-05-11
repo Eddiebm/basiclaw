@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { ArrowRight, FileQuestion } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AuditReportCard } from "@/components/audit/AuditReportCard";
-import type { AuditReport, AuditType } from "@/lib/audit-types";
+import type { AuditReport } from "@/lib/audit-types";
+import { normaliseAuditType } from "@/lib/audit-engine";
 
 function decodeReport(hash: string): AuditReport | null {
   try {
@@ -14,7 +15,7 @@ function decodeReport(hash: string): AuditReport | null {
     const decoded = decodeURIComponent(escape(atob(trimmed)));
     const parsed = JSON.parse(decoded) as Partial<AuditReport> & { overallRiskGrade?: string; documentType?: string };
     if (!parsed?.overallRiskGrade || !parsed.documentType) return null;
-    const auditType: AuditType = parsed.auditType === "lease" || parsed.auditType === "employment" || parsed.auditType === "terms" ? parsed.auditType : "general";
+    const auditType = normaliseAuditType(typeof parsed.auditType === "string" ? parsed.auditType : null);
     return { ...parsed, auditType } as AuditReport;
   } catch {
     return null;

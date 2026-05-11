@@ -1,22 +1,13 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
-import { AuditClient } from "./AuditClient";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
-import type { AuditType } from "@/lib/audit-types";
+import { DemandLetterGeneratorClient } from "./DemandLetterGeneratorClient";
 
-type AuditToolNamespace =
-  | "auditLeasePage"
-  | "auditEmploymentPage"
-  | "auditTermsPage"
-  | "auditPrenupPage"
-  | "auditDivorcePage";
-
-function faqJsonLd(
-  items: { question: string; answer: string }[]
-): Record<string, unknown> {
+function faqJsonLd(items: { question: string; answer: string }[]): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -31,16 +22,39 @@ function faqJsonLd(
   };
 }
 
-export async function AuditToolPageShell({
-  locale,
-  namespace,
-  auditType,
-}: {
-  locale: string;
-  namespace: AuditToolNamespace;
-  auditType: Extract<AuditType, "lease" | "employment" | "terms" | "prenup" | "divorce">;
-}) {
-  const t = await getTranslations({ locale, namespace });
+function Step({ n, title, body }: { n: number; title: string; body: string }) {
+  return (
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 text-left">
+      <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)]/10 text-[var(--primary)] text-sm font-semibold">
+        {n}
+      </span>
+      <p className="mt-3 font-semibold text-[var(--foreground)]">{title}</p>
+      <p className="mt-1 text-sm text-[var(--muted-foreground)]">{body}</p>
+    </div>
+  );
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "auditDemandLetterPage" });
+  const title = t("metaTitle");
+  const description = t("metaDescription");
+  return {
+    title,
+    description,
+    alternates: { canonical: `/${locale}/audit/demand-letter-generator` },
+    openGraph: {
+      title,
+      description,
+      url: `/${locale}/audit/demand-letter-generator`,
+      type: "website",
+    },
+  };
+}
+
+export default async function DemandLetterGeneratorPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "auditDemandLetterPage" });
   const faqItems = [
     { question: t("faq1_q"), answer: t("faq1_a") },
     { question: t("faq2_q"), answer: t("faq2_a") },
@@ -63,7 +77,7 @@ export async function AuditToolPageShell({
       </section>
       <section className="pb-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <AuditClient presetAuditType={auditType} />
+          <DemandLetterGeneratorClient />
           <div className="mt-10 grid sm:grid-cols-3 gap-3 text-center">
             <Step n={1} title={t("step1_title")} body={t("step1_body")} />
             <Step n={2} title={t("step2_title")} body={t("step2_body")} />
@@ -74,7 +88,7 @@ export async function AuditToolPageShell({
             <p className="text-sm text-[var(--muted-foreground)]">{t("lawyerSection_body")}</p>
             <LawyerCtaLink
               href="/find-a-lawyer"
-              source={`audit_${auditType}_page`}
+              source="audit_demand_letter_page"
               className="inline-flex items-center gap-2 text-sm font-medium text-[var(--primary)] underline-offset-4 hover:underline"
             >
               {t("lawyerSection_cta")}
@@ -93,17 +107,5 @@ export async function AuditToolPageShell({
       </section>
       <Footer />
     </main>
-  );
-}
-
-function Step({ n, title, body }: { n: number; title: string; body: string }) {
-  return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 text-left">
-      <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)]/10 text-[var(--primary)] text-sm font-semibold">
-        {n}
-      </span>
-      <p className="mt-3 font-semibold text-[var(--foreground)]">{title}</p>
-      <p className="mt-1 text-sm text-[var(--muted-foreground)]">{body}</p>
-    </div>
   );
 }

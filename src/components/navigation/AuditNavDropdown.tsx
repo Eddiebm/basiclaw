@@ -5,7 +5,15 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-const AUDIT_PATHS = ["/audit", "/audit/lease", "/audit/employment", "/audit/terms"] as const;
+const AUDIT_PATHS = [
+  "/audit",
+  "/audit/lease",
+  "/audit/employment",
+  "/audit/terms",
+  "/audit/prenup",
+  "/audit/divorce",
+  "/audit/demand-letter-generator",
+] as const;
 
 export function AuditNavDropdown({
   variant,
@@ -37,6 +45,9 @@ export function AuditNavDropdown({
     { href: "/audit/lease", label: t("auditLease") },
     { href: "/audit/employment", label: t("auditEmployment") },
     { href: "/audit/terms", label: t("auditTerms") },
+    { href: "/audit/prenup", label: t("auditPrenup") },
+    { href: "/audit/divorce", label: t("auditDivorce") },
+    { href: "/audit/demand-letter-generator", label: t("auditDemandLetter") },
   ] as const;
 
   if (variant === "mobile") {

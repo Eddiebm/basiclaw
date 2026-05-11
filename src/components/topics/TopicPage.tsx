@@ -25,6 +25,8 @@ import { getLastVerified } from "@/lib/jurisdictions";
 export type TopicSlug = "rights" | "police-stop" | "landlord";
 
 export interface TopicSection {
+  /** Stable key for i18n section titles (`topicPage.sections.{topic}.{id}`) */
+  id: string;
   heading: string;
   body: string;
   bullets?: string[];
@@ -55,10 +57,13 @@ export function TopicPage({
   country,
   topic,
   content,
+  pageLocale = "en",
 }: {
   country: Country;
   topic: TopicSlug;
   content: TopicContent;
+  /** BCP-47 locale from the route; non-English uses translated section headings where available. */
+  pageLocale?: string;
 }) {
   const t = useTranslations("topicPage");
   const lastVerified = getLastVerified(country);
@@ -67,6 +72,7 @@ export function TopicPage({
     month: "long",
     day: "numeric",
   });
+  const translate = t as unknown as (key: string) => string;
   const Icon = TOPIC_ICON[topic];
   const topicLabel = t(`labels.${topic}`);
   const topicSubtitle = t(`subtitles.${topic}`);
@@ -159,10 +165,22 @@ export function TopicPage({
               </p>
             </div>
 
+            {pageLocale !== "en" && (
+              <div
+                role="status"
+                className="mb-8 rounded-2xl border border-[var(--border)] bg-[var(--muted)]/30 p-4 text-sm text-[var(--muted-foreground)]"
+              >
+                {t("localePartialBanner")}
+              </div>
+            )}
+
             <div className="space-y-8">
-              {content.sections.map((section) => (
-                <section key={section.heading} className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
-                  <h2 className="text-xl font-semibold text-[var(--foreground)] mb-3">{section.heading}</h2>
+              {content.sections.map((section) => {
+                const sectionTitle =
+                  pageLocale !== "en" ? translate(`sections.${topic}.${section.id}`) : section.heading;
+                return (
+                <section key={section.id} className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
+                  <h2 className="text-xl font-semibold text-[var(--foreground)] mb-3">{sectionTitle}</h2>
                   <p className="text-[var(--muted-foreground)] leading-relaxed">{section.body}</p>
                   {section.bullets && section.bullets.length > 0 && (
                     <ul className="mt-4 space-y-2">
@@ -175,7 +193,8 @@ export function TopicPage({
                     </ul>
                   )}
                 </section>
-              ))}
+              );
+              })}
             </div>
 
             <section className="mt-10 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">

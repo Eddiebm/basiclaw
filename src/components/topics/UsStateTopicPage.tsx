@@ -142,7 +142,10 @@ export function UsStateTopicPage({
 
             <div className="space-y-8">
               {content.sections.map((section) => (
-                <section key={section.heading} className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
+                <section
+                  key={section.id ?? section.heading}
+                  className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8"
+                >
                   <h2 className="text-xl font-semibold text-[var(--foreground)] mb-3">{section.heading}</h2>
                   <p className="text-[var(--muted-foreground)] leading-relaxed whitespace-pre-line">{section.body}</p>
                   {section.bullets && section.bullets.length > 0 && (

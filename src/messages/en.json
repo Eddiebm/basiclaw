@@ -313,6 +313,7 @@
     "paywallTitle": "Daily free limit reached",
     "paywallBody": "The demand-letter generator allows one educational outline per calendar day on the free tier. Upgrade to Pro for unlimited runs (billing integration in progress).",
     "paywallCta": "View Pro pricing",
+    "paywallBack": "Go back",
     "fromLabel": "Your name or organisation (sender)",
     "toLabel": "Recipient name or organisation",
     "subjectLabel": "What this is about (short)",

@@ -10,6 +10,7 @@ export type AnalyticsEvent =
   | "audit_started"
   | "audit_completed"
   | "audit_shared"
+  | "demand_letter_paywall"
   | "pricing_viewed"
   | "checkout_started"
   | "checkout_completed"

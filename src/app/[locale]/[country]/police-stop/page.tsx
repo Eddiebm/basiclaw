@@ -44,9 +44,9 @@ export default async function CountryPoliceStopPage({
 }: {
   params: Promise<RouteParams>;
 }) {
-  const { country: code } = await params;
+  const { locale, country: code } = await params;
   const country = getCountry(code);
   if (!country) notFound();
   const content = getTopicContent(country, "police-stop");
-  return <TopicPage country={country} topic="police-stop" content={content} />;
+  return <TopicPage country={country} topic="police-stop" content={content} pageLocale={locale} />;
 }

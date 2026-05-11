@@ -72,6 +72,42 @@ export default async function AuditPage({ params }: { params: Promise<{ locale: 
       </section>
       <section className="pb-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-10 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
+            <h2 className="text-lg font-semibold text-[var(--foreground)]">{t("specialtiesTitle")}</h2>
+            <p className="mt-2 text-sm text-[var(--muted-foreground)]">{t("specialtiesIntro")}</p>
+            <ul className="mt-4 grid gap-2 sm:grid-cols-2 text-sm">
+              <li>
+                <Link className="text-[var(--primary)] font-medium hover:underline" href="/audit/lease">
+                  → {t("leaseLink")}
+                </Link>
+              </li>
+              <li>
+                <Link className="text-[var(--primary)] font-medium hover:underline" href="/audit/employment">
+                  → {t("employmentLink")}
+                </Link>
+              </li>
+              <li>
+                <Link className="text-[var(--primary)] font-medium hover:underline" href="/audit/terms">
+                  → {t("termsLink")}
+                </Link>
+              </li>
+              <li>
+                <Link className="text-[var(--primary)] font-medium hover:underline" href="/audit/prenup">
+                  → {t("prenupLink")}
+                </Link>
+              </li>
+              <li>
+                <Link className="text-[var(--primary)] font-medium hover:underline" href="/audit/divorce">
+                  → {t("divorceLink")}
+                </Link>
+              </li>
+              <li>
+                <Link className="text-[var(--primary)] font-medium hover:underline" href="/audit/demand-letter-generator">
+                  → {t("demandLetterLink")}
+                </Link>
+              </li>
+            </ul>
+          </div>
           <AuditClient presetAuditType="general" />
           <div className="mt-10 grid sm:grid-cols-3 gap-3 text-center">
             <Step n={1} title={t("step1_title")} body={t("step1_body")} />

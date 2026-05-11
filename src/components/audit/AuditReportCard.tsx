@@ -103,6 +103,36 @@ export function AuditReportCard({ report, showShareButton = true, onShared }: Pr
         </Section>
       )}
 
+      {report.prenupStructured && (
+        <Section icon={<Flag className="h-5 w-5 text-violet-500" aria-hidden />} title="Prenup checklist (disclosure, support, counsel)">
+          <ul className="space-y-3">
+            <FocusSlotCard label="Financial disclosure" slot={report.prenupStructured.financialDisclosure} />
+            <FocusSlotCard label="Spousal support" slot={report.prenupStructured.spousalSupport} />
+            <FocusSlotCard label="Independent counsel" slot={report.prenupStructured.independentCounsel} />
+          </ul>
+        </Section>
+      )}
+
+      {report.divorceStructured && (
+        <Section icon={<Flag className="h-5 w-5 text-violet-500" aria-hidden />} title="Divorce settlement checklist (assets, parenting, support)">
+          <ul className="space-y-3">
+            <FocusSlotCard label="Asset & debt division" slot={report.divorceStructured.assetDivision} />
+            <FocusSlotCard label="Custody / parenting" slot={report.divorceStructured.custodyParenting} />
+            <FocusSlotCard label="Support / alimony" slot={report.divorceStructured.supportAlimony} />
+          </ul>
+        </Section>
+      )}
+
+      {report.demandLetterStructured && (
+        <Section icon={<Flag className="h-5 w-5 text-violet-500" aria-hidden />} title="Demand letter checklist (facts, relief, deadline)">
+          <ul className="space-y-3">
+            <FocusSlotCard label="Facts & timeline" slot={report.demandLetterStructured.factsAndTimeline} />
+            <FocusSlotCard label="Relief & amount" slot={report.demandLetterStructured.reliefAndAmount} />
+            <FocusSlotCard label="Deadline & tone" slot={report.demandLetterStructured.deadlineAndTone} />
+          </ul>
+        </Section>
+      )}
+
       <Section
         icon={<ShieldAlert className="h-5 w-5 text-red-500" aria-hidden />}
         title="Top red flags"

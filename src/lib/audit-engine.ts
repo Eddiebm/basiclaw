@@ -4,8 +4,11 @@ import type {
   AuditFocusSlot,
   AuditReport,
   AuditType,
+  DemandLetterStructuredFindings,
+  DivorceStructuredFindings,
   EmploymentStructuredFindings,
   LeaseStructuredFindings,
+  PrenupStructuredFindings,
   RiskGrade,
   TermsStructuredFindings,
 } from "@/lib/audit-types";
@@ -14,7 +17,15 @@ export const MAX_TEXT_CHARS = 60_000;
 export const MIN_TEXT_CHARS = 200;
 
 const VALID_GRADES = new Set<RiskGrade>(["low", "moderate", "elevated", "high", "critical"]);
-const VALID_AUDIT_TYPES = new Set<AuditType>(["general", "lease", "employment", "terms"]);
+const VALID_AUDIT_TYPES = new Set<AuditType>([
+  "general",
+  "lease",
+  "employment",
+  "terms",
+  "prenup",
+  "divorce",
+  "demand_letter",
+]);
 
 export function normaliseAuditType(value: string | null | undefined): AuditType {
   const v = (value ?? "general").toLowerCase();
@@ -73,6 +84,39 @@ Also include:
 }
 
 Consumer / website terms focus: personal data use and deletion, arbitration / class-action waivers, liability caps and disclaimers.`;
+    case "prenup":
+      return `${BASE_REPORT_TYPE}
+
+Also include:
+"prenupStructured": {
+  "financialDisclosure": ${FOCUS_SLOT},
+  "spousalSupport": ${FOCUS_SLOT},
+  "independentCounsel": ${FOCUS_SLOT}
+}
+
+Prenup / postnup / marital-property agreement focus: adequacy of financial disclosure, spousal-support waivers or limits, and independent legal advice / procedural fairness.`;
+    case "divorce":
+      return `${BASE_REPORT_TYPE}
+
+Also include:
+"divorceStructured": {
+  "assetDivision": ${FOCUS_SLOT},
+  "custodyParenting": ${FOCUS_SLOT},
+  "supportAlimony": ${FOCUS_SLOT}
+}
+
+Separation / divorce settlement focus: division of assets and debts, parenting and custody language, support or alimony hooks.`;
+    case "demand_letter":
+      return `${BASE_REPORT_TYPE}
+
+Also include:
+"demandLetterStructured": {
+  "factsAndTimeline": ${FOCUS_SLOT},
+  "reliefAndAmount": ${FOCUS_SLOT},
+  "deadlineAndTone": ${FOCUS_SLOT}
+}
+
+Demand-letter or pre-action outline focus: clarity and proportionality of facts vs rhetoric, specificity of relief and amounts, response deadline and tone/defamation risk.`;
     default:
       return BASE_REPORT_TYPE;
   }
@@ -95,7 +139,13 @@ export function buildPrompt(input: {
         ? "Assume an employment agreement, offer letter, or contractor agreement unless clearly otherwise."
         : input.auditType === "terms"
           ? "Assume website / app terms of service or similar click-wrap terms unless clearly otherwise."
-          : "";
+          : input.auditType === "prenup"
+            ? "Assume a prenuptial, postnuptial, or marital-property agreement unless clearly otherwise."
+            : input.auditType === "divorce"
+              ? "Assume a separation agreement, consent order draft, or divorce settlement unless clearly otherwise."
+              : input.auditType === "demand_letter"
+                ? "Assume a demand letter, cease-and-desist outline, or pre-action notice compiled from user-supplied facts."
+                : "";
 
   const schema = specialisedSchema(input.auditType);
 
@@ -113,7 +163,7 @@ Rules:
 - Bias toward what an ordinary person (not a corporate counterparty) cares about.
 - If the document is too short, ambiguous, or clearly not a legal document, say so in oneLineSummary and use lower-grade risk plus shorter arrays — still return valid JSON.
 - Do not invent statutes. If you cite something, name only well-known acts (e.g. UK Equality Act 2010, US FLSA).
-${input.auditType !== "general" ? "- Include the specialised structured object (leaseStructured / employmentStructured / termsStructured) with all three slots filled even if the document is silent (then explain uncertainty in summary fields)." : ""}
+${input.auditType !== "general" ? "- Include the specialised structured object for this audit type (leaseStructured, employmentStructured, termsStructured, prenupStructured, divorceStructured, or demandLetterStructured) with all three slots filled even if the document is silent (then explain uncertainty in summary fields)." : ""}
 
 Document text follows between <DOC> tags.
 
@@ -166,6 +216,36 @@ function parseTermsStructured(value: unknown): TermsStructuredFindings | undefin
   const liabilityCap = parseFocusSlot(o.liabilityCap);
   if (!dataRights || !arbitration || !liabilityCap) return undefined;
   return { dataRights, arbitration, liabilityCap };
+}
+
+function parsePrenupStructured(value: unknown): PrenupStructuredFindings | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const o = value as Record<string, unknown>;
+  const financialDisclosure = parseFocusSlot(o.financialDisclosure);
+  const spousalSupport = parseFocusSlot(o.spousalSupport);
+  const independentCounsel = parseFocusSlot(o.independentCounsel);
+  if (!financialDisclosure || !spousalSupport || !independentCounsel) return undefined;
+  return { financialDisclosure, spousalSupport, independentCounsel };
+}
+
+function parseDivorceStructured(value: unknown): DivorceStructuredFindings | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const o = value as Record<string, unknown>;
+  const assetDivision = parseFocusSlot(o.assetDivision);
+  const custodyParenting = parseFocusSlot(o.custodyParenting);
+  const supportAlimony = parseFocusSlot(o.supportAlimony);
+  if (!assetDivision || !custodyParenting || !supportAlimony) return undefined;
+  return { assetDivision, custodyParenting, supportAlimony };
+}
+
+function parseDemandLetterStructured(value: unknown): DemandLetterStructuredFindings | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const o = value as Record<string, unknown>;
+  const factsAndTimeline = parseFocusSlot(o.factsAndTimeline);
+  const reliefAndAmount = parseFocusSlot(o.reliefAndAmount);
+  const deadlineAndTone = parseFocusSlot(o.deadlineAndTone);
+  if (!factsAndTimeline || !reliefAndAmount || !deadlineAndTone) return undefined;
+  return { factsAndTimeline, reliefAndAmount, deadlineAndTone };
 }
 
 export function parseReport(
@@ -230,10 +310,18 @@ export function parseReport(
   const leaseStructured = parseLeaseStructured(parsed.leaseStructured);
   const employmentStructured = parseEmploymentStructured(parsed.employmentStructured);
   const termsStructured = parseTermsStructured(parsed.termsStructured);
+  const prenupStructured = parsePrenupStructured(parsed.prenupStructured);
+  const divorceStructured = parseDivorceStructured(parsed.divorceStructured);
+  const demandLetterStructured = parseDemandLetterStructured(parsed.demandLetterStructured);
 
   if (auditType === "lease" && leaseStructured) report.leaseStructured = leaseStructured;
   if (auditType === "employment" && employmentStructured) report.employmentStructured = employmentStructured;
   if (auditType === "terms" && termsStructured) report.termsStructured = termsStructured;
+  if (auditType === "prenup" && prenupStructured) report.prenupStructured = prenupStructured;
+  if (auditType === "divorce" && divorceStructured) report.divorceStructured = divorceStructured;
+  if (auditType === "demand_letter" && demandLetterStructured) {
+    report.demandLetterStructured = demandLetterStructured;
+  }
 
   return report;
 }
@@ -307,7 +395,12 @@ export async function runAuditPipeline(options: RunAuditOptions): Promise<AuditO
         { role: "user", content: prompt },
       ],
       temperature: 0.2,
-      max_tokens: options.auditType === "general" ? 1400 : 2000,
+      max_tokens:
+        options.auditType === "general"
+          ? 1400
+          : options.auditType === "demand_letter"
+            ? 2800
+            : 2000,
     }),
   });
 
