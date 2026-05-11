@@ -15,6 +15,7 @@ import {
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { countryStats } from "@/lib/jurisdictions";
+import { RightOfDaySubscribe } from "@/components/sections/RightOfDaySubscribe";
 
 export function Hero() {
   const t = useTranslations("hero");
@@ -70,6 +71,7 @@ export function Hero() {
                   </Link>
                 </Button>
               </div>
+              <RightOfDaySubscribe />
               <p className="mt-3 text-sm text-[var(--muted-foreground)]">
                 <Link href="/questions" className="font-medium text-[var(--primary)] hover:underline">
                   {t("ctaQuestions")}
@@ -101,6 +103,15 @@ export function Hero() {
                 </span>
                 <Link href="/audit/terms" className="underline underline-offset-4 hover:text-[var(--foreground)]">
                   {t("auditToolsTerms")}
+                </Link>
+              </p>
+              <p className="mt-3 text-sm text-[var(--muted-foreground)] flex flex-wrap items-center justify-center lg:justify-start gap-x-2 gap-y-1">
+                <span>{t("extensionLead")}</span>
+                <Link
+                  href="/extension"
+                  className="inline-flex items-center gap-1 font-medium text-[var(--primary)] underline underline-offset-4 hover:opacity-80"
+                >
+                  {t("extensionCta")} <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </p>
               <p className="mt-4 text-xs text-[var(--muted-foreground)]">{t("tinyDisclaimer")}</p>

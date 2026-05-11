@@ -16,18 +16,23 @@
     "toggleMenu": "Toggle menu",
     "toggleTheme": "Toggle theme",
     "findLawyer": "Find a lawyer",
+    "signIn": "Sign in",
     "usStates": "US States",
+    "learnGroupMenu": "Learn",
+    "learnLawSchool": "Law School",
+    "learnDocuments": "Documents",
+    "learnQuestions": "Citizen questions",
+    "learnMobileGroup": "Learn",
     "auditToolsMenu": "Audit tools",
     "auditGeneral": "General contract audit",
     "auditLease": "Lease audit",
     "auditEmployment": "Employment audit",
     "auditTerms": "Terms / ToS audit",
-    "auditMobileGroup": "Audits",
-    "learnGroupMenu": "Learn",
-    "learnLawSchool": "Law School",
-    "learnDocuments": "Documents",
-    "learnQuestions": "Citizen questions",
-    "learnMobileGroup": "Learn"
+    "auditPrenup": "Prenup audit",
+    "auditDivorce": "Divorce settlement audit",
+    "auditDemandLetter": "Demand letter generator",
+    "extension": "Browser extension",
+    "auditMobileGroup": "Audits"
   },
   "languageSwitcher": {
     "label": "Language",
@@ -42,17 +47,27 @@
     }
   },
   "hero": {
+    "newsletterTitle": "Right of the Day",
+    "newsletterSubtitle": "One short legal principle per day, tuned to your jurisdiction — free, plain language.",
+    "newsletterPlaceholder": "you@example.com",
+    "newsletterJurisdiction": "Jurisdiction",
+    "newsletterSubmit": "Get the digest",
+    "newsletterSuccess": "You’re subscribed. Expect light traffic — we won’t spam.",
+    "newsletterError": "Could not subscribe. Check your email address or try again later.",
     "badge": "{count} constitutions · plain language · zero jargon",
     "titleLead": "Stop guessing what the law says about",
     "titleAccent": "your life",
     "subtitle": "BasicLaw turns the constitution and core laws of every country in the world into clear answers anyone can read. No subscriptions to a lawyer just to know your rights.",
     "ctaAudit": "Audit my contract free",
     "ctaAsk": "Ask a question",
+    "ctaQuestions": "Browse citizen questions",
     "browseRich": "Or <link>browse all {count} constitutions</link>.",
     "auditToolsLead": "Focused audits:",
     "auditToolsLease": "Lease",
     "auditToolsEmployment": "Employment",
     "auditToolsTerms": "Terms",
+    "extensionLead": "Or audit anything you're already reading:",
+    "extensionCta": "Add the BasicLaw browser extension",
     "tinyDisclaimer": "Free to read. Educational only — never a substitute for a licensed lawyer.",
     "cardQA_title": "Legal Q&A",
     "cardQA_body": "Ask a question in plain language. Get a clear, jurisdiction-aware answer with the disclaimer baked in.",
@@ -64,8 +79,7 @@
     "cardLibrary_link": "Open library",
     "statsEducational": "Educational only",
     "statsJurisdictions": "{count} jurisdictions",
-    "statsPlainLanguage": "Plain language",
-    "ctaQuestions": "Browse citizen questions"
+    "statsPlainLanguage": "Plain language"
   },
   "footer": {
     "tagline": "The plain-language constitution and rights library for {count} countries. Civic infrastructure for the digital age.",
@@ -82,9 +96,12 @@
       "auditLease": "Lease audit",
       "auditEmployment": "Employment audit",
       "auditTerms": "Terms audit",
+      "extension": "Browser extension",
       "ask": "Ask the assistant",
+      "questions": "Citizen questions",
       "documents": "Document help",
       "pricing": "Pricing",
+      "signIn": "Sign in",
       "findLawyer": "Find a lawyer",
       "us": "United States",
       "uk": "United Kingdom",
@@ -99,8 +116,7 @@
       "privacy": "Privacy Policy",
       "terms": "Terms of Service",
       "disclaimer": "Disclaimer",
-      "cookies": "Cookie Policy",
-      "questions": "Citizen questions"
+      "cookies": "Cookie Policy"
     },
     "copyright": "© {year} BasicLaw. Educational only — not a substitute for a licensed lawyer.",
     "builtFor": "Built for everyone, everywhere."
@@ -141,7 +157,15 @@
     "faq2_q": "Do you store my document?",
     "faq2_a": "No. The text is sent to the model for analysis and discarded afterward. Do not upload legally privileged or highly sensitive material you cannot risk transmitting over the internet.",
     "faq3_q": "What jurisdictions are supported?",
-    "faq3_a": "You can pick from the same country list as the general audit. The model answers in plain language with jurisdiction-aware framing, but you should still verify outcomes with local counsel."
+    "faq3_a": "You can pick from the same country list as the general audit. The model answers in plain language with jurisdiction-aware framing, but you should still verify outcomes with local counsel.",
+    "specialtiesTitle": "Specialised flows",
+    "specialtiesIntro": "Same audit engine — tighter checklists for common document types.",
+    "leaseLink": "Lease audit",
+    "employmentLink": "Employment audit",
+    "termsLink": "Terms / ToS audit",
+    "prenupLink": "Prenup audit",
+    "divorceLink": "Divorce settlement audit",
+    "demandLetterLink": "Demand letter generator"
   },
   "auditLeasePage": {
     "metaTitle": "Lease audit — BasicLaw",
@@ -212,6 +236,99 @@
     "faq3_q": "Can I rely on this to sue a platform?",
     "faq3_a": "No. BasicLaw does not provide litigation strategy; talk to a litigator if you have a dispute."
   },
+  "auditPrenupPage": {
+    "metaTitle": "Prenup audit — BasicLaw",
+    "metaDescription": "Upload or paste a prenuptial or marital property agreement. We stress-test disclosure, spousal-support waivers, and independent-counsel risk in plain language.",
+    "badge": "Prenup · educational only",
+    "title": "Audit a prenup before you sign.",
+    "subtitle": "Extra focus on financial disclosure, spousal-support limitations, and whether independent legal advice was contemplated.",
+    "step1_title": "Paste or upload",
+    "step1_body": "PDF or text — never stored on our servers.",
+    "step2_title": "Pick jurisdiction",
+    "step2_body": "Matrimonial property and support rules vary sharply by country and state.",
+    "step3_title": "Structured + red flags",
+    "step3_body": "Disclosure, support, and counsel slots plus the standard audit sections.",
+    "proLink": "Need bulk audits or saved history? See Pro and Pro+",
+    "lawyerSection_title": "About to sign?",
+    "lawyerSection_body": "A family-law lawyer can confirm enforceability, disclosure adequacy, and tax consequences in your jurisdiction.",
+    "lawyerSection_cta": "Find a lawyer",
+    "faq1_q": "Does this replace a matrimonial lawyer?",
+    "faq1_a": "No. It highlights common risk patterns in the text you provide. Courts may refuse agreements that are unconscionable or procedurally unfair — you need counsel for a definitive view.",
+    "faq2_q": "Postnup vs prenup?",
+    "faq2_a": "Paste whichever you have. The same disclosure, support, and fairness issues apply to both.",
+    "faq3_q": "Will this tell me if my waiver is enforceable?",
+    "faq3_a": "It flags bargaining angles and missing safeguards. Enforceability is fact-specific — talk to a family lawyer."
+  },
+  "auditDivorcePage": {
+    "metaTitle": "Divorce settlement audit — BasicLaw",
+    "metaDescription": "Paste a separation agreement, consent order draft, or divorce settlement. We foreground parenting, support, and asset-division risks.",
+    "badge": "Divorce · educational only",
+    "title": "Audit a divorce or separation draft.",
+    "subtitle": "Extra focus on asset and debt division, parenting language, and support or alimony hooks.",
+    "step1_title": "Paste or upload",
+    "step1_body": "PDF or text — never stored.",
+    "step2_title": "Pick jurisdiction",
+    "step2_body": "Family law is intensely local — county courts and statutes matter.",
+    "step3_title": "Structured + red flags",
+    "step3_body": "Division, custody, and support slots plus the standard audit.",
+    "proLink": "Need bulk audits or saved history? See Pro and Pro+",
+    "lawyerSection_title": "Negotiating a settlement?",
+    "lawyerSection_body": "A family lawyer can align the draft with local forms, tax reporting, and enforcement.",
+    "lawyerSection_cta": "Find a lawyer",
+    "faq1_q": "Can I file this in court after the audit?",
+    "faq1_a": "BasicLaw does not file anything. This is educational review of text you supply — not litigation strategy.",
+    "faq2_q": "International custody?",
+    "faq2_a": "Mention countries involved in your pasted summary. Cross-border parenting and relocation rules need specialist counsel.",
+    "faq3_q": "Tax treatment?",
+    "faq3_a": "We do not give tax advice. Ask a family lawyer and a tax adviser about support characterization and property transfers."
+  },
+  "auditDemandLetterPage": {
+    "metaTitle": "Demand letter generator — BasicLaw",
+    "metaDescription": "Turn your facts into a structured demand-letter outline and get an educational risk read — tone, deadlines, and relief clarity.",
+    "badge": "Demand letter · educational only",
+    "title": "Structure a demand letter before you send it.",
+    "subtitle": "No upload — answer a short form. We compile plain-language text and run the same red-flag scan as other audits.",
+    "step1_title": "Fill the form",
+    "step1_body": "Parties, facts, relief, and response window — compiled into one document for analysis.",
+    "step2_title": "Pick jurisdiction",
+    "step2_body": "Defamation risk, debt-collection rules, and pre-action protocols vary by place.",
+    "step3_title": "Risk read",
+    "step3_body": "Facts vs rhetoric, clarity of relief, deadline and tone checklist.",
+    "proLink": "Unlimited demand-letter runs on Pro — see pricing",
+    "lawyerSection_title": "Ready to send?",
+    "lawyerSection_body": "A litigator or debt lawyer can finalise wording, service method, and next steps.",
+    "lawyerSection_cta": "Find a lawyer",
+    "faq1_q": "Is this a finished letter I can post?",
+    "faq1_a": "No. It is an educational outline and risk scan. You should have a lawyer review before anything is served or filed.",
+    "faq2_q": "Defamation worries?",
+    "faq2_a": "The audit comments on tone and specificity risk. It does not predict court outcomes.",
+    "faq3_q": "Free tier limits?",
+    "faq3_a": "You can run one structured demand-letter audit per day on the free tier; Pro is advertised as unlimited once billing is connected to your account."
+  },
+  "demandLetterGenerator": {
+    "validation": "Add both parties, at least ~120 characters of facts, and a clear demand.",
+    "failed": "Could not complete the audit.",
+    "network": "Network error",
+    "another": "Start another outline",
+    "paywallTitle": "Daily free limit reached",
+    "paywallBody": "The demand-letter generator allows one educational outline per calendar day on the free tier. Upgrade to Pro for unlimited runs (billing integration in progress).",
+    "paywallCta": "View Pro pricing",
+    "fromLabel": "Your name or organisation (sender)",
+    "toLabel": "Recipient name or organisation",
+    "subjectLabel": "What this is about (short)",
+    "subjectPlaceholder": "e.g. Unpaid invoice #1042, noise nuisance, contract breach",
+    "jurisdiction": "Jurisdiction",
+    "optgroupPopular": "Most chosen",
+    "optgroupAll": "All countries",
+    "factsLabel": "Facts and timeline (be specific)",
+    "factsPlaceholder": "Dates, amounts, prior notices, what was promised vs what happened…",
+    "reliefLabel": "What you want them to do",
+    "reliefPlaceholder": "e.g. Pay £X within 14 days, cease the activity, repair the defect…",
+    "daysLabel": "Days to respond",
+    "submit": "Generate outline & run audit",
+    "submitting": "Working…",
+    "footnote": "Educational only — not legal advice. Nothing is emailed or filed automatically."
+  },
   "auditClient": {
     "fileTooLarge": "File too large — max 5MB.",
     "pasteMin": "Paste at least 200 characters of the document, or upload a file.",
@@ -236,7 +353,10 @@
     "presetBanner": {
       "lease": "You are on the lease-focused audit — deposit, notice, and renewal fields are highlighted in the report.",
       "employment": "You are on the employment-focused audit — IP, non-compete, and at-will fields are highlighted.",
-      "terms": "You are on the terms-of-service audit — data rights, arbitration, and liability-cap fields are highlighted."
+      "terms": "You are on the terms-of-service audit — data rights, arbitration, and liability-cap fields are highlighted.",
+      "prenup": "You are on the prenup-focused audit — disclosure, support, and independent-counsel fields are highlighted.",
+      "divorce": "You are on the divorce-settlement audit — assets, parenting, and support fields are highlighted.",
+      "demand_letter": "You are on the demand-letter audit — facts, relief, and deadline/tone fields are highlighted."
     }
   },
   "faqPage": {
@@ -326,6 +446,7 @@
     "usStatesCta": "Open US state index"
   },
   "topicPage": {
+    "localePartialBanner": "Full localised body text is coming soon — section headings are translated; the detailed guide below is still in English.",
     "breadcrumbHome": "BasicLaw",
     "breadcrumbConstitutions": "Constitutions",
     "eduOnlyStrong": "Educational only.",
@@ -355,6 +476,34 @@
       "policeInCountry": "Police stops in {country}",
       "landlordInCountry": "Tenant & landlord law in {country}"
     },
+    "sections": {
+      "rights": {
+        "whereFrom": "Where your rights come from",
+        "civilPolitical": "Civil and political rights",
+        "economicSocial": "Economic, social, and cultural rights",
+        "enforce": "How to enforce a right",
+        "limits": "Limits on rights",
+        "subnational": "When the answer changes"
+      },
+      "police-stop": {
+        "stayCalm": "Stay calm and make the encounter visible",
+        "askWhy": "Ask why you have been stopped",
+        "mustDo": "What you usually have to do",
+        "needNot": "What you usually do not have to do",
+        "searches": "Searches",
+        "arrested": "If you are arrested",
+        "after": "After the encounter"
+      },
+      "landlord": {
+        "leaseContract": "Your lease is a contract — but not the whole story",
+        "deposits": "Deposits",
+        "repairs": "Repairs and habitability",
+        "rent": "Rent increases",
+        "eviction": "Eviction",
+        "discrimination": "Discrimination and retaliation",
+        "help": "When to get help"
+      }
+    },
     "findLawyerCta": "Find a lawyer"
   },
   "lawyerPage": {
@@ -382,7 +531,63 @@
   "chatEmpty": {
     "title": "Start a Conversation",
     "body": "Ask questions about legal concepts, your rights, or how the law works in your jurisdiction.",
-    "lawyerCta": "Need representation? Find a lawyer"
+    "lawyerCta": "Need representation? Find a lawyer",
+    "signInToSaveLead": "Want your threads on every device?",
+    "signInToSaveCta": "Sign in to save chats"
+  },
+  "chatSidebar": {
+    "jurisdiction": "Jurisdiction",
+    "optgroupPopular": "Most-explored",
+    "optgroupAll": "All {count} countries",
+    "assistantWillAnswer": "The assistant will answer for {country}.",
+    "readConstitution": "Read its constitution",
+    "newChat": "New chat",
+    "recentChats": "Recent chats",
+    "noChats": "No conversations yet."
+  },
+  "auth": {
+    "notConfiguredBanner": "Auth is not configured (missing Clerk keys). Sign-in and saved history are disabled until CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY are set.",
+    "signInTitle": "Sign in — BasicLaw",
+    "signUpTitle": "Create account — BasicLaw",
+    "backHome": "Back to BasicLaw"
+  },
+  "dashboardPage": {
+    "metaTitle": "Dashboard — BasicLaw",
+    "metaDescription": "Saved chats, audits, and subscription",
+    "title": "Your dashboard",
+    "subtitle": "Saved chats from the assistant (when signed in) and your Stripe subscription.",
+    "disabledTitle": "Account dashboard",
+    "disabledBody": "Clerk authentication is not configured on this deployment yet. You can still use the site anonymously.",
+    "checkoutSuccessTitle": "Subscription started — thank you.",
+    "checkoutSuccessBody": "A receipt is on its way to your inbox.",
+    "checkoutCancelled": "Checkout was cancelled. No charge was made.",
+    "savedChatsTitle": "Saved chats",
+    "savedChatsSubtitle": "Synced when you are signed in and send messages in the assistant.",
+    "savedChatsEmpty": "No saved chats yet. Open the assistant and ask a question while signed in.",
+    "openChat": "Open chat",
+    "renamePrompt": "Rename chat",
+    "renameAria": "Rename",
+    "deleteAria": "Delete",
+    "savedAuditsTitle": "Saved audits",
+    "savedAuditsSubtitle": "When we wire audit persistence, completed audits will appear here.",
+    "savedAuditsEmpty": "No saved audits yet.",
+    "subscriptionTitle": "Manage subscription",
+    "subscriptionBody": "Update payment method, change plan, or cancel anytime through the secure Stripe customer portal.",
+    "openingPortal": "Opening…",
+    "openPortal": "Open customer portal",
+    "portalTip": "Tip: open this page right after subscribing and we can route you straight to your portal.",
+    "comingTitle": "What’s next",
+    "coming1": "Push saved audits from the contract tool into this list automatically.",
+    "coming2": "Export chat transcripts for your records (Pro+).",
+    "linkChat": "Open the legal assistant",
+    "linkConstitutions": "Browse the constitution library",
+    "linkAudit": "Audit a contract"
+  },
+  "auditReportCard": {
+    "askLawyerTitle": "Ask a licensed lawyer",
+    "askLawyerBody": "This panel is educational. A licensed lawyer in {jurisdiction} can review your exact document and priorities.",
+    "askLawyerCta": "Find a lawyer",
+    "followUpCta": "Ask the assistant a follow-up"
   },
   "pricingTiers": {
     "monthly": "Monthly",
