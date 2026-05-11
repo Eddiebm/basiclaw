@@ -19,6 +19,7 @@ const LOCALIZED_STATIC = [
   "/learn",
   "/documents",
   "/us/states",
+  "/compare",
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

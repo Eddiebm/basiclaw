@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { ArrowLeft, BookText, Globe2, Library } from "lucide-react";
+import { ArrowLeft, ArrowRightLeft, BookText, Globe2, Library } from "lucide-react";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { CountryBrowser } from "@/components/constitutions/CountryBrowser";
@@ -69,6 +69,22 @@ export default async function ConstitutionsPage({ params }: { params: Promise<{ 
 
       <section className="py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-10 rounded-3xl border border-[var(--primary)]/20 bg-[var(--primary)]/5 p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-2 text-[var(--primary)] mb-2" aria-hidden>
+                <ArrowRightLeft className="h-4 w-4" />
+              </div>
+              <h2 className="text-lg font-semibold text-[var(--foreground)] mb-2">{t("compareBannerTitle")}</h2>
+              <p className="text-sm text-[var(--muted-foreground)] leading-relaxed">{t("compareBannerBody")}</p>
+            </div>
+            <Link
+              href="/compare?a=US&b=GH&topic=rights"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--primary)] text-[var(--primary-foreground)] px-5 py-3 text-sm font-semibold hover:opacity-95 transition-opacity shrink-0"
+            >
+              {t("compareBannerCta")}
+              <ArrowRightLeft className="h-4 w-4" aria-hidden />
+            </Link>
+          </div>
           <CountryBrowser countries={COUNTRIES} popular={popular} />
         </div>
       </section>

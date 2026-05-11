@@ -267,6 +267,9 @@
     }
   },
   "constitutionBrowse": {
+    "compareBannerTitle": "Compare two constitutions side by side",
+    "compareBannerBody": "Pick any two countries and a topic — rights, government structure, judiciary, or amendment process. Share the URL with students, editors, or your lawyer as a starting map (educational only).",
+    "compareBannerCta": "Open comparison tool",
     "back": "Back to BasicLaw",
     "badge": "The Constitution Library",
     "title": "Every country's constitution, in one place.",
@@ -520,6 +523,28 @@
       "police-stop": "Police stops in {state}",
       "landlord": "Tenant & landlord rules in {state}",
       "employment": "Employment basics in {state}"
+    }
+  },
+  "comparePage": {
+    "metaTitle": "Compare constitutions | BasicLaw",
+    "metaDescription": "Side-by-side educational comparison of two countries across rights, government structure, judiciary, and amendment process.",
+    "title": "Compare constitutions",
+    "subtitle": "Choose two countries and a topic. We surface plain-language highlights from each country's BasicLaw summary — not a substitute for reading the official text.",
+    "back": "Back to library",
+    "countryA": "Country A",
+    "countryB": "Country B",
+    "topic": "Topic",
+    "swap": "Swap countries",
+    "shareHint": "Copy the URL from your address bar to share this exact comparison.",
+    "breadcrumbConstitutions": "Constitutions",
+    "breadcrumbCompare": "Compare",
+    "jsonLdName": "{a} vs {b} — {topic}",
+    "jsonLdDescription": "Educational side-by-side comparison of constitutional highlights on BasicLaw.",
+    "topics": {
+      "rights": "Rights",
+      "government-structure": "Government structure",
+      "judiciary": "Judiciary",
+      "amendment-process": "Amendment process"
     }
   }
 }
