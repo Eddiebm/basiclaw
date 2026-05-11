@@ -3,12 +3,15 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, User, Bot, Copy } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useChat } from "@/store/chat-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { track } from "@/lib/analytics";
 
 export function ChatInterface() {
+  const tc = useTranslations("chatEmpty");
   const { currentSession, sendMessage, isTyping } = useChat();
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -53,10 +56,15 @@ export function ChatInterface() {
           >
             <Bot className="w-8 h-8 text-primary" />
           </motion.div>
-          <h2 className="text-2xl font-semibold mb-2">Start a Conversation</h2>
-          <p className="text-muted-foreground">
-            Ask questions about legal concepts, your rights, or how the law works in your jurisdiction.
-          </p>
+          <h2 className="text-2xl font-semibold mb-2">{tc("title")}</h2>
+          <p className="text-muted-foreground mb-4">{tc("body")}</p>
+          <LawyerCtaLink
+            href="/find-a-lawyer"
+            source="chat_empty_no_session"
+            className="inline-flex text-sm font-medium text-primary underline-offset-4 hover:underline"
+          >
+            {tc("lawyerCta")}
+          </LawyerCtaLink>
         </div>
       </div>
     );
@@ -73,9 +81,14 @@ export function ChatInterface() {
               animate={{ opacity: 1 }}
               className="text-center py-12"
             >
-              <p className="text-muted-foreground">
-                Start by typing your question below
-              </p>
+              <p className="text-muted-foreground mb-4">{tc("body")}</p>
+              <LawyerCtaLink
+                href="/find-a-lawyer"
+                source="chat_empty_session"
+                className="inline-flex text-sm font-medium text-primary underline-offset-4 hover:underline"
+              >
+                {tc("lawyerCta")}
+              </LawyerCtaLink>
             </motion.div>
           )}
 
