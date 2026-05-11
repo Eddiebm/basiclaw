@@ -17,7 +17,9 @@ export type AnalyticsEvent =
   | "topic_page_viewed"
   | "us_state_topic_viewed"
   | "compare_viewed"
-  | "lawyer_cta_clicked";
+  | "lawyer_cta_clicked"
+  | "question_viewed"
+  | "question_to_chat";
 
 let initialised = false;
 

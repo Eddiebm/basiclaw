@@ -6,6 +6,7 @@ import { Navigation } from "@/components/sections/Navigation";
 import { Button } from "@/components/ui/Button";
 import { ChatInterface } from "@/components/chat/ChatInterface";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
+import { ChatPrefillListener } from "@/components/chat/ChatPrefillListener";
 
 export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -16,6 +17,7 @@ export default function ChatPage() {
 
       <div className="flex-1 flex">
         <Suspense fallback={null}>
+          <ChatPrefillListener />
           <ChatSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         </Suspense>
 
