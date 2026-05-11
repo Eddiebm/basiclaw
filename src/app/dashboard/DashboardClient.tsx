@@ -1,9 +1,10 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, CheckCircle2, ExternalLink, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { track } from "@/lib/analytics";
 
 export function DashboardClient() {
   const params = useSearchParams();
@@ -11,6 +12,12 @@ export function DashboardClient() {
   const sessionId = params.get("session_id");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (checkout === "success") {
+      track("checkout_completed", { session_id: sessionId ?? null });
+    }
+  }, [checkout, sessionId]);
 
   async function openPortal() {
     setLoading(true);

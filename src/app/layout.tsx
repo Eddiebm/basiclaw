@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { ChatProvider } from "@/store/chat-context";
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
 
@@ -102,6 +104,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ThemeProvider defaultTheme="system" storageKey="basiclaw-ui-theme">
           <ChatProvider>{children}</ChatProvider>
         </ThemeProvider>
+        <Suspense fallback={null}>
+          <AnalyticsProvider />
+        </Suspense>
       </body>
     </html>
   );

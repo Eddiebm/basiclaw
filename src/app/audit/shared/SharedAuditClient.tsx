@@ -21,15 +21,16 @@ function decodeReport(hash: string): AuditReport | null {
 }
 
 export function SharedAuditClient() {
-  const [report, setReport] = useState<AuditReport | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [state, setState] = useState<{ loaded: boolean; report: AuditReport | null }>({ loaded: false, report: null });
 
   useEffect(() => {
-    setReport(decodeReport(window.location.hash));
-    setLoaded(true);
+    const decoded = decodeReport(window.location.hash);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setState({ loaded: true, report: decoded });
   }, []);
 
-  if (!loaded) return null;
+  if (!state.loaded) return null;
+  const { report } = state;
 
   if (!report) {
     return (

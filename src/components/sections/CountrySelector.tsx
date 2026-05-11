@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { COUNTRIES } from "@/data/countries";
 import { countryStats, getPopularCountries, searchCountries } from "@/lib/jurisdictions";
+import { track } from "@/lib/analytics";
 
 export function CountrySelector() {
   const stats = countryStats();
@@ -70,6 +71,7 @@ export function CountrySelector() {
                   <li key={country.code}>
                     <Link
                       href={`/constitutions/${country.code.toLowerCase()}`}
+                      onClick={() => track("country_selected", { country_code: country.code, country: country.name, source: "search" })}
                       className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-[var(--accent)]/40 transition-colors"
                     >
                       <span className="flex items-center gap-3">
@@ -101,6 +103,7 @@ export function CountrySelector() {
             >
               <Link
                 href={`/constitutions/${country.code.toLowerCase()}`}
+                onClick={() => track("country_selected", { country_code: country.code, country: country.name, source: "popular_grid" })}
                 className="group flex h-full flex-col rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 hover:border-[var(--primary)] hover:shadow-md transition-all"
               >
                 <div className="flex items-center justify-between mb-3">

@@ -21,6 +21,7 @@ import {
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { Button } from "@/components/ui/Button";
+import { EventTracker } from "@/components/analytics/EventTracker";
 import { COUNTRIES } from "@/data/countries";
 import { LEGAL_SYSTEM_DESCRIPTIONS, LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { getCountry, getLastVerified, getSources } from "@/lib/jurisdictions";
@@ -127,6 +128,15 @@ export default async function ConstitutionDetailPage({
   return (
     <main className="min-h-screen">
       <Navigation />
+      <EventTracker
+        event="constitution_viewed"
+        properties={{
+          country_code: country.code,
+          country: country.name,
+          region: country.region,
+          legal_system: country.legalSystem,
+        }}
+      />
       <article className="pt-28 pb-16">
         <script
           type="application/ld+json"

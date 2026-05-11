@@ -6,6 +6,7 @@ import { Send, User, Bot, Copy } from "lucide-react";
 import { useChat } from "@/store/chat-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
+import { track } from "@/lib/analytics";
 
 export function ChatInterface() {
   const { currentSession, sendMessage, isTyping } = useChat();
@@ -23,7 +24,13 @@ export function ChatInterface() {
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
-    await sendMessage(input.trim());
+    const message = input.trim();
+    track("chat_message_sent", {
+      length: message.length,
+      jurisdiction: currentSession?.jurisdiction ?? null,
+      session_id: currentSession?.id ?? null,
+    });
+    await sendMessage(message);
     setInput("");
     textareaRef.current?.focus();
   };

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, HelpCircle } from "lucide-react";
+import { track } from "@/lib/analytics";
 
 export const FAQ_ITEMS = [
   {
@@ -58,7 +59,11 @@ export function HomeFAQ() {
               >
                 <button
                   type="button"
-                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  onClick={() => {
+                    const nextOpen = !isOpen;
+                    setOpenIndex(nextOpen ? index : null);
+                    if (nextOpen) track("faq_expanded", { question: item.q, index });
+                  }}
                   aria-expanded={isOpen}
                   className="w-full text-left px-5 sm:px-6 py-4 flex items-center justify-between gap-4 hover:bg-[var(--accent)]/40 transition-colors"
                 >

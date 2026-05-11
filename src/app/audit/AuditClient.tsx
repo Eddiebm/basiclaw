@@ -14,6 +14,7 @@ import { COUNTRIES } from "@/data/countries";
 import { getPopularCountries } from "@/lib/jurisdictions";
 import { AuditReportCard } from "@/components/audit/AuditReportCard";
 import type { AuditReport } from "@/lib/audit-types";
+import { track } from "@/lib/analytics";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const ACCEPTED = ".pdf,.txt,.md";
@@ -67,6 +68,13 @@ export function AuditClient() {
     }
     setSubmitting(true);
     setReport(null);
+    track("audit_started", {
+      jurisdiction,
+      input_type: file ? "file" : "text",
+      document_type: documentType || null,
+      char_count: text.length,
+      file_size: file?.size ?? null,
+    });
     try {
       let res: Response;
       if (file) {
@@ -86,6 +94,12 @@ export function AuditClient() {
       const json = (await res.json()) as { report?: AuditReport; error?: string; message?: string };
       if (json.report) {
         setReport(json.report);
+        track("audit_completed", {
+          jurisdiction: json.report.jurisdictionCode,
+          document_type: json.report.documentType,
+          risk_grade: json.report.overallRiskGrade,
+          red_flags: json.report.redFlags.length,
+        });
       } else {
         setError(json.message ?? json.error ?? "Audit failed. Try a shorter excerpt.");
       }
@@ -104,7 +118,15 @@ export function AuditClient() {
   if (report) {
     return (
       <div className="space-y-6">
-        <AuditReportCard report={report} />
+        <AuditReportCard
+          report={report}
+          onShared={() =>
+            track("audit_shared", {
+              jurisdiction: report.jurisdictionCode,
+              risk_grade: report.overallRiskGrade,
+            })
+          }
+        />
         <div className="flex justify-center">
           <Button variant="outline" onClick={reset}>Audit another document</Button>
         </div>

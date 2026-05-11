@@ -13,6 +13,7 @@ import {
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { Button } from "@/components/ui/Button";
+import { EventTracker } from "@/components/analytics/EventTracker";
 import type { Country } from "@/data/types";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { getLastVerified } from "@/lib/jurisdictions";
@@ -108,6 +109,10 @@ export function TopicPage({
   return (
     <main className="min-h-screen">
       <Navigation />
+      <EventTracker
+        event="topic_page_viewed"
+        properties={{ topic, country_code: country.code, country: country.name }}
+      />
       <article className="pt-28 pb-16">
         <script
           type="application/ld+json"

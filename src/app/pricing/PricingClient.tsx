@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { BillingCadence, StripeTierId } from "@/lib/stripe-config";
+import { track } from "@/lib/analytics";
 
 interface PaidTier {
   id: StripeTierId;
@@ -90,9 +91,14 @@ export function PricingClient() {
   const [loadingTier, setLoadingTier] = useState<StripeTierId | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    track("pricing_viewed");
+  }, []);
+
   async function checkout(tier: StripeTierId) {
     setLoadingTier(tier);
     setError(null);
+    track("checkout_started", { tier, cadence });
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -101,7 +107,7 @@ export function PricingClient() {
       });
       const json = (await res.json()) as { url?: string; message?: string; error?: string };
       if (json.url) {
-        window.location.href = json.url;
+        window.location.assign(json.url);
         return;
       }
       setError(json.message ?? json.error ?? "Could not start checkout. Please try again.");
