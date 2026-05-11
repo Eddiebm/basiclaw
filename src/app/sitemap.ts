@@ -9,6 +9,9 @@ const LOCALIZED_STATIC = [
   "/constitutions",
   "/pricing",
   "/audit",
+  "/audit/lease",
+  "/audit/employment",
+  "/audit/terms",
   "/faq",
   "/find-a-lawyer",
   "/chat",
@@ -28,7 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority:
         path === "/"
           ? 1.0
-          : path === "/constitutions" || path === "/audit"
+          : path === "/constitutions" || path === "/audit" || path.startsWith("/audit/")
             ? 0.9
             : path === "/pricing" || path === "/faq" || path === "/find-a-lawyer"
               ? 0.7

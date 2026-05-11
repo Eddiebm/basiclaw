@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
 import { getCountry } from "@/lib/jurisdictions";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
-import type { AuditReport, RiskGrade } from "@/lib/audit-types";
+import type {
+  AuditFocusSlot,
+  AuditReport,
+  AuditType,
+  EmploymentStructuredFindings,
+  LeaseStructuredFindings,
+  RiskGrade,
+  TermsStructuredFindings,
+} from "@/lib/audit-types";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -17,22 +25,32 @@ const ALLOWED_MIME = new Set([
 ]);
 
 const VALID_GRADES = new Set<RiskGrade>(["low", "moderate", "elevated", "high", "critical"]);
+const VALID_AUDIT_TYPES = new Set<AuditType>(["general", "lease", "employment", "terms"]);
 
 interface AuditRequestPayload {
   text?: string;
   jurisdiction?: string;
   documentType?: string;
+  auditType?: string;
 }
 
 function siteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL ?? "https://basiclaw.vercel.app";
 }
 
-async function extractFromForm(form: FormData): Promise<{ text: string; jurisdiction: string; documentType?: string; filename?: string }> {
+function normaliseAuditType(value: string | null | undefined): AuditType {
+  const v = (value ?? "general").toLowerCase();
+  return VALID_AUDIT_TYPES.has(v as AuditType) ? (v as AuditType) : "general";
+}
+
+async function extractFromForm(
+  form: FormData
+): Promise<{ text: string; jurisdiction: string; documentType?: string; auditType: AuditType; filename?: string }> {
   const file = form.get("file");
   const text = (form.get("text") as string | null) ?? "";
   const jurisdiction = ((form.get("jurisdiction") as string | null) ?? "us").toLowerCase();
   const documentType = (form.get("documentType") as string | null) ?? undefined;
+  const auditType = normaliseAuditType(form.get("auditType") as string | null);
 
   let extracted = text;
   let filename: string | undefined;
@@ -56,14 +74,17 @@ async function extractFromForm(form: FormData): Promise<{ text: string; jurisdic
     }
   }
 
-  return { text: extracted.trim(), jurisdiction, documentType, filename };
+  return { text: extracted.trim(), jurisdiction, documentType, auditType, filename };
 }
 
-async function extractFromJson(payload: AuditRequestPayload): Promise<{ text: string; jurisdiction: string; documentType?: string }> {
+async function extractFromJson(
+  payload: AuditRequestPayload
+): Promise<{ text: string; jurisdiction: string; documentType?: string; auditType: AuditType }> {
   return {
     text: (payload.text ?? "").trim(),
     jurisdiction: (payload.jurisdiction ?? "us").toLowerCase(),
     documentType: payload.documentType,
+    auditType: normaliseAuditType(payload.auditType),
   };
 }
 
@@ -72,14 +93,146 @@ function clipText(text: string): string {
   return `${text.slice(0, MAX_TEXT_CHARS)}\n\n[\u2026 truncated for length \u2026]`;
 }
 
-function buildPrompt(input: { jurisdictionName: string; legalSystem: string; documentType?: string; text: string }) {
+const BASE_REPORT_TYPE = `interface AuditReport {
+  documentType: string;
+  overallRiskGrade: "low" | "moderate" | "elevated" | "high" | "critical";
+  oneLineSummary: string;            // <= 160 chars
+  redFlags: { title: string; why: string; pushback: string }[];   // 3 to 5
+  positives: { title: string; why: string }[];                    // 2 to 3
+  keyClausesToPushBackOn: { clause: string; pushback: string }[]; // 2 to 5
+  askLawyerIfTriggers: { trigger: string; why: string }[];        // 2 to 4
+}`;
+
+const FOCUS_SLOT = '{ "summary": string, "pushback": string }';
+
+function specialisedSchema(auditType: AuditType): string {
+  switch (auditType) {
+    case "lease":
+      return `${BASE_REPORT_TYPE}
+
+Also include this exact key with nested objects:
+"leaseStructured": {
+  "deposit": ${FOCUS_SLOT},
+  "notice": ${FOCUS_SLOT},
+  "renewal": ${FOCUS_SLOT}
+}
+
+Lease focus: security deposits and deductions, notice to quit / entry rules, renewal options and rent increases.`;
+    case "employment":
+      return `${BASE_REPORT_TYPE}
+
+Also include:
+"employmentStructured": {
+  "intellectualProperty": ${FOCUS_SLOT},
+  "nonCompete": ${FOCUS_SLOT},
+  "atWill": ${FOCUS_SLOT}
+}
+
+Employment focus: IP assignment / inventions, non-compete and solicitation, at-will vs notice / cause language.`;
+    case "terms":
+      return `${BASE_REPORT_TYPE}
+
+Also include:
+"termsStructured": {
+  "dataRights": ${FOCUS_SLOT},
+  "arbitration": ${FOCUS_SLOT},
+  "liabilityCap": ${FOCUS_SLOT}
+}
+
+Consumer / website terms focus: personal data use and deletion, arbitration / class-action waivers, liability caps and disclaimers.`;
+    default:
+      return BASE_REPORT_TYPE;
+  }
+}
+
+function buildPrompt(input: {
+  jurisdictionName: string;
+  legalSystem: string;
+  documentType?: string;
+  text: string;
+  auditType: AuditType;
+}) {
   const docTypeLine = input.documentType
     ? `The user says this is a "${input.documentType}".`
     : "If you can infer the document type, name it (e.g. employment contract, residential lease, NDA, terms of service).";
-  return `You are a senior contracts lawyer producing a plain-language risk audit for a non-lawyer in ${input.jurisdictionName} (${input.legalSystem}). ${docTypeLine}\n\nReturn a single JSON object exactly matching this TypeScript type:\n\ninterface AuditReport {\n  documentType: string;\n  overallRiskGrade: "low" | "moderate" | "elevated" | "high" | "critical";\n  oneLineSummary: string;            // \u2264 160 chars\n  redFlags: { title: string; why: string; pushback: string }[];   // 3 to 5\n  positives: { title: string; why: string }[];                    // 2 to 3\n  keyClausesToPushBackOn: { clause: string; pushback: string }[]; // 2 to 5\n  askLawyerIfTriggers: { trigger: string; why: string }[];        // 2 to 4\n}\n\nRules:\n- Output JSON only. No prose, no markdown, no code fences.\n- Be specific and concrete. Quote the clause briefly where useful.\n- "pushback" should be the exact one-sentence ask the user can put in writing.\n- Bias toward what an ordinary person (not a corporate counterparty) cares about.\n- If the document is too short, ambiguous, or clearly not a legal document, say so in oneLineSummary and use lower-grade risk plus shorter arrays \u2014 still return valid JSON.\n- Do not invent statutes. If you cite something, name only well-known acts (e.g. UK Equality Act 2010, US FLSA).\n\nDocument text follows between <DOC> tags.\n\n<DOC>\n${clipText(input.text)}\n</DOC>`;
+  const typeHint =
+    input.auditType === "lease"
+      ? "Assume a residential or commercial tenancy agreement unless the text clearly says otherwise."
+      : input.auditType === "employment"
+        ? "Assume an employment agreement, offer letter, or contractor agreement unless clearly otherwise."
+        : input.auditType === "terms"
+          ? "Assume website / app terms of service or similar click-wrap terms unless clearly otherwise."
+          : "";
+
+  const schema = specialisedSchema(input.auditType);
+
+  return `You are a senior contracts lawyer producing a plain-language risk audit for a non-lawyer in ${input.jurisdictionName} (${input.legalSystem}). ${docTypeLine}
+${typeHint}
+
+Return a single JSON object exactly matching this TypeScript shape:
+
+${schema}
+
+Rules:
+- Output JSON only. No prose, no markdown, no code fences.
+- Be specific and concrete. Quote the clause briefly where useful.
+- "pushback" should be the exact one-sentence ask the user can put in writing.
+- Bias toward what an ordinary person (not a corporate counterparty) cares about.
+- If the document is too short, ambiguous, or clearly not a legal document, say so in oneLineSummary and use lower-grade risk plus shorter arrays — still return valid JSON.
+- Do not invent statutes. If you cite something, name only well-known acts (e.g. UK Equality Act 2010, US FLSA).
+${input.auditType !== "general" ? "- Include the specialised structured object (leaseStructured / employmentStructured / termsStructured) with all three slots filled even if the document is silent (then explain uncertainty in summary fields)." : ""}
+
+Document text follows between <DOC> tags.
+
+<DOC>
+${clipText(input.text)}
+</DOC>`;
 }
 
-function parseReport(content: string, jurisdictionCode: string, jurisdictionName: string): AuditReport {
+function clean(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function parseFocusSlot(value: unknown): AuditFocusSlot | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const o = value as Record<string, unknown>;
+  const summary = clean(o.summary);
+  const pushback = clean(o.pushback);
+  if (!summary && !pushback) return undefined;
+  return { summary: summary || "Not clearly addressed in the excerpt.", pushback: pushback || "Ask the counterparty to clarify this point in writing." };
+}
+
+function parseLeaseStructured(value: unknown): LeaseStructuredFindings | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const o = value as Record<string, unknown>;
+  const deposit = parseFocusSlot(o.deposit);
+  const notice = parseFocusSlot(o.notice);
+  const renewal = parseFocusSlot(o.renewal);
+  if (!deposit || !notice || !renewal) return undefined;
+  return { deposit, notice, renewal };
+}
+
+function parseEmploymentStructured(value: unknown): EmploymentStructuredFindings | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const o = value as Record<string, unknown>;
+  const intellectualProperty = parseFocusSlot(o.intellectualProperty);
+  const nonCompete = parseFocusSlot(o.nonCompete);
+  const atWill = parseFocusSlot(o.atWill);
+  if (!intellectualProperty || !nonCompete || !atWill) return undefined;
+  return { intellectualProperty, nonCompete, atWill };
+}
+
+function parseTermsStructured(value: unknown): TermsStructuredFindings | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const o = value as Record<string, unknown>;
+  const dataRights = parseFocusSlot(o.dataRights);
+  const arbitration = parseFocusSlot(o.arbitration);
+  const liabilityCap = parseFocusSlot(o.liabilityCap);
+  if (!dataRights || !arbitration || !liabilityCap) return undefined;
+  return { dataRights, arbitration, liabilityCap };
+}
+
+function parseReport(content: string, jurisdictionCode: string, jurisdictionName: string, auditType: AuditType): AuditReport {
   let raw = content.trim();
   if (raw.startsWith("```")) {
     raw = raw.replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
@@ -97,9 +250,9 @@ function parseReport(content: string, jurisdictionCode: string, jurisdictionName
   }
   const grade = String(parsed.overallRiskGrade ?? "moderate").toLowerCase() as RiskGrade;
   const safeGrade: RiskGrade = VALID_GRADES.has(grade) ? grade : "moderate";
-  const clean = (value: unknown): string => (typeof value === "string" ? value.trim() : "");
   const arr = (value: unknown) => (Array.isArray(value) ? value : []);
-  return {
+
+  const report: AuditReport = {
     documentType: clean(parsed.documentType) || "Document",
     jurisdictionCode,
     jurisdictionName,
@@ -122,13 +275,24 @@ function parseReport(content: string, jurisdictionCode: string, jurisdictionName
       return { trigger: clean(o.trigger), why: clean(o.why) };
     }).filter((f) => f.trigger),
     generatedAt: new Date().toISOString(),
+    auditType,
   };
+
+  const leaseStructured = parseLeaseStructured(parsed.leaseStructured);
+  const employmentStructured = parseEmploymentStructured(parsed.employmentStructured);
+  const termsStructured = parseTermsStructured(parsed.termsStructured);
+
+  if (auditType === "lease" && leaseStructured) report.leaseStructured = leaseStructured;
+  if (auditType === "employment" && employmentStructured) report.employmentStructured = employmentStructured;
+  if (auditType === "terms" && termsStructured) report.termsStructured = termsStructured;
+
+  return report;
 }
 
 export async function POST(request: Request) {
   try {
     const contentType = request.headers.get("content-type") ?? "";
-    let extracted: { text: string; jurisdiction: string; documentType?: string };
+    let extracted: { text: string; jurisdiction: string; documentType?: string; auditType: AuditType };
     if (contentType.includes("multipart/form-data")) {
       const form = await request.formData();
       extracted = await extractFromForm(form);
@@ -164,6 +328,7 @@ export async function POST(request: Request) {
       legalSystem,
       documentType: extracted.documentType,
       text: extracted.text,
+      auditType: extracted.auditType,
     });
 
     const completion = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -181,7 +346,7 @@ export async function POST(request: Request) {
           { role: "user", content: prompt },
         ],
         temperature: 0.2,
-        max_tokens: 1400,
+        max_tokens: extracted.auditType === "general" ? 1400 : 2000,
       }),
     });
 
@@ -199,7 +364,7 @@ export async function POST(request: Request) {
     if (!content) {
       return NextResponse.json({ error: "empty_response", message: "Model returned no content." }, { status: 502 });
     }
-    const report = parseReport(content, country.code, jurisdictionName);
+    const report = parseReport(content, country.code, jurisdictionName, extracted.auditType);
     return NextResponse.json({ report });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

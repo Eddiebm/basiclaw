@@ -23,6 +23,9 @@ export function Footer() {
   const productLinks = [
     { name: tl("constitutions"), href: "/constitutions" },
     { name: tl("audit"), href: "/audit" },
+    { name: tl("auditLease"), href: "/audit/lease" },
+    { name: tl("auditEmployment"), href: "/audit/employment" },
+    { name: tl("auditTerms"), href: "/audit/terms" },
     { name: tl("ask"), href: "/chat" },
     { name: tl("documents"), href: "/documents" },
     { name: tl("pricing"), href: "/pricing" },

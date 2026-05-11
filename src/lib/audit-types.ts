@@ -1,5 +1,8 @@
 export type RiskGrade = "low" | "moderate" | "elevated" | "high" | "critical";
 
+/** General contract audit or a specialised preset */
+export type AuditType = "general" | "lease" | "employment" | "terms";
+
 export interface AuditFlag {
   title: string;
   why: string;
@@ -21,6 +24,30 @@ export interface AuditTrigger {
   why: string;
 }
 
+/** Pair returned for specialised checklist slots */
+export interface AuditFocusSlot {
+  summary: string;
+  pushback: string;
+}
+
+export interface LeaseStructuredFindings {
+  deposit: AuditFocusSlot;
+  notice: AuditFocusSlot;
+  renewal: AuditFocusSlot;
+}
+
+export interface EmploymentStructuredFindings {
+  intellectualProperty: AuditFocusSlot;
+  nonCompete: AuditFocusSlot;
+  atWill: AuditFocusSlot;
+}
+
+export interface TermsStructuredFindings {
+  dataRights: AuditFocusSlot;
+  arbitration: AuditFocusSlot;
+  liabilityCap: AuditFocusSlot;
+}
+
 export interface AuditReport {
   documentType: string;
   jurisdictionCode: string;
@@ -32,6 +59,10 @@ export interface AuditReport {
   keyClausesToPushBackOn: AuditClause[];
   askLawyerIfTriggers: AuditTrigger[];
   generatedAt: string;
+  auditType: AuditType;
+  leaseStructured?: LeaseStructuredFindings;
+  employmentStructured?: EmploymentStructuredFindings;
+  termsStructured?: TermsStructuredFindings;
 }
 
 export const RISK_GRADE_LABEL: Record<RiskGrade, string> = {

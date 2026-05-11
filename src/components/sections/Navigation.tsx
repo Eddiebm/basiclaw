@@ -20,15 +20,16 @@ import { Toggle } from "@/components/ui/Toggle";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { searchCountries, getPopularCountries } from "@/lib/jurisdictions";
+import { AuditNavDropdown } from "@/components/navigation/AuditNavDropdown";
 
-const NAV_HREFS = [
+const NAV_LINKS = [
   { href: "/constitutions", key: "constitutions" as const },
-  { href: "/audit", key: "audit" as const },
+  { special: "auditTools" as const },
   { href: "/chat", key: "ask" as const },
   { href: "/learn", key: "learn" as const },
   { href: "/pricing", key: "pricing" as const },
   { href: "/find-a-lawyer", key: "findLawyer" as const },
-];
+] as const;
 
 export function Navigation() {
   const t = useTranslations("nav");
@@ -66,19 +67,23 @@ export function Navigation() {
           </Link>
 
           <div className="hidden md:flex md:items-center md:gap-7">
-            {NAV_HREFS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-sm font-medium transition-colors ${
-                  pathname === link.href
-                    ? "text-[var(--foreground)]"
-                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-                }`}
-              >
-                {t(link.key)}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) =>
+              "special" in link ? (
+                <AuditNavDropdown key="audit-tools" variant="desktop" />
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`text-sm font-medium transition-colors ${
+                    pathname === link.href
+                      ? "text-[var(--foreground)]"
+                      : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                  }`}
+                >
+                  {t(link.key)}
+                </Link>
+              )
+            )}
           </div>
 
           <div className="flex items-center gap-3">
@@ -221,16 +226,20 @@ export function Navigation() {
               className="md:hidden py-4 border-t border-[var(--border)]"
             >
               <div className="flex flex-col gap-3">
-                {NAV_HREFS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="text-sm font-medium text-[var(--foreground)]"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {t(link.key)}
-                  </Link>
-                ))}
+                {NAV_LINKS.map((link) =>
+                  "special" in link ? (
+                    <AuditNavDropdown key="audit-tools-m" variant="mobile" onNavigate={() => setIsOpen(false)} />
+                  ) : (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="text-sm font-medium text-[var(--foreground)]"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {t(link.key)}
+                    </Link>
+                  )
+                )}
                 <Button asChild className="w-full mt-2">
                   <Link href="/chat">
                     {t("askNow")} <ArrowRight className="h-4 w-4" />

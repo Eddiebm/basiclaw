@@ -71,11 +71,32 @@ export function Hero() {
                 </Button>
               </div>
               <p className="mt-3 text-sm text-[var(--muted-foreground)]">
-                {t("browseLead")}{" "}
-                <Link href="/constitutions" className="underline underline-offset-4 hover:text-[var(--foreground)]">
-                  {t("browseLink", { count: stats.total })}
+                {t.rich("browseRich", {
+                  count: stats.total,
+                  link: (chunks) => (
+                    <Link href="/constitutions" className="underline underline-offset-4 hover:text-[var(--foreground)]">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </p>
+              <p className="mt-2 text-sm text-[var(--muted-foreground)] flex flex-wrap items-center justify-center lg:justify-start gap-x-2 gap-y-1">
+                <span>{t("auditToolsLead")}</span>
+                <Link href="/audit/lease" className="underline underline-offset-4 hover:text-[var(--foreground)]">
+                  {t("auditToolsLease")}
                 </Link>
-                .
+                <span aria-hidden className="text-[var(--muted-foreground)]">
+                  ·
+                </span>
+                <Link href="/audit/employment" className="underline underline-offset-4 hover:text-[var(--foreground)]">
+                  {t("auditToolsEmployment")}
+                </Link>
+                <span aria-hidden className="text-[var(--muted-foreground)]">
+                  ·
+                </span>
+                <Link href="/audit/terms" className="underline underline-offset-4 hover:text-[var(--foreground)]">
+                  {t("auditToolsTerms")}
+                </Link>
               </p>
               <p className="mt-4 text-xs text-[var(--muted-foreground)]">{t("tinyDisclaimer")}</p>
             </motion.div>
