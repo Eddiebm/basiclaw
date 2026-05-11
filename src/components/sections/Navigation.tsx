@@ -22,9 +22,9 @@ import { searchCountries, getPopularCountries } from "@/lib/jurisdictions";
 
 const NAV_LINKS = [
   { href: "/constitutions", label: "Constitutions" },
-  { href: "/learn", label: "Learn" },
+  { href: "/audit", label: "Audit" },
   { href: "/chat", label: "Ask" },
-  { href: "/documents", label: "Documents" },
+  { href: "/learn", label: "Learn" },
   { href: "/pricing", label: "Pricing" },
 ];
 

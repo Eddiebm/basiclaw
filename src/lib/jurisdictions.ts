@@ -50,8 +50,9 @@ export function getCountry(code: string): Country | undefined {
   return COUNTRY_BY_CODE[code.toLowerCase()];
 }
 
-export function getPopularCountries(): Country[] {
-  return COUNTRIES.filter((country) => country.popular);
+export function getPopularCountries(limit?: number): Country[] {
+  const popular = COUNTRIES.filter((country) => country.popular);
+  return typeof limit === "number" ? popular.slice(0, limit) : popular;
 }
 
 export function searchCountries(query: string): Country[] {

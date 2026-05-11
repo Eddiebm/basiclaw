@@ -8,9 +8,9 @@ import { countryStats } from "@/lib/jurisdictions";
 const footerLinks = {
   product: [
     { name: "Constitutions", href: "/constitutions" },
+    { name: "Audit a contract", href: "/audit" },
     { name: "Ask the assistant", href: "/chat" },
     { name: "Document help", href: "/documents" },
-    { name: "Law School", href: "/learn" },
     { name: "Pricing", href: "/pricing" },
   ],
   jurisdictions: [

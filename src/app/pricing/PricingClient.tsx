@@ -42,9 +42,10 @@ const FREE_TIER: FreeTier = {
     "Plain-language summaries and key principles",
     "Ask the legal assistant (rate-limited)",
     "Country-by-country rights, police, and tenant guides",
+    "1 contract audit / month \u2014 plain-language risk report",
   ],
   highlight: false,
-  cta: { label: "Start reading", href: "/constitutions" },
+  cta: { label: "Start with a free audit", href: "/audit" },
 };
 
 const PAID_TIERS: PaidTier[] = [
@@ -58,7 +59,7 @@ const PAID_TIERS: PaidTier[] = [
       "For people facing a contract, a notice, or a legal question that actually matters this week.",
     features: [
       "Everything in Know Your Rights",
-      "Document analysis (paste a contract, lease, or notice)",
+      "Unlimited contract audits + saved history",
       "Side-by-side jurisdiction comparison",
       "Save and revisit your chats",
       "Higher-context models, no daily caps",
@@ -75,7 +76,7 @@ const PAID_TIERS: PaidTier[] = [
       "For founders, journalists, advocates, and small teams who need legal context across many countries.",
     features: [
       "Everything in Pro",
-      "Bulk document analysis (5 docs / month)",
+      "Bulk audit (10 documents / month)",
       "Custom jurisdiction watchlists",
       "Citation-grade output and exports",
       "Priority email support",

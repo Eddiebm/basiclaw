@@ -1,0 +1,63 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ArrowRight, FileQuestion } from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import { AuditReportCard } from "@/components/audit/AuditReportCard";
+import type { AuditReport } from "@/lib/audit-types";
+
+function decodeReport(hash: string): AuditReport | null {
+  try {
+    const trimmed = hash.startsWith("#") ? hash.slice(1) : hash;
+    if (!trimmed) return null;
+    const decoded = decodeURIComponent(escape(atob(trimmed)));
+    const parsed = JSON.parse(decoded) as AuditReport;
+    if (!parsed?.overallRiskGrade || !parsed.documentType) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+export function SharedAuditClient() {
+  const [report, setReport] = useState<AuditReport | null>(null);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    setReport(decodeReport(window.location.hash));
+    setLoaded(true);
+  }, []);
+
+  if (!loaded) return null;
+
+  if (!report) {
+    return (
+      <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-8 text-center">
+        <FileQuestion className="mx-auto h-10 w-10 text-[var(--muted-foreground)]" aria-hidden />
+        <p className="mt-4 font-semibold text-[var(--foreground)]">No audit found in this link.</p>
+        <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+          The link may have been truncated by the messaging app you used. Ask the sender to share the original page.
+        </p>
+        <Button asChild className="mt-6 gap-2">
+          <Link href="/audit">
+            Run your own audit <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <AuditReportCard report={report} showShareButton={false} />
+      <div className="text-center">
+        <Button asChild className="gap-2">
+          <Link href="/audit">
+            Audit your own document <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
+    </div>
+  );
+}

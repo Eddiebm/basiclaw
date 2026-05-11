@@ -58,16 +58,19 @@ export function Hero() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button asChild size="lg" className="gap-2">
+                  <Link href="/audit">
+                    Audit my contract free <FileText className="h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="gap-2">
                   <Link href="/chat">
                     Ask a question <MessageCircle className="h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="gap-2">
-                  <Link href="/constitutions">
-                    Browse all {stats.total} constitutions <Library className="h-4 w-4" />
-                  </Link>
-                </Button>
               </div>
+              <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+                or <Link href="/constitutions" className="underline underline-offset-4 hover:text-[var(--foreground)]">browse all {stats.total} constitutions</Link>.
+              </p>
               <p className="mt-4 text-xs text-[var(--muted-foreground)]">
                 Free to read. Educational only — never a substitute for a licensed lawyer.
               </p>
@@ -101,11 +104,17 @@ export function Hero() {
                   <div className="p-2 rounded-lg bg-[var(--secondary)]/30">
                     <FileText className="h-5 w-5 text-[var(--secondary-foreground)]" />
                   </div>
-                  <span className="font-semibold text-[var(--foreground)]">Document help</span>
+                  <span className="font-semibold text-[var(--foreground)]">Contract audit</span>
                 </div>
                 <p className="text-sm text-[var(--muted-foreground)]">
-                  Paste a contract, a notice, or a policy. We&apos;ll explain what it means and what you should look out for.
+                  Paste a lease, contract, or notice. Get a risk grade, the top red flags, and the exact pushback to put in writing.
                 </p>
+                <Link
+                  href="/audit"
+                  className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[var(--primary)] hover:underline"
+                >
+                  Run an audit <ArrowRight className="h-4 w-4" />
+                </Link>
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
