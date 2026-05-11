@@ -172,7 +172,7 @@ export async function POST(request: Request) {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
         "HTTP-Referer": siteUrl(),
-        "X-Title": "BasicLaw \u2014 Audit",
+        "X-Title": "BasicLaw - Audit",
       },
       body: JSON.stringify({
         model: process.env.OPENROUTER_AUDIT_MODEL || process.env.OPENROUTER_MODEL || "openai/gpt-oss-120b:free",

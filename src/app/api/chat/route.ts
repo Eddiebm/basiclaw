@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
         "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app",
-        "X-Title": "BasicLaw \u2014 Legal Information Assistant",
+        "X-Title": "BasicLaw - Legal Information Assistant",
       },
       body: JSON.stringify({
         model: process.env.OPENROUTER_MODEL || "openai/gpt-oss-120b:free",
@@ -92,7 +92,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error("Chat API error:", error);
-    const message = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ error: "Internal server error", message }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
