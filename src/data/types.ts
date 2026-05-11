@@ -43,6 +43,11 @@ export type Subregion =
 
 export type CountryStatus = "active" | "preview" | "planned";
 
+export interface ConstitutionSource {
+  label: string;
+  url: string;
+}
+
 export interface Constitution {
   title: string;
   yearAdopted: number;
@@ -51,6 +56,8 @@ export interface Constitution {
   keyPrinciples: string[];
   officialUrl?: string;
   fullTextUrl?: string;
+  sources?: ConstitutionSource[];
+  lastVerified?: string;
 }
 
 export interface Country {

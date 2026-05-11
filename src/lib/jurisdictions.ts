@@ -1,5 +1,31 @@
 import { COUNTRIES, COUNTRY_BY_CODE } from "@/data/countries";
-import type { Country, LegalSystem, Region } from "@/data/types";
+import type { ConstitutionSource, Country, LegalSystem, Region } from "@/data/types";
+
+const DEFAULT_LAST_VERIFIED = "2026-05-10";
+
+export function getSources(country: Country): ConstitutionSource[] {
+  const explicit = country.constitution.sources ?? [];
+  const auto: ConstitutionSource[] = [];
+  if (country.constitution.officialUrl) {
+    auto.push({ label: `${country.name} \u2014 official source`, url: country.constitution.officialUrl });
+  }
+  if (country.constitution.fullTextUrl) {
+    auto.push({
+      label: "Comparative Constitutions Project (full English text)",
+      url: country.constitution.fullTextUrl,
+    });
+  }
+  const seen = new Set<string>();
+  return [...explicit, ...auto].filter((source) => {
+    if (seen.has(source.url)) return false;
+    seen.add(source.url);
+    return true;
+  });
+}
+
+export function getLastVerified(country: Country): string {
+  return country.constitution.lastVerified ?? DEFAULT_LAST_VERIFIED;
+}
 
 export const REGIONS: readonly Region[] = [
   "Africa",

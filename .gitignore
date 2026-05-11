@@ -10,3 +10,4 @@ dist/
 .env.production
 pnpm-lock.yaml
 --store-dir/
+.vercel

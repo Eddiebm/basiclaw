@@ -22,5 +22,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: country.popular ? 0.85 : 0.6,
   }));
 
-  return [...staticPages, ...constitutionPages];
+  const TOPIC_SLUGS = ["rights", "police-stop", "landlord"] as const;
+  const topicPages: MetadataRoute.Sitemap = COUNTRIES.flatMap((country) =>
+    TOPIC_SLUGS.map((slug) => ({
+      url: `${SITE_URL}/${country.code.toLowerCase()}/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: country.popular ? 0.75 : 0.55,
+    }))
+  );
+
+  return [...staticPages, ...constitutionPages, ...topicPages];
 }

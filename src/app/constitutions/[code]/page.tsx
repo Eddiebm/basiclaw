@@ -2,15 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
+  AlertTriangle,
   ArrowLeft,
   ArrowRight,
   BookText,
   CalendarClock,
   ExternalLink,
+  FileText,
   Globe2,
+  Home,
   Languages,
+  Library,
   MapPin,
   Scale,
+  ShieldAlert,
   Sparkles,
 } from "lucide-react";
 import { Navigation } from "@/components/sections/Navigation";
@@ -18,7 +23,7 @@ import { Footer } from "@/components/sections/Footer";
 import { Button } from "@/components/ui/Button";
 import { COUNTRIES } from "@/data/countries";
 import { LEGAL_SYSTEM_DESCRIPTIONS, LEGAL_SYSTEM_LABELS } from "@/data/types";
-import { getCountry } from "@/lib/jurisdictions";
+import { getCountry, getLastVerified, getSources } from "@/lib/jurisdictions";
 
 type RouteParams = { code: string };
 
@@ -64,6 +69,14 @@ export default async function ConstitutionDetailPage({
   if (!country) notFound();
 
   const { constitution } = country;
+  const sources = getSources(country);
+  const lastVerified = getLastVerified(country);
+  const lastVerifiedDate = new Date(lastVerified);
+  const formattedLastVerified = lastVerifiedDate.toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -71,13 +84,40 @@ export default async function ConstitutionDetailPage({
     headline: `${country.name} \u2014 ${constitution.title}`,
     description: constitution.summary,
     inLanguage: "en",
+    dateModified: lastVerified,
     about: {
       "@type": "Country",
       name: country.name,
     },
     isBasedOn: constitution.officialUrl ?? constitution.fullTextUrl,
+    citation: sources.map((source) => ({
+      "@type": "CreativeWork",
+      name: source.label,
+      url: source.url,
+    })),
     publisher: { "@type": "Organization", name: "BasicLaw" },
   };
+
+  const TOPIC_PAGES = [
+    {
+      slug: "rights",
+      icon: Sparkles,
+      title: "Your rights",
+      blurb: "Plain-language guide to the constitutional rights that protect you",
+    },
+    {
+      slug: "police-stop",
+      icon: ShieldAlert,
+      title: "Police stops",
+      blurb: "What to say, what to show, what you must do (and what you don't)",
+    },
+    {
+      slug: "landlord",
+      icon: Home,
+      title: "Tenant & landlord",
+      blurb: "Deposit rules, evictions, repairs, and what your lease can't override",
+    },
+  ];
 
   const sortedSiblings = COUNTRIES.slice().sort((a, b) => a.name.localeCompare(b.name));
   const indexInList = sortedSiblings.findIndex((c) => c.code === country.code);
@@ -95,11 +135,21 @@ export default async function ConstitutionDetailPage({
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <Link
             href="/constitutions"
-            className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors mb-8"
+            className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors mb-6"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
             All constitutions
           </Link>
+
+          <div
+            role="note"
+            className="mb-8 flex items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-900 dark:text-amber-200"
+          >
+            <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
+            <p>
+              <strong className="font-semibold">Educational summary.</strong> Always cross-reference the official text linked below before relying on any clause. Constitutions are amended, suspended, and reinterpreted; this page may not reflect the very latest changes.
+            </p>
+          </div>
 
           <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-10">
             <div>
@@ -191,6 +241,77 @@ export default async function ConstitutionDetailPage({
               </div>
             </aside>
           </div>
+
+          <section
+            aria-labelledby="topics-heading"
+            className="mb-10 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8"
+          >
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+              <h2 id="topics-heading" className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-2">
+                <Library className="h-4 w-4" aria-hidden />
+                Plain-language guides for {country.name}
+              </h2>
+            </div>
+            <div className="grid sm:grid-cols-3 gap-3">
+              {TOPIC_PAGES.map(({ slug, icon: Icon, title, blurb }) => (
+                <Link
+                  key={slug}
+                  href={`/${country.code.toLowerCase()}/${slug}`}
+                  className="group flex flex-col gap-2 rounded-2xl border border-[var(--border)]/60 bg-[var(--background)] p-4 hover:border-[var(--primary)] hover:shadow-md transition-all"
+                >
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)]/10 text-[var(--primary)]">
+                    <Icon className="h-4 w-4" aria-hidden />
+                  </span>
+                  <p className="font-semibold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">
+                    {title}
+                  </p>
+                  <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">{blurb}</p>
+                  <span className="mt-auto text-xs text-[var(--muted-foreground)] flex items-center gap-1">
+                    Read guide <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" aria-hidden />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          <section
+            aria-labelledby="sources-heading"
+            className="mb-10 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8"
+          >
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
+              <h2 id="sources-heading" className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-2">
+                <FileText className="h-4 w-4" aria-hidden />
+                Sources
+              </h2>
+              <p className="text-xs text-[var(--muted-foreground)]">
+                Last verified <time dateTime={lastVerified}>{formattedLastVerified}</time>
+              </p>
+            </div>
+            {sources.length > 0 ? (
+              <ul className="space-y-2">
+                {sources.map((source) => (
+                  <li key={source.url}>
+                    <a
+                      href={source.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-start gap-2 text-sm text-[var(--foreground)] hover:text-[var(--primary)] underline-offset-4 hover:underline"
+                    >
+                      <ExternalLink className="h-4 w-4 mt-0.5 flex-shrink-0 text-[var(--muted-foreground)]" aria-hidden />
+                      <span>{source.label}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-[var(--muted-foreground)]">
+                Primary-source links are still being added for this jurisdiction. In the meantime, please consult the official government gazette or parliament website.
+              </p>
+            )}
+            <p className="mt-4 text-xs text-[var(--muted-foreground)] leading-relaxed">
+              Spotted something wrong? Email <a className="underline underline-offset-2" href={`mailto:corrections@basiclaw.app?subject=Correction%3A%20${encodeURIComponent(country.name)}`}>corrections@basiclaw.app</a> with the article reference and we&apos;ll update the page.
+            </p>
+          </section>
 
           <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--accent)]/30 p-5 text-sm text-[var(--muted-foreground)] mb-10">
             <strong className="text-[var(--foreground)]">Educational only.</strong> BasicLaw is not a law firm. Constitutional provisions can be amended, suspended, or interpreted differently by domestic courts. Verify with the official source before relying on any provision.
