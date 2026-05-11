@@ -16,6 +16,11 @@ BasicLaw turns the constitution and core rights of **every country in the world*
 ## Stack
 
 - **Framework:** Next.js 16 (App Router, Turbopack, Cache Components-ready)
+
+### Middleware note
+
+BasicLaw uses `src/middleware.ts` with **next-intl** for locale detection and routing. If a future Next.js release deprecates `middleware` in favour of a `proxy` entry convention, migrating will depend on next-intl’s supported integration path — track [next-intl middleware docs](https://next-intl.dev/docs/routing/middleware) before renaming files. Until then, keep `middleware.ts` as-is.
+
 - **Styling:** Tailwind CSS v4, Radix UI, Framer Motion
 - **AI:** OpenRouter (model-agnostic) — set `OPENROUTER_API_KEY`
 - **Hosting:** Vercel
@@ -63,9 +68,11 @@ src/
     sections/{Hero, Navigation, Footer, ...}
   data/
     countries.ts               # all 195 countries + constitutions
+    constitution-snippets/     # optional per-country snippets for /api/chat retrieval
     types.ts                   # legal-system / region taxonomy
   lib/
     jurisdictions.ts           # search, group-by helpers, official sources
+    constitution-snippets.ts   # load + rank snippets for chat context
 ```
 
 ## Adding a country

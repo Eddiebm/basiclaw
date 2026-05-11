@@ -51,14 +51,14 @@ export function CountryBrowser({ countries, popular }: Props) {
               onChange={(event) => setQuery(event.target.value)}
               type="search"
               placeholder={t("placeholder")}
-              aria-label="Search countries"
+              aria-label={t("searchAria")}
               className="w-full h-14 pl-12 pr-4 rounded-2xl border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             />
           </label>
           <select
             value={region}
             onChange={(event) => setRegion(event.target.value as Region | "All")}
-            aria-label="Filter by region"
+            aria-label={t("filterRegionAria")}
             className="h-14 px-4 rounded-2xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
           >
             <option value="All">{t("allRegions")}</option>
@@ -69,7 +69,7 @@ export function CountryBrowser({ countries, popular }: Props) {
           <select
             value={system}
             onChange={(event) => setSystem(event.target.value as LegalSystem | "All")}
-            aria-label="Filter by legal system"
+            aria-label={t("filterSystemAria")}
             className="h-14 px-4 rounded-2xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
           >
             <option value="All">{t("allSystems")}</option>
@@ -79,7 +79,7 @@ export function CountryBrowser({ countries, popular }: Props) {
           </select>
         </div>
         <p className="mt-4 text-sm text-[var(--muted-foreground)]">
-          Showing <span className="font-semibold text-[var(--foreground)]">{filtered.length}</span> of {countries.length} jurisdictions.
+          {t("showing", { filtered: filtered.length, total: countries.length })}
         </p>
       </div>
 
@@ -88,9 +88,9 @@ export function CountryBrowser({ countries, popular }: Props) {
           <div className="flex items-center justify-between">
             <h2 id="popular-heading" className="text-xl font-semibold text-[var(--foreground)] flex items-center gap-2">
               <Globe2 className="h-5 w-5 text-[var(--primary)]" aria-hidden />
-              Most-explored constitutions
+              {t("popularHeading")}
             </h2>
-            <span className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider">Tier 1</span>
+            <span className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider">{t("tierLabel")}</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {popular.map((country, index) => (
@@ -109,7 +109,9 @@ export function CountryBrowser({ countries, popular }: Props) {
               <h2 id={`region-${regionName}`} className="text-xl font-semibold text-[var(--foreground)]">
                 {regionName}
               </h2>
-              <span className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider">{list.length} {list.length === 1 ? "country" : "countries"}</span>
+              <span className="text-xs text-[var(--muted-foreground)] uppercase tracking-wider">
+                {t("countryCount", { count: list.length })}
+              </span>
             </header>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {list.map((country, index) => (
@@ -123,8 +125,8 @@ export function CountryBrowser({ countries, popular }: Props) {
       {filtered.length === 0 && (
         <div className="rounded-2xl border border-dashed border-[var(--border)] p-12 text-center">
           <Scale className="mx-auto h-10 w-10 text-[var(--muted-foreground)]" aria-hidden />
-          <h3 className="mt-4 text-lg font-semibold text-[var(--foreground)]">No matching countries</h3>
-          <p className="mt-1 text-sm text-[var(--muted-foreground)]">Try a different region, legal system, or search term.</p>
+          <h3 className="mt-4 text-lg font-semibold text-[var(--foreground)]">{t("emptyTitle")}</h3>
+          <p className="mt-1 text-sm text-[var(--muted-foreground)]">{t("emptyBody")}</p>
         </div>
       )}
     </div>

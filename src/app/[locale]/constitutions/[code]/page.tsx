@@ -81,7 +81,7 @@ export default async function ConstitutionDetailPage({
   const sources = getSources(country);
   const lastVerified = getLastVerified(country);
   const lastVerifiedDate = new Date(lastVerified);
-  const formattedLastVerified = lastVerifiedDate.toLocaleDateString("en-GB", {
+  const formattedLastVerified = lastVerifiedDate.toLocaleDateString(locale, {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -92,7 +92,7 @@ export default async function ConstitutionDetailPage({
     "@type": "Article",
     headline: `${country.name} \u2014 ${constitution.title}`,
     description: constitution.summary,
-    inLanguage: "en",
+    inLanguage: locale,
     dateModified: lastVerified,
     about: {
       "@type": "Country",
@@ -316,7 +316,8 @@ export default async function ConstitutionDetailPage({
                 {t("sources")}
               </h2>
               <p className="text-xs text-[var(--muted-foreground)]">
-                Last verified <time dateTime={lastVerified}>{formattedLastVerified}</time>
+                {t("lastVerifiedIntro")}{" "}
+                <time dateTime={lastVerified}>{formattedLastVerified}</time>
               </p>
             </div>
             {sources.length > 0 ? (
