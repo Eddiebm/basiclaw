@@ -71,6 +71,11 @@ export function Hero() {
                 </Button>
               </div>
               <p className="mt-3 text-sm text-[var(--muted-foreground)]">
+                <Link href="/questions" className="font-medium text-[var(--primary)] hover:underline">
+                  {t("ctaQuestions")}
+                </Link>
+              </p>
+              <p className="mt-2 text-sm text-[var(--muted-foreground)]">
                 {t.rich("browseRich", {
                   count: stats.total,
                   link: (chunks) => (

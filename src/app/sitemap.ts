@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { COUNTRIES } from "@/data/countries";
 import { US_STATES, US_STATE_TOPIC_SLUGS } from "@/data/us-states";
+import { STAGES } from "@/data/questions/taxonomy";
 import { routing } from "@/i18n/routing";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
@@ -20,6 +21,7 @@ const LOCALIZED_STATIC = [
   "/documents",
   "/us/states",
   "/compare",
+  "/extension",
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -68,5 +70,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }))
   );
 
-  return [...localizedPages, ...constitutionPages, ...topicPages, ...usStateTopicPages];
+  const questionLibraryPages: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/${defaultLocale}/questions`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.72,
+    },
+    ...STAGES.map((stage) => ({
+      url: `${SITE_URL}/${defaultLocale}/questions/${stage}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.68,
+    })),
+  ];
+
+  return [...localizedPages, ...constitutionPages, ...topicPages, ...usStateTopicPages, ...questionLibraryPages];
 }

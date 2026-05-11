@@ -21,13 +21,14 @@ import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { searchCountries, getPopularCountries } from "@/lib/jurisdictions";
 import { AuditNavDropdown } from "@/components/navigation/AuditNavDropdown";
+import { LearnNavDropdown } from "@/components/navigation/LearnNavDropdown";
 
 const NAV_LINKS = [
   { href: "/constitutions", key: "constitutions" as const },
   { href: "/us/states", key: "usStates" as const },
   { special: "auditTools" as const },
   { href: "/chat", key: "ask" as const },
-  { href: "/learn", key: "learn" as const },
+  { special: "learnLibrary" as const },
   { href: "/pricing", key: "pricing" as const },
   { href: "/find-a-lawyer", key: "findLawyer" as const },
 ] as const;
@@ -70,7 +71,11 @@ export function Navigation() {
           <div className="hidden md:flex md:items-center md:gap-7">
             {NAV_LINKS.map((link) =>
               "special" in link ? (
-                <AuditNavDropdown key="audit-tools" variant="desktop" />
+                link.special === "auditTools" ? (
+                  <AuditNavDropdown key="audit-tools" variant="desktop" />
+                ) : (
+                  <LearnNavDropdown key="learn-library" variant="desktop" />
+                )
               ) : (
                 <Link
                   key={link.href}
@@ -229,7 +234,11 @@ export function Navigation() {
               <div className="flex flex-col gap-3">
                 {NAV_LINKS.map((link) =>
                   "special" in link ? (
-                    <AuditNavDropdown key="audit-tools-m" variant="mobile" onNavigate={() => setIsOpen(false)} />
+                    link.special === "auditTools" ? (
+                      <AuditNavDropdown key="audit-tools-m" variant="mobile" onNavigate={() => setIsOpen(false)} />
+                    ) : (
+                      <LearnNavDropdown key="learn-library-m" variant="mobile" onNavigate={() => setIsOpen(false)} />
+                    )
                   ) : (
                     <Link
                       key={link.href}

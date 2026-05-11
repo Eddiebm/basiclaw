@@ -22,7 +22,12 @@
     "auditLease": "Lease audit",
     "auditEmployment": "Employment audit",
     "auditTerms": "Terms / ToS audit",
-    "auditMobileGroup": "Audits"
+    "auditMobileGroup": "Audits",
+    "learnGroupMenu": "Learn",
+    "learnLawSchool": "Law School",
+    "learnDocuments": "Documents",
+    "learnQuestions": "Citizen questions",
+    "learnMobileGroup": "Learn"
   },
   "languageSwitcher": {
     "label": "Language",
@@ -59,7 +64,8 @@
     "cardLibrary_link": "Open library",
     "statsEducational": "Educational only",
     "statsJurisdictions": "{count} jurisdictions",
-    "statsPlainLanguage": "Plain language"
+    "statsPlainLanguage": "Plain language",
+    "ctaQuestions": "Browse citizen questions"
   },
   "footer": {
     "tagline": "The plain-language constitution and rights library for {count} countries. Civic infrastructure for the digital age.",
@@ -93,7 +99,8 @@
       "privacy": "Privacy Policy",
       "terms": "Terms of Service",
       "disclaimer": "Disclaimer",
-      "cookies": "Cookie Policy"
+      "cookies": "Cookie Policy",
+      "questions": "Citizen questions"
     },
     "copyright": "© {year} BasicLaw. Educational only — not a substitute for a licensed lawyer.",
     "builtFor": "Built for everyone, everywhere."
