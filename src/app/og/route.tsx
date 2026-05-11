@@ -1,9 +1,8 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "BasicLaw — every country's constitution and rights, in plain language";
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+
+const SIZE = { width: 1200, height: 630 };
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -75,6 +74,6 @@ export async function GET(request: Request) {
         </div>
       </div>
     ),
-    { ...size }
+    { ...SIZE }
   );
 }
