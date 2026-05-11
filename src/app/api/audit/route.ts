@@ -175,14 +175,13 @@ export async function POST(request: Request) {
         "X-Title": "BasicLaw - Audit",
       },
       body: JSON.stringify({
-        model: process.env.OPENROUTER_AUDIT_MODEL || process.env.OPENROUTER_MODEL || "openai/gpt-oss-120b:free",
+        model: process.env.OPENROUTER_AUDIT_MODEL || process.env.OPENROUTER_MODEL || "openai/gpt-oss-20b:free",
         messages: [
           { role: "system", content: "You output strictly valid JSON. No prose. No markdown." },
           { role: "user", content: prompt },
         ],
         temperature: 0.2,
-        max_tokens: 1800,
-        response_format: { type: "json_object" },
+        max_tokens: 1400,
       }),
     });
 
