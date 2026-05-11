@@ -1,0 +1,229 @@
+{
+  "nav": {
+    "constitutions": "Constituciones",
+    "audit": "Auditoría",
+    "ask": "Preguntar",
+    "learn": "Aprender",
+    "pricing": "Precios",
+    "country": "País",
+    "countryAria": "Elige un país",
+    "searchCountriesPlaceholder": "Buscar en 195 países…",
+    "searchCountriesAria": "Buscar países",
+    "popular": "Popular",
+    "browseLibrary": "Explorar la biblioteca completa",
+    "askNow": "Preguntar ahora",
+    "toggleMenu": "Menú",
+    "toggleTheme": "Tema",
+    "findLawyer": "Buscar abogado"
+  },
+  "hero": {
+    "badge": "{count} constituciones · lenguaje claro · cero jerga",
+    "titleLead": "Deja de adivinar qué dice la ley sobre",
+    "titleAccent": "tu vida",
+    "subtitle": "BasicLaw convierte la constitución y las leyes núcleo de cada país del mundo en respuestas claras para cualquiera. Sin suscripciones solo para conocer tus derechos.",
+    "ctaAudit": "Auditar mi contrato gratis",
+    "ctaAsk": "Hacer una pregunta",
+    "browseLink": "explorar las {count} constituciones",
+    "browseLead": "o",
+    "tinyDisclaimer": "Gratis para leer. Solo educativo — no sustituye a un abogado colegiado.",
+    "cardQA_title": "Preguntas legales",
+    "cardQA_body": "Pregunta en lenguaje claro. Obtén una respuesta clara según la jurisdicción con el aviso integrado.",
+    "cardAudit_title": "Auditoría de contratos",
+    "cardAudit_body": "Pega un arrendamiento, contrato o aviso. Obtén un nivel de riesgo, las alertas clave y la réplica exacta.",
+    "cardAudit_link": "Ejecutar auditoría",
+    "cardLibrary_title": "Biblioteca de Constituciones",
+    "cardLibrary_body": "Todos los países, resumidos en lenguaje claro con principios clave y enlaces a la fuente oficial.",
+    "cardLibrary_link": "Abrir biblioteca",
+    "statsEducational": "Solo educativo",
+    "statsJurisdictions": "{count} jurisdicciones",
+    "statsPlainLanguage": "Lenguaje claro"
+  },
+  "footer": {
+    "tagline": "Biblioteca de constituciones y derechos en lenguaje claro para {count} países. Infraestructura cívica para la era digital.",
+    "columns": {
+      "product": "Producto",
+      "jurisdictions": "Jurisdicciones populares",
+      "company": "Empresa",
+      "legal": "Legal"
+    },
+    "links": {
+      "constitutions": "Constituciones",
+      "audit": "Auditar un contrato",
+      "ask": "Preguntar al asistente",
+      "documents": "Ayuda con documentos",
+      "pricing": "Precios",
+      "findLawyer": "Buscar abogado",
+      "us": "Estados Unidos",
+      "uk": "Reino Unido",
+      "in": "India",
+      "ng": "Nigeria",
+      "gh": "Ghana",
+      "browseAll": "Ver todo",
+      "about": "Acerca de",
+      "faq": "Preguntas frecuentes",
+      "blog": "Blog",
+      "contact": "Contacto",
+      "privacy": "Privacidad",
+      "terms": "Términos",
+      "disclaimer": "Aviso legal",
+      "cookies": "Cookies"
+    },
+    "copyright": "© {year} BasicLaw. Solo educativo — no sustituye a un abogado colegiado.",
+    "builtFor": "Hecho para todos, en todas partes."
+  },
+  "trustDisclaimer": {
+    "title": "Confianza y transparencia",
+    "lead": "BasicLaw es una plataforma educativa, no un bufete. Ayudamos a entender conceptos legales, pero no brindamos asesoría ni representación.",
+    "whatWeDo_title": "Qué hacemos",
+    "whatWeDont_title": "Qué no hacemos",
+    "important": "Para asuntos serios, consulta siempre a un abogado colegiado en tu jurisdicción. Los temas legales pueden tener consecuencias importantes.",
+    "ctaFindLawyer": "Buscar abogado colegiado"
+  },
+  "pricingPage": {
+    "badge": "Para preguntas legales cotidianas",
+    "title": "Precios que se pagan solos la primera vez que no necesitas llamar.",
+    "subtitle": "BasicLaw cubre los {count} países gratis. Pro y Pro+ añaden análisis de documentos, comparación, exportaciones y modelos prioritarios.",
+    "teamPlan": "¿Plan Team o Newsroom?",
+    "getInTouch": "Escríbenos"
+  },
+  "auditPage": {
+    "badge": "Gratis · solo educativo",
+    "title": "Audita cualquier contrato antes de firmar.",
+    "subtitle": "Pega tu arrendamiento, contrato, carta laboral o términos. Devolveremos un nivel de riesgo en lenguaje claro, alertas, lo que te favorece y la réplica exacta.",
+    "step1_title": "Pega o sube",
+    "step1_body": "PDF, texto o pegar — máx. 5 MB, no guardamos.",
+    "step2_title": "Elige jurisdicción",
+    "step2_body": "195 países — la auditoría respeta el país.",
+    "step3_title": "Recibe tu informe",
+    "step3_body": "Riesgo, alertas, líneas de réplica y chat de seguimiento.",
+    "proLink": "¿Muchas auditorías o historial? Ver Pro y Pro+",
+    "lawyerSection_title": "¿Quieres un consejo en el que puedas confiar?",
+    "lawyerSection_body": "Esta auditoría es educativa. Para plazos, negociaciones o tribunales, habla con un abogado colegiado.",
+    "lawyerSection_cta": "Buscar abogado"
+  },
+  "faqPage": {
+    "title": "BasicLaw, en respuestas claras.",
+    "subtitle": "Qué somos, qué no somos y qué esperar."
+  },
+  "constitutionBrowse": {
+    "back": "Volver a BasicLaw",
+    "badge": "Biblioteca de Constituciones",
+    "title": "La constitución de cada país, en un solo lugar.",
+    "subtitle": "Busca en {count} jurisdicciones. Filtra por región o sistema jurídico. Lee un resumen claro, principios clave y enlaza al texto oficial.",
+    "statCountries": "Países",
+    "statLive": "Activos",
+    "statPreview": "Vista previa"
+  },
+  "lawyerPage": {
+    "title": "Buscar abogado",
+    "subtitle": "BasicLaw puede presentarte abogados y despachos independientes. Podemos recibir una comisión por referidos cuando contratas a un socio — eso ayuda a mantener la biblioteca gratis.",
+    "disclaimer_title": "Importante",
+    "disclaimer_body": "BasicLaw no es un bufete ni respalda abogados concretos. El formulario no crea relación abogado-cliente. Verifica la colegiación en tu barra.",
+    "form_title": "Solicitud para la red de socios",
+    "form_hint": "Abogados y despachos: indica dónde practicas y te contactaremos cuando abramos referidos en tu jurisdicción.",
+    "fields": {
+      "name": "Nombre completo",
+      "email": "Correo",
+      "barNumber": "Número de colegiación (opcional)",
+      "country": "País principal de práctica",
+      "practiceAreas": "Áreas de práctica",
+      "practiceAreasPlaceholder": "p. ej., inmigración, laboral, vivienda",
+      "submit": "Enviar solicitud",
+      "submitting": "Enviando…",
+      "success": "Gracias — registramos tu solicitud."
+    },
+    "jurisdiction_note": "¿Buscas ayuda en un país concreto? Empieza desde la página de constitución de ese país.",
+    "chatCta": "Hablar con un abogado"
+  },
+  "chatEmpty": {
+    "title": "Empieza una conversación",
+    "body": "Pregunta por conceptos legales, tus derechos o cómo funciona la ley en tu jurisdicción.",
+    "lawyerCta": "¿Necesitas representación? Buscar abogado"
+  },
+  "topicPage": {
+    "breadcrumbHome": "BasicLaw",
+    "breadcrumbConstitutions": "Constituciones",
+    "eduOnlyStrong": "Solo educativo.",
+    "eduOnlyBody": "Normas locales, reformas recientes y matices jurisprudenciales pueden cambiar la respuesta en tu caso. Usa esta página para orientarte y luego habla con un abogado colegiado en {country}.",
+    "faqHeading": "Preguntas frecuentes",
+    "askPrefill": "Pregunta sobre {country}",
+    "readConstitution": "Leer la constitución de {country}",
+    "jurisdiction": "Jurisdicción",
+    "constitutionOverview": "Resumen constitucional",
+    "sidebar_rights": "Tus derechos",
+    "sidebar_police": "Paradas policiales",
+    "sidebar_landlord": "Inquilino y arrendador",
+    "backToConstitution": "Volver a la constitución de {country}",
+    "labels": {
+      "rights": "Tus derechos",
+      "police-stop": "Paradas policiales",
+      "landlord": "Inquilino y arrendador"
+    },
+    "subtitles": {
+      "rights": "Guía clara de tus derechos constitucionales",
+      "police-stop": "Qué decir, qué mostrar, qué debes hacer",
+      "landlord": "Fianzas, desalojos, reparas y límites del contrato"
+    },
+    "headings": {
+      "rightsInCountry": "Tus derechos en {country}",
+      "policeInCountry": "Paradas policiales en {country}",
+      "landlordInCountry": "Arrendamiento en {country}"
+    },
+    "findLawyerCta": "Buscar abogado"
+  },
+  "constitutionDetail": {
+    "backAll": "Todas las constituciones",
+    "eduSummaryLead": "Resumen educativo.",
+    "eduSummaryBody": "Comprueba siempre el texto oficial enlazado abajo. Las constituciones se reforman o reinterpretan; esta página puede no estar al día.",
+    "plainLanguage": "En lenguaje claro",
+    "keyPrinciples": "Principios clave",
+    "howLegalWorks": "Cómo funciona {system}",
+    "atAGlance": "De un vistazo",
+    "capital": "Capital",
+    "region": "Región",
+    "languages": "Idiomas",
+    "statusLabel": "Estado en BasicLaw",
+    "officialSource": "Fuente oficial",
+    "readFullText": "Leer texto completo",
+    "askQuestion": "Pregunta sobre {country}",
+    "findLawyerCta": "Buscar abogado en {country}",
+    "guidesHeading": "Guías claras para {country}",
+    "readGuide": "Leer guía",
+    "sources": "Fuentes",
+    "sourcesMissing": "Aún faltan enlaces primarios. Consulta el boletín oficial o el parlamento.",
+    "corrections": "¿Algo incorrecto? Escríbenos a corrections@basiclaw.app con la referencia.",
+    "bottomDisclaimer": "BasicLaw no es un bufete. Las normas pueden cambiar o interpretarse distinto. Verifica la fuente oficial.",
+    "adopted": "Adoptada",
+    "amended": "reformada",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "topic_rights_title": "Tus derechos",
+    "topic_rights_blurb": "Guía clara de los derechos que te protegen",
+    "topic_police_title": "Paradas policiales",
+    "topic_police_blurb": "Qué decir, qué mostrar, qué debes hacer",
+    "topic_landlord_title": "Inquilino y arrendador",
+    "topic_landlord_blurb": "Fianzas, desalojos, reparaciones y límites del contrato",
+    "status_active": "Activo con asistente completo",
+    "status_preview": "Resumen listo · asistente en vista previa",
+    "status_planned": "Planificado — lista de espera"
+  },
+  "countryBrowser": {
+    "placeholder": "Busca 195 países por nombre, capital, idioma, región…",
+    "allRegions": "Todas las regiones",
+    "allSystems": "Todos los sistemas jurídicos",
+    "status": {
+      "active": "Activo",
+      "preview": "Vista previa",
+      "planned": "Planificado"
+    }
+  },
+  "pricingTiers": {
+    "monthly": "Mensual",
+    "annual": "Anual",
+    "annualSave": "· ahorra ~17%",
+    "mostChosen": "Más elegido",
+    "startingCheckout": "Iniciando pago…",
+    "subscribeTo": "Suscribirse a {tier}",
+    "checkoutError": "No pudimos iniciar el pago. Inténtalo de nuevo."
+  }
+}

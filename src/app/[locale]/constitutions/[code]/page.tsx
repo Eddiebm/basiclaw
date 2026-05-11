@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import {
   AlertTriangle,
@@ -20,16 +21,20 @@ import {
 } from "lucide-react";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
+import { routing } from "@/i18n/routing";
 import { Button } from "@/components/ui/Button";
 import { EventTracker } from "@/components/analytics/EventTracker";
+import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { COUNTRIES } from "@/data/countries";
 import { LEGAL_SYSTEM_DESCRIPTIONS, LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { getCountry, getLastVerified, getSources } from "@/lib/jurisdictions";
 
-type RouteParams = { code: string };
+type RouteParams = { locale: string; code: string };
 
 export function generateStaticParams(): RouteParams[] {
-  return COUNTRIES.map((country) => ({ code: country.code.toLowerCase() }));
+  return routing.locales.flatMap((locale) =>
+    COUNTRIES.map((country) => ({ locale, code: country.code.toLowerCase() }))
+  );
 }
 
 export async function generateMetadata({
@@ -37,7 +42,7 @@ export async function generateMetadata({
 }: {
   params: Promise<RouteParams>;
 }): Promise<Metadata> {
-  const { code } = await params;
+  const { locale, code } = await params;
   const country = getCountry(code);
   if (!country) return { title: "Not found \u2014 BasicLaw" };
   const title = `${country.constitution.title} \u2014 ${country.name} | BasicLaw`;
@@ -45,11 +50,13 @@ export async function generateMetadata({
   return {
     title,
     description,
-    alternates: { canonical: `/constitutions/${country.code.toLowerCase()}` },
+    alternates: {
+      canonical: `/${locale}/constitutions/${country.code.toLowerCase()}`,
+    },
     openGraph: {
       title: `${country.flag} ${country.name} \u2014 Constitution overview`,
       description,
-      url: `/constitutions/${country.code.toLowerCase()}`,
+      url: `/${locale}/constitutions/${country.code.toLowerCase()}`,
       type: "article",
     },
     twitter: {
@@ -65,10 +72,11 @@ export default async function ConstitutionDetailPage({
 }: {
   params: Promise<RouteParams>;
 }) {
-  const { code } = await params;
+  const { locale, code } = await params;
   const country = getCountry(code);
   if (!country) notFound();
 
+  const t = await getTranslations({ locale, namespace: "constitutionDetail" });
   const { constitution } = country;
   const sources = getSources(country);
   const lastVerified = getLastVerified(country);
@@ -100,23 +108,18 @@ export default async function ConstitutionDetailPage({
   };
 
   const TOPIC_PAGES = [
+    { slug: "rights" as const, icon: Sparkles, title: t("topic_rights_title"), blurb: t("topic_rights_blurb") },
     {
-      slug: "rights",
-      icon: Sparkles,
-      title: "Your rights",
-      blurb: "Plain-language guide to the constitutional rights that protect you",
-    },
-    {
-      slug: "police-stop",
+      slug: "police-stop" as const,
       icon: ShieldAlert,
-      title: "Police stops",
-      blurb: "What to say, what to show, what you must do (and what you don't)",
+      title: t("topic_police_title"),
+      blurb: t("topic_police_blurb"),
     },
     {
-      slug: "landlord",
+      slug: "landlord" as const,
       icon: Home,
-      title: "Tenant & landlord",
-      blurb: "Deposit rules, evictions, repairs, and what your lease can't override",
+      title: t("topic_landlord_title"),
+      blurb: t("topic_landlord_blurb"),
     },
   ];
 
@@ -148,7 +151,7 @@ export default async function ConstitutionDetailPage({
             className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors mb-6"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
-            All constitutions
+            {t("backAll")}
           </Link>
 
           <div
@@ -157,7 +160,7 @@ export default async function ConstitutionDetailPage({
           >
             <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
             <p>
-              <strong className="font-semibold">Educational summary.</strong> Always cross-reference the official text linked below before relying on any clause. Constitutions are amended, suspended, and reinterpreted; this page may not reflect the very latest changes.
+              <strong className="font-semibold">{t("eduSummaryLead")}</strong> {t("eduSummaryBody")}
             </p>
           </div>
 
@@ -181,16 +184,16 @@ export default async function ConstitutionDetailPage({
               </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1.5">
                 <CalendarClock className="h-4 w-4 text-[var(--primary)]" aria-hidden />
-                Adopted {constitution.yearAdopted}
+                {t("adopted")} {constitution.yearAdopted}
                 {constitution.yearLatestAmendment && constitution.yearLatestAmendment !== constitution.yearAdopted
-                  ? ` · amended ${constitution.yearLatestAmendment}`
+                  ? ` · ${t("amended")} ${constitution.yearLatestAmendment}`
                   : null}
               </span>
             </div>
           </header>
 
           <section className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 mb-8 shadow-sm">
-            <h2 className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] mb-3">In plain language</h2>
+            <h2 className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] mb-3">{t("plainLanguage")}</h2>
             <p className="text-lg text-[var(--foreground)] leading-relaxed">{constitution.summary}</p>
           </section>
 
@@ -198,7 +201,7 @@ export default async function ConstitutionDetailPage({
             <section className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
               <h2 className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] mb-4 flex items-center gap-2">
                 <Sparkles className="h-4 w-4" aria-hidden />
-                Key principles
+                {t("keyPrinciples")}
               </h2>
               <ul className="grid sm:grid-cols-2 gap-3">
                 {constitution.keyPrinciples.map((principle) => (
@@ -213,7 +216,7 @@ export default async function ConstitutionDetailPage({
               </ul>
               <div className="mt-6 rounded-xl border border-[var(--border)]/60 bg-[var(--background)] p-4">
                 <p className="text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-1">
-                  How {LEGAL_SYSTEM_LABELS[country.legalSystem]} works
+                  {t("howLegalWorks", { system: LEGAL_SYSTEM_LABELS[country.legalSystem] })}
                 </p>
                 <p className="text-sm text-[var(--foreground)]">
                   {LEGAL_SYSTEM_DESCRIPTIONS[country.legalSystem]}
@@ -222,32 +225,50 @@ export default async function ConstitutionDetailPage({
             </section>
 
             <aside className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 space-y-4">
-              <h2 className="text-sm uppercase tracking-wider text-[var(--muted-foreground)]">At a glance</h2>
-              <FactRow icon={<MapPin className="h-4 w-4" aria-hidden />} label="Capital" value={country.capital} />
-              <FactRow icon={<Globe2 className="h-4 w-4" aria-hidden />} label="Region" value={`${country.region} · ${country.subregion}`} />
-              <FactRow icon={<Languages className="h-4 w-4" aria-hidden />} label="Languages" value={country.languages.join(", ")} />
-              <FactRow icon={<BookText className="h-4 w-4" aria-hidden />} label="Status on BasicLaw" value={statusLabel(country.status)} />
+              <h2 className="text-sm uppercase tracking-wider text-[var(--muted-foreground)]">{t("atAGlance")}</h2>
+              <FactRow icon={<MapPin className="h-4 w-4" aria-hidden />} label={t("capital")} value={country.capital} />
+              <FactRow icon={<Globe2 className="h-4 w-4" aria-hidden />} label={t("region")} value={`${country.region} · ${country.subregion}`} />
+              <FactRow icon={<Languages className="h-4 w-4" aria-hidden />} label={t("languages")} value={country.languages.join(", ")} />
+              <FactRow
+                icon={<BookText className="h-4 w-4" aria-hidden />}
+                label={t("statusLabel")}
+                value={
+                  country.status === "active"
+                    ? t("status_active")
+                    : country.status === "preview"
+                      ? t("status_preview")
+                      : t("status_planned")
+                }
+              />
 
               <div className="space-y-2 pt-2 border-t border-[var(--border)]/60">
                 {constitution.officialUrl && (
                   <Button asChild variant="outline" className="w-full justify-between">
                     <a href={constitution.officialUrl} target="_blank" rel="noreferrer">
-                      Official source <ExternalLink className="h-4 w-4" />
+                      {t("officialSource")} <ExternalLink className="h-4 w-4" />
                     </a>
                   </Button>
                 )}
                 {constitution.fullTextUrl && (
                   <Button asChild className="w-full justify-between">
                     <a href={constitution.fullTextUrl} target="_blank" rel="noreferrer">
-                      Read full text <ExternalLink className="h-4 w-4" />
+                      {t("readFullText")} <ExternalLink className="h-4 w-4" />
                     </a>
                   </Button>
                 )}
                 <Button asChild variant="ghost" className="w-full justify-between">
                   <Link href={`/chat?country=${country.code.toLowerCase()}`}>
-                    Ask a question about {country.name} <ArrowRight className="h-4 w-4" />
+                    {t("askQuestion", { country: country.name })} <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
+                <LawyerCtaLink
+                  href={`/find-a-lawyer?country=${country.code.toLowerCase()}`}
+                  source="constitution_detail_sidebar"
+                  className="inline-flex h-10 w-full items-center justify-between rounded-md border border-[var(--border)] bg-transparent px-4 py-2 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--accent)] transition-colors"
+                >
+                  {t("findLawyerCta", { country: country.name })}
+                  <ArrowRight className="h-4 w-4" />
+                </LawyerCtaLink>
               </div>
             </aside>
           </div>
@@ -259,7 +280,7 @@ export default async function ConstitutionDetailPage({
             <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
               <h2 id="topics-heading" className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-2">
                 <Library className="h-4 w-4" aria-hidden />
-                Plain-language guides for {country.name}
+                {t("guidesHeading", { country: country.name })}
               </h2>
             </div>
             <div className="grid sm:grid-cols-3 gap-3">
@@ -277,7 +298,8 @@ export default async function ConstitutionDetailPage({
                   </p>
                   <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">{blurb}</p>
                   <span className="mt-auto text-xs text-[var(--muted-foreground)] flex items-center gap-1">
-                    Read guide <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" aria-hidden />
+                    {t("readGuide")}{" "}
+                    <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" aria-hidden />
                   </span>
                 </Link>
               ))}
@@ -291,7 +313,7 @@ export default async function ConstitutionDetailPage({
             <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
               <h2 id="sources-heading" className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-2">
                 <FileText className="h-4 w-4" aria-hidden />
-                Sources
+                {t("sources")}
               </h2>
               <p className="text-xs text-[var(--muted-foreground)]">
                 Last verified <time dateTime={lastVerified}>{formattedLastVerified}</time>
@@ -314,17 +336,13 @@ export default async function ConstitutionDetailPage({
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Primary-source links are still being added for this jurisdiction. In the meantime, please consult the official government gazette or parliament website.
-              </p>
+              <p className="text-sm text-[var(--muted-foreground)]">{t("sourcesMissing")}</p>
             )}
-            <p className="mt-4 text-xs text-[var(--muted-foreground)] leading-relaxed">
-              Spotted something wrong? Email <a className="underline underline-offset-2" href={`mailto:corrections@basiclaw.app?subject=Correction%3A%20${encodeURIComponent(country.name)}`}>corrections@basiclaw.app</a> with the article reference and we&apos;ll update the page.
-            </p>
+            <p className="mt-4 text-xs text-[var(--muted-foreground)] leading-relaxed">{t("corrections")}</p>
           </section>
 
           <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--accent)]/30 p-5 text-sm text-[var(--muted-foreground)] mb-10">
-            <strong className="text-[var(--foreground)]">Educational only.</strong> BasicLaw is not a law firm. Constitutional provisions can be amended, suspended, or interpreted differently by domestic courts. Verify with the official source before relying on any provision.
+            {t("bottomDisclaimer")}
           </div>
 
           <nav aria-label="Adjacent constitutions" className="flex items-center justify-between gap-4">
@@ -334,7 +352,7 @@ export default async function ConstitutionDetailPage({
             >
               <ArrowLeft className="h-4 w-4 text-[var(--muted-foreground)] group-hover:-translate-x-0.5 transition-transform" aria-hidden />
               <span>
-                <span className="block text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">Previous</span>
+                <span className="block text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">{t("previous")}</span>
                 <span className="font-semibold">{previous.flag} {previous.name}</span>
               </span>
             </Link>
@@ -343,7 +361,7 @@ export default async function ConstitutionDetailPage({
               className="group inline-flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-sm text-[var(--foreground)] hover:border-[var(--primary)] transition-colors text-right"
             >
               <span>
-                <span className="block text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">Next</span>
+                <span className="block text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">{t("next")}</span>
                 <span className="font-semibold">{next.flag} {next.name}</span>
               </span>
               <ArrowRight className="h-4 w-4 text-[var(--muted-foreground)] group-hover:translate-x-0.5 transition-transform" aria-hidden />
@@ -370,13 +388,3 @@ function FactRow({ icon, label, value }: { icon: React.ReactNode; label: string;
   );
 }
 
-function statusLabel(status: "active" | "preview" | "planned"): string {
-  switch (status) {
-    case "active":
-      return "Live with full assistant support";
-    case "preview":
-      return "Constitutional summary ready · assistant in preview";
-    case "planned":
-      return "Planned — join the waitlist";
-  }
-}

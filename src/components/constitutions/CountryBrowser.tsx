@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo, useState, useDeferredValue } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { Search, ChevronRight, Globe2, Scale } from "lucide-react";
 import type { Country, LegalSystem, Region } from "@/data/types";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
@@ -13,12 +14,6 @@ type Props = {
   popular: Country[];
 };
 
-const STATUS_LABEL: Record<Country["status"], string> = {
-  active: "Live",
-  preview: "Preview",
-  planned: "Planned",
-};
-
 const STATUS_TONE: Record<Country["status"], string> = {
   active: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/30",
   preview: "bg-blue-500/10 text-blue-600 dark:text-blue-400 ring-1 ring-blue-500/20",
@@ -26,6 +21,7 @@ const STATUS_TONE: Record<Country["status"], string> = {
 };
 
 export function CountryBrowser({ countries, popular }: Props) {
+  const t = useTranslations("countryBrowser");
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
   const [region, setRegion] = useState<Region | "All">("All");
@@ -54,7 +50,7 @@ export function CountryBrowser({ countries, popular }: Props) {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               type="search"
-              placeholder="Search 195 countries by name, capital, language, region…"
+              placeholder={t("placeholder")}
               aria-label="Search countries"
               className="w-full h-14 pl-12 pr-4 rounded-2xl border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             />
@@ -65,7 +61,7 @@ export function CountryBrowser({ countries, popular }: Props) {
             aria-label="Filter by region"
             className="h-14 px-4 rounded-2xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
           >
-            <option value="All">All regions</option>
+            <option value="All">{t("allRegions")}</option>
             {REGIONS.map((r) => (
               <option key={r} value={r}>{r}</option>
             ))}
@@ -76,7 +72,7 @@ export function CountryBrowser({ countries, popular }: Props) {
             aria-label="Filter by legal system"
             className="h-14 px-4 rounded-2xl border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
           >
-            <option value="All">All legal systems</option>
+            <option value="All">{t("allSystems")}</option>
             {LEGAL_SYSTEMS.map((s) => (
               <option key={s} value={s}>{LEGAL_SYSTEM_LABELS[s]}</option>
             ))}
@@ -136,6 +132,7 @@ export function CountryBrowser({ countries, popular }: Props) {
 }
 
 function CountryCard({ country, index, compact }: { country: Country; index: number; compact?: boolean }) {
+  const t = useTranslations("countryBrowser");
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -150,7 +147,7 @@ function CountryCard({ country, index, compact }: { country: Country; index: num
         <div className="flex items-start justify-between gap-2 mb-3">
           <span className="text-3xl leading-none" aria-hidden>{country.flag}</span>
           <span className={`text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-full ${STATUS_TONE[country.status]}`}>
-            {STATUS_LABEL[country.status]}
+            {t(`status.${country.status}`)}
           </span>
         </div>
         <p className="text-sm font-semibold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors line-clamp-2">

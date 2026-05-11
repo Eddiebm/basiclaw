@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { ArrowLeft, BookText, Globe2, Library } from "lucide-react";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
@@ -7,21 +8,32 @@ import { CountryBrowser } from "@/components/constitutions/CountryBrowser";
 import { COUNTRIES } from "@/data/countries";
 import { countryStats, getPopularCountries } from "@/lib/jurisdictions";
 
-export const metadata: Metadata = {
-  title: "Every Country's Constitution \u2014 Searchable Library | BasicLaw",
-  description:
-    "Browse the constitutions of all 195 countries in plain language. Compare legal systems, key principles, and amendment history side by side.",
-  alternates: { canonical: "/constitutions" },
-  openGraph: {
-    title: "Every Country's Constitution \u2014 BasicLaw",
-    description:
-      "Browse the constitutions of all 195 countries in plain language. Compare legal systems, key principles, and amendment history.",
-    url: "/constitutions",
-    type: "website",
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const stats = countryStats();
+  const t = await getTranslations({ locale, namespace: "constitutionBrowse" });
+  const title = `${t("title")} | BasicLaw`;
+  const description = t("subtitle", { count: stats.total });
+  return {
+    title,
+    description,
+    alternates: { canonical: `/${locale}/constitutions` },
+    openGraph: {
+      title: `${t("title")} — BasicLaw`,
+      description,
+      url: `/${locale}/constitutions`,
+      type: "website",
+    },
+  };
+}
 
-export default function ConstitutionsPage() {
+export default async function ConstitutionsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "constitutionBrowse" });
   const stats = countryStats();
   const popular = getPopularCountries();
 
@@ -35,25 +47,21 @@ export default function ConstitutionsPage() {
             className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors mb-6"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
-            Back to BasicLaw
+            {t("back")}
           </Link>
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
             <div className="max-w-2xl">
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] text-xs font-medium mb-4">
                 <Library className="h-3.5 w-3.5" aria-hidden />
-                The Constitution Library
+                {t("badge")}
               </span>
-              <h1 className="text-4xl sm:text-5xl font-bold text-[var(--foreground)] mb-4 leading-tight">
-                Every country&apos;s constitution, in one place.
-              </h1>
-              <p className="text-lg text-[var(--muted-foreground)]">
-                Search {stats.total} jurisdictions. Filter by region or legal system. Read a plain-language summary, the key principles, and link straight to the official text.
-              </p>
+              <h1 className="text-4xl sm:text-5xl font-bold text-[var(--foreground)] mb-4 leading-tight">{t("title")}</h1>
+              <p className="text-lg text-[var(--muted-foreground)]">{t("subtitle", { count: stats.total })}</p>
             </div>
             <dl className="grid grid-cols-3 gap-3 text-center sm:text-left">
-              <Stat label="Countries" value={stats.total} icon={<Globe2 className="h-4 w-4" aria-hidden />} />
-              <Stat label="Live now" value={stats.active} />
-              <Stat label="Preview" value={stats.preview} />
+              <Stat label={t("statCountries")} value={stats.total} icon={<Globe2 className="h-4 w-4" aria-hidden />} />
+              <Stat label={t("statLive")} value={stats.active} />
+              <Stat label={t("statPreview")} value={stats.preview} />
             </dl>
           </div>
         </div>

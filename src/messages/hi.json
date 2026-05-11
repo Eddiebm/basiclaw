@@ -1,0 +1,175 @@
+{
+  "nav": {
+    "constitutions": "संविधान",
+    "audit": "ऑडिट",
+    "ask": "पूछें",
+    "learn": "सीखें",
+    "pricing": "मूल्य",
+    "country": "देश",
+    "countryAria": "देश चुनें",
+    "searchCountriesPlaceholder": "195 देश खोजें…",
+    "popular": "लोकप्रिय",
+    "browseLibrary": "पूरा संग्रह देखें",
+    "askNow": "अभी पूछें",
+    "toggleMenu": "मेनू",
+    "toggleTheme": "थीम",
+    "findLawyer": "वकील खोजें"
+  },
+  "hero": {
+    "badge": "{count} संविधान · सरल भाषा",
+    "titleLead": "अंदाज़ा लगाना बंद करें कि कानून आपके",
+    "titleAccent": "जीवन",
+    "subtitle": "BasicLaw हर देश के संविधान और मुख्य कानूनों को सरल उत्तरों में बदलता है।",
+    "ctaAudit": "मुफ़्त अनुबंध ऑडिट",
+    "ctaAsk": "प्रश्न पूछें",
+    "browseLink": "सभी {count} संविधान देखें",
+    "browseLead": "या",
+    "tinyDisclaimer": "पढ़ने में मुफ़्त। केवल शैक्षिक।",
+    "cardQA_title": "कानूनी प्रश्नोत्तर",
+    "cardAudit_title": "अनुबंध ऑडिट",
+    "cardAudit_link": "ऑडिट चलाएँ",
+    "cardLibrary_title": "संविधान पुस्तकालय",
+    "cardLibrary_link": "पुस्तकालय खोलें",
+    "statsEducational": "केवल शैक्षिक",
+    "statsJurisdictions": "{count} क्षेत्राधिकार",
+    "statsPlainLanguage": "सरल भाषा"
+  },
+  "footer": {
+    "tagline": "{count} देशों के लिए सादे भाषा में संविधान पुस्तकालय।",
+    "columns": {
+      "product": "उत्पाद",
+      "jurisdictions": "लोकप्रिय क्षेत्र",
+      "company": "कंपनी",
+      "legal": "कानूनी"
+    },
+    "links": {
+      "constitutions": "संविधान",
+      "audit": "अनुबंध ऑडिट",
+      "ask": "सहायक",
+      "documents": "दस्तावेज़ सहायता",
+      "pricing": "मूल्य",
+      "findLawyer": "वकील खोजें",
+      "us": "संयुक्त राज्य",
+      "uk": "यूनाइटेड किंगडम",
+      "in": "भारत",
+      "ng": "नाइजीरिया",
+      "gh": "घाना",
+      "browseAll": "सभी देखें",
+      "about": "परिचय",
+      "faq": "सामान्य प्रश्न",
+      "blog": "ब्लॉग",
+      "contact": "संपर्क",
+      "privacy": "गोपनीयता",
+      "terms": "शर्तें",
+      "disclaimer": "अस्वीकरण",
+      "cookies": "कुकीज़"
+    },
+    "copyright": "© {year} BasicLaw — केवल शैक्षिक।",
+    "builtFor": "सभी के लिए, हर जगह।"
+  },
+  "trustDisclaimer": {
+    "title": "विश्वास और पारदर्शिता",
+    "lead": "BasicLaw शैक्षिक है, कोई वकालत कार्यालय नहीं।",
+    "whatWeDo_title": "हम क्या करते हैं",
+    "whatWeDont_title": "हम क्या नहीं करते",
+    "important": "गंभीर मामलों में अपने क्षेत्र के लाइसेंस वकील से परामर्श करें।",
+    "ctaFindLawyer": "लाइसेंस वकील खोजें"
+  },
+  "pricingPage": {
+    "title": "ऐसी कीमतें जो पहली बार बचत पर खुद को चुका दें।",
+    "subtitle": "BasicLaw {count} देशों को मुफ़्त में कवर करता है।",
+    "teamPlan": "टीम प्लान चाहिए?",
+    "getInTouch": "संपर्क करें",
+    "badge": "रोज़मर्रा के कानूनी सवालों के लिए"
+  },
+  "auditPage": {
+    "badge": "मुफ़्त · केवल शैक्षिक",
+    "title": "हस्ताक्षर से पहले किसी भी अनुबंध का ऑडिट करें।",
+    "subtitle": "पट्टा, अनुबंध या शर्तें चिपकाएँ। स्पष्ट जोखिम रिपोर्ट पाएँ।",
+    "step1_title": "चिपकाएँ या अपलोड करें",
+    "step1_body": "PDF/टेक्स्ट — अधिकतम 5 MB।",
+    "step2_title": "क्षेत्राधिकार चुनें",
+    "step2_body": "195 देश समर्थित।",
+    "step3_title": "रिपोर्ट प्राप्त करें",
+    "step3_body": "जोखिम, चेतावनियाँ, आगे के कदम।",
+    "proLink": "बड़े उपयोग के लिए Pro देखें",
+    "lawyerSection_title": "भरोसेमंद सलाह चाहिए?",
+    "lawyerSection_body": "यह ऑडिट शैक्षिक है। अदालत या समय सीमा के लिए वकील से बात करें।",
+    "lawyerSection_cta": "वकील खोजें"
+  },
+  "faqPage": {
+    "title": "BasicLaw — सीधे जवाब।",
+    "subtitle": "हम क्या हैं और क्या नहीं।"
+  },
+  "constitutionBrowse": {
+    "back": "BasicLaw पर वापस",
+    "badge": "संविधान पुस्तकालय",
+    "title": "हर देश का संविधान, एक जगह।",
+    "subtitle": "{count} क्षेत्राधिकार खोजें और फ़िल्टर करें।",
+    "statCountries": "देश",
+    "statLive": "लाइव",
+    "statPreview": "पूर्वावलोकन"
+  },
+  "lawyerPage": {
+    "title": "वकील खोजें",
+    "subtitle": "हम स्वतंत्र वकीलों से परिचय करा सकते हैं। भर्ती पर रेफ़रल शुल्क संभव है — इससे पुस्तकालय मुफ़्त रहता है।",
+    "disclaimer_title": "महत्वपूर्ण",
+    "disclaimer_body": "BasicLaw कोई वकील कार्यालय नहीं। फ़ॉर्म अटॉर्नी-क्लाइंट संबंध नहीं बनाता। लाइसेंस जाँचें।",
+    "form_title": "पार्टनर नेटवर्क आवेदन",
+    "form_hint": "वकील: अपना देश बताएँ।",
+    "fields": {
+      "name": "पूरा नाम",
+      "email": "ईमेल",
+      "barNumber": "बार नंबर (वैकल्पिक)",
+      "country": "मुख्य देश",
+      "practiceAreas": "अभ्यास क्षेत्र",
+      "practiceAreasPlaceholder": "जैसे प्रवासन, रोज़गार",
+      "submit": "आवेदन भेजें",
+      "submitting": "भेज रहे हैं…",
+      "success": "धन्यवाद — हमने आपका आवेदन लॉग किया।"
+    },
+    "jurisdiction_note": "किसी देश के लिए उसके संविधान पृष्ठ से शुरू करें।",
+    "chatCta": "वकील से बात करें"
+  },
+  "chatEmpty": {
+    "title": "बातचीत शुरू करें",
+    "body": "अपने अधिकारों या कानून के बारे में प्रश्न पूछें।",
+    "lawyerCta": "प्रतिनिधित्व चाहिए? वकील खोजें"
+  },
+  "topicPage": {
+    "headings": {
+      "rightsInCountry": "{country} में आपके अधिकार",
+      "policeInCountry": "{country} में पुलिस रोक",
+      "landlordInCountry": "{country} में मकान मालिक किरायेदार कानून"
+    },
+    "labels": {
+      "rights": "आपके अधिकार",
+      "police-stop": "पुलिस रोक",
+      "landlord": "किरायेदार और मकान मालिक"
+    },
+    "findLawyerCta": "वकील खोजें"
+  },
+  "constitutionDetail": {
+    "guidesHeading": "{country} के लिए सरल गाइड",
+    "findLawyerCta": "{country} में वकील खोजें",
+    "sources": "स्रोत",
+    "plainLanguage": "सरल भाषा में",
+    "keyPrinciples": "मुख्य सिद्धांत",
+    "askQuestion": "{country} के बारे में प्रश्न",
+    "readFullText": "पूरा पाठ",
+    "officialSource": "आधिकारिक स्रोत",
+    "backAll": "सभी संविधान"
+  },
+  "countryBrowser": {
+    "placeholder": "195 देश खोजें…",
+    "allRegions": "सभी क्षेत्र",
+    "allSystems": "सभी कानून प्रणालियाँ"
+  },
+  "pricingTiers": {
+    "monthly": "मासिक",
+    "annual": "वार्षिक",
+    "mostChosen": "सबसे चुना गया",
+    "subscribeTo": "{tier} की सदस्यता लें",
+    "checkoutError": "चेकआउट शुरू नहीं हो सका।"
+  }
+}

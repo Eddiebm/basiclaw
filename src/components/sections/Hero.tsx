@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -12,10 +12,12 @@ import {
   Shield,
   Sparkles,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { countryStats } from "@/lib/jurisdictions";
 
 export function Hero() {
+  const t = useTranslations("hero");
   const stats = countryStats();
 
   return (
@@ -47,33 +49,35 @@ export function Hero() {
             >
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] text-sm font-medium mb-6">
                 <Sparkles className="h-4 w-4" aria-hidden />
-                {stats.total} constitutions · plain language · zero jargon
+                {t("badge", { count: stats.total })}
               </span>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[var(--foreground)] leading-[1.05] mb-6">
-                Stop guessing what the law says about{" "}
-                <span className="text-[var(--primary)]">your life</span>.
+                {t("titleLead")}{" "}
+                <span className="text-[var(--primary)]">{t("titleAccent")}</span>.
               </h1>
               <p className="text-lg sm:text-xl text-[var(--muted-foreground)] mb-8 max-w-xl mx-auto lg:mx-0">
-                BasicLaw turns the constitution and core laws of every country in the world into clear answers anyone can read. No subscriptions to a lawyer just to know your rights.
+                {t("subtitle")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Button asChild size="lg" className="gap-2">
                   <Link href="/audit">
-                    Audit my contract free <FileText className="h-4 w-4" />
+                    {t("ctaAudit")} <FileText className="h-4 w-4" />
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="gap-2">
                   <Link href="/chat">
-                    Ask a question <MessageCircle className="h-4 w-4" />
+                    {t("ctaAsk")} <MessageCircle className="h-4 w-4" />
                   </Link>
                 </Button>
               </div>
               <p className="mt-3 text-sm text-[var(--muted-foreground)]">
-                or <Link href="/constitutions" className="underline underline-offset-4 hover:text-[var(--foreground)]">browse all {stats.total} constitutions</Link>.
+                {t("browseLead")}{" "}
+                <Link href="/constitutions" className="underline underline-offset-4 hover:text-[var(--foreground)]">
+                  {t("browseLink", { count: stats.total })}
+                </Link>
+                .
               </p>
-              <p className="mt-4 text-xs text-[var(--muted-foreground)]">
-                Free to read. Educational only — never a substitute for a licensed lawyer.
-              </p>
+              <p className="mt-4 text-xs text-[var(--muted-foreground)]">{t("tinyDisclaimer")}</p>
             </motion.div>
           </div>
           <div className="relative">
@@ -88,11 +92,9 @@ export function Hero() {
                   <div className="p-2 rounded-lg bg-[var(--primary)]/10">
                     <MessageCircle className="h-5 w-5 text-[var(--primary)]" />
                   </div>
-                  <span className="font-semibold text-[var(--foreground)]">Legal Q&amp;A</span>
+                  <span className="font-semibold text-[var(--foreground)]">{t("cardQA_title")}</span>
                 </div>
-                <p className="text-sm text-[var(--muted-foreground)]">
-                  Ask a question in plain language. Get a clear, jurisdiction-aware answer with the disclaimer baked in.
-                </p>
+                <p className="text-sm text-[var(--muted-foreground)]">{t("cardQA_body")}</p>
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
@@ -104,16 +106,14 @@ export function Hero() {
                   <div className="p-2 rounded-lg bg-[var(--secondary)]/30">
                     <FileText className="h-5 w-5 text-[var(--secondary-foreground)]" />
                   </div>
-                  <span className="font-semibold text-[var(--foreground)]">Contract audit</span>
+                  <span className="font-semibold text-[var(--foreground)]">{t("cardAudit_title")}</span>
                 </div>
-                <p className="text-sm text-[var(--muted-foreground)]">
-                  Paste a lease, contract, or notice. Get a risk grade, the top red flags, and the exact pushback to put in writing.
-                </p>
+                <p className="text-sm text-[var(--muted-foreground)]">{t("cardAudit_body")}</p>
                 <Link
                   href="/audit"
                   className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[var(--primary)] hover:underline"
                 >
-                  Run an audit <ArrowRight className="h-4 w-4" />
+                  {t("cardAudit_link")} <ArrowRight className="h-4 w-4" />
                 </Link>
               </motion.div>
               <motion.div
@@ -128,15 +128,15 @@ export function Hero() {
                       <Library className="h-5 w-5 text-[var(--accent-foreground)]" />
                     </div>
                     <div>
-                      <span className="block font-semibold text-[var(--foreground)]">The Constitution Library</span>
-                      <span className="text-sm text-[var(--muted-foreground)]">Every country, summarised in plain language with key principles and links to the official source.</span>
+                      <span className="block font-semibold text-[var(--foreground)]">{t("cardLibrary_title")}</span>
+                      <span className="text-sm text-[var(--muted-foreground)]">{t("cardLibrary_body")}</span>
                     </div>
                   </div>
                   <Link
                     href="/constitutions"
                     className="inline-flex items-center gap-1 text-sm font-medium text-[var(--primary)] hover:underline"
                   >
-                    Open library <ArrowRight className="h-4 w-4" />
+                    {t("cardLibrary_link")} <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
               </motion.div>
@@ -151,16 +151,16 @@ export function Hero() {
         >
           <div className="flex flex-wrap items-center justify-center gap-8 text-[var(--muted-foreground)]">
             <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              <span className="text-sm">Educational only</span>
+              <Shield className="h-5 w-5" aria-hidden />
+              <span className="text-sm">{t("statsEducational")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Globe className="h-5 w-5" />
-              <span className="text-sm">{stats.total} jurisdictions</span>
+              <Globe className="h-5 w-5" aria-hidden />
+              <span className="text-sm">{t("statsJurisdictions", { count: stats.total })}</span>
             </div>
             <div className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5" />
-              <span className="text-sm">Plain language</span>
+              <BookOpen className="h-5 w-5" aria-hidden />
+              <span className="text-sm">{t("statsPlainLanguage")}</span>
             </div>
           </div>
         </motion.div>

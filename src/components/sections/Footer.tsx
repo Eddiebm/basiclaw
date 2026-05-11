@@ -1,39 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Github, Linkedin, Mail, Scale, Twitter } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Separator } from "@/components/ui/Separator";
 import { countryStats } from "@/lib/jurisdictions";
-
-const footerLinks = {
-  product: [
-    { name: "Constitutions", href: "/constitutions" },
-    { name: "Audit a contract", href: "/audit" },
-    { name: "Ask the assistant", href: "/chat" },
-    { name: "Document help", href: "/documents" },
-    { name: "Pricing", href: "/pricing" },
-  ],
-  jurisdictions: [
-    { name: "United States", href: "/constitutions/us" },
-    { name: "United Kingdom", href: "/constitutions/gb" },
-    { name: "India", href: "/constitutions/in" },
-    { name: "Nigeria", href: "/constitutions/ng" },
-    { name: "Ghana", href: "/constitutions/gh" },
-    { name: "Browse all", href: "/constitutions" },
-  ],
-  company: [
-    { name: "About", href: "/about" },
-    { name: "FAQ", href: "/faq" },
-    { name: "Blog", href: "/blog" },
-    { name: "Contact", href: "mailto:hello@basiclaw.app" },
-  ],
-  legal: [
-    { name: "Privacy Policy", href: "/privacy" },
-    { name: "Terms of Service", href: "/terms" },
-    { name: "Disclaimer", href: "/disclaimer" },
-    { name: "Cookie Policy", href: "/cookies" },
-  ],
-};
 
 const socialLinks = [
   { name: "Twitter", icon: Twitter, href: "https://twitter.com" },
@@ -43,7 +14,44 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const t = useTranslations("footer");
+  const tc = useTranslations("footer.columns");
+  const tl = useTranslations("footer.links");
+  const tNav = useTranslations("nav");
   const stats = countryStats();
+
+  const productLinks = [
+    { name: tl("constitutions"), href: "/constitutions" },
+    { name: tl("audit"), href: "/audit" },
+    { name: tl("ask"), href: "/chat" },
+    { name: tl("documents"), href: "/documents" },
+    { name: tl("pricing"), href: "/pricing" },
+    { name: tl("findLawyer"), href: "/find-a-lawyer" },
+  ];
+
+  const jurisdictionLinks = [
+    { name: tl("us"), href: "/constitutions/us" },
+    { name: tl("uk"), href: "/constitutions/gb" },
+    { name: tl("in"), href: "/constitutions/in" },
+    { name: tl("ng"), href: "/constitutions/ng" },
+    { name: tl("gh"), href: "/constitutions/gh" },
+    { name: tl("browseAll"), href: "/constitutions" },
+  ];
+
+  const companyLinks = [
+    { name: tl("about"), href: "/about", external: false },
+    { name: tl("faq"), href: "/faq", external: false },
+    { name: tl("blog"), href: "/blog", external: false },
+    { name: tl("contact"), href: "mailto:hello@basiclaw.app", external: true },
+  ];
+
+  const legalLinks = [
+    { name: tl("privacy"), href: "/privacy" },
+    { name: tl("terms"), href: "/terms" },
+    { name: tl("disclaimer"), href: "/disclaimer" },
+    { name: tl("cookies"), href: "/cookies" },
+  ];
+
   return (
     <footer className="py-16 border-t border-[var(--border)] bg-[var(--accent)]/20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -51,11 +59,9 @@ export function Footer() {
           <div className="col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <Scale className="h-8 w-8 text-[var(--primary)]" />
-              <span className="text-xl font-bold text-[var(--foreground)]">BasicLaw</span>
+              <span className="text-xl font-bold text-[var(--foreground)]">{tNav("brand")}</span>
             </Link>
-            <p className="text-sm text-[var(--muted-foreground)] mb-4 max-w-xs">
-              The plain-language constitution and rights library for {stats.total} countries. Civic infrastructure for the digital age.
-            </p>
+            <p className="text-sm text-[var(--muted-foreground)] mb-4 max-w-xs">{t("tagline", { count: stats.total })}</p>
             <div className="flex gap-3">
               {socialLinks.map((link) => (
                 <a
@@ -71,15 +77,15 @@ export function Footer() {
               ))}
             </div>
           </div>
-          <FooterColumn title="Product" links={footerLinks.product} />
-          <FooterColumn title="Popular jurisdictions" links={footerLinks.jurisdictions} />
-          <FooterColumn title="Company" links={footerLinks.company} />
-          <FooterColumn title="Legal" links={footerLinks.legal} />
+          <FooterColumn title={tc("product")} links={productLinks} />
+          <FooterColumn title={tc("jurisdictions")} links={jurisdictionLinks} />
+          <FooterColumnMixed title={tc("company")} links={companyLinks} />
+          <FooterColumn title={tc("legal")} links={legalLinks} />
         </div>
         <Separator className="mb-8" />
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[var(--muted-foreground)]">
-          <p>© {new Date().getFullYear()} BasicLaw. Educational only — not a substitute for a licensed lawyer.</p>
-          <p>Built for everyone, everywhere.</p>
+          <p>{t("copyright", { year: new Date().getFullYear() })}</p>
+          <p>{t("builtFor")}</p>
         </div>
       </div>
     </footer>
@@ -105,6 +111,41 @@ function FooterColumn({
             >
               {link.name}
             </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function FooterColumnMixed({
+  title,
+  links,
+}: {
+  title: string;
+  links: { name: string; href: string; external?: boolean }[];
+}) {
+  return (
+    <div>
+      <h3 className="font-semibold text-[var(--foreground)] mb-4 text-sm">{title}</h3>
+      <ul className="space-y-3">
+        {links.map((link) => (
+          <li key={link.name}>
+            {link.external ? (
+              <a
+                href={link.href}
+                className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+              >
+                {link.name}
+              </a>
+            ) : (
+              <Link
+                href={link.href}
+                className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+              >
+                {link.name}
+              </Link>
+            )}
           </li>
         ))}
       </ul>

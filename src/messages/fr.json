@@ -1,0 +1,229 @@
+{
+  "nav": {
+    "constitutions": "Constitutions",
+    "audit": "Audit",
+    "ask": "Demander",
+    "learn": "Apprendre",
+    "pricing": "Tarifs",
+    "country": "Pays",
+    "countryAria": "Choisir un pays",
+    "searchCountriesPlaceholder": "Rechercher 195 pays…",
+    "searchCountriesAria": "Rechercher des pays",
+    "popular": "Populaires",
+    "browseLibrary": "Parcourir toute la bibliothèque",
+    "askNow": "Demander maintenant",
+    "toggleMenu": "Menu",
+    "toggleTheme": "Thème",
+    "findLawyer": "Trouver un avocat"
+  },
+  "hero": {
+    "badge": "{count} constitutions · langage clair · zéro jargon",
+    "titleLead": "Arrêtez de deviner ce que la loi dit sur",
+    "titleAccent": "votre vie",
+    "subtitle": "BasicLaw transforme la constitution et les lois essentielles de chaque pays en réponses claires pour tous — sans abonnement pour connaître vos droits.",
+    "ctaAudit": "Auditer mon contrat gratuitement",
+    "ctaAsk": "Poser une question",
+    "browseLink": "parcourir les {count} constitutions",
+    "browseLead": "ou",
+    "tinyDisclaimer": "Gratuit à lire. Strictement éducatif — pas un substitut à un avocat.",
+    "cardQA_title": "Questions juridiques",
+    "cardQA_body": "Posez votre question simplement. Obtenez une réponse claire, adaptée à la juridiction, avec l’avertissement intégré.",
+    "cardAudit_title": "Audit de contrat",
+    "cardAudit_body": "Collez un bail, un contrat ou un courrier. Obtenez une note de risque, les alertes et la réponse exacte à envoyer.",
+    "cardAudit_link": "Lancer un audit",
+    "cardLibrary_title": "Bibliothèque des constitutions",
+    "cardLibrary_body": "Chaque pays, résumé en langage clair avec les principes clés et les sources officielles.",
+    "cardLibrary_link": "Ouvrir la bibliothèque",
+    "statsEducational": "Strictement éducatif",
+    "statsJurisdictions": "{count} juridictions",
+    "statsPlainLanguage": "Langage clair"
+  },
+  "footer": {
+    "tagline": "Bibliothèque des constitutions et des droits en langage clair pour {count} pays — infrastructure civique.",
+    "columns": {
+      "product": "Produit",
+      "jurisdictions": "Juridictions populaires",
+      "company": "Entreprise",
+      "legal": "Juridique"
+    },
+    "links": {
+      "constitutions": "Constitutions",
+      "audit": "Auditer un contrat",
+      "ask": "Assistant",
+      "documents": "Documents",
+      "pricing": "Tarifs",
+      "findLawyer": "Trouver un avocat",
+      "us": "États-Unis",
+      "uk": "Royaume-Uni",
+      "in": "Inde",
+      "ng": "Nigeria",
+      "gh": "Ghana",
+      "browseAll": "Tout parcourir",
+      "about": "À propos",
+      "faq": "FAQ",
+      "blog": "Blog",
+      "contact": "Contact",
+      "privacy": "Confidentialité",
+      "terms": "Conditions",
+      "disclaimer": "Avertissement",
+      "cookies": "Cookies"
+    },
+    "copyright": "© {year} BasicLaw — éducatif uniquement.",
+    "builtFor": "Pour tout le monde, partout."
+  },
+  "trustDisclaimer": {
+    "title": "Confiance et transparence",
+    "lead": "BasicLaw est une plateforme éducative, pas un cabinet. Nous aidons à comprendre le droit, mais nous ne donnons pas de conseil ni de représentation.",
+    "whatWeDo_title": "Ce que nous faisons",
+    "whatWeDont_title": "Ce que nous ne faisons pas",
+    "important": "Pour les dossiers sérieux, consultez toujours un avocat agréé dans votre juridiction.",
+    "ctaFindLawyer": "Trouver un avocat agréé"
+  },
+  "pricingPage": {
+    "badge": "Pour vos questions juridiques du quotidien",
+    "title": "Des tarifs rentabilisés dès la première fois où vous évitez un appel.",
+    "subtitle": "BasicLaw couvre {count} pays gratuitement. Pro et Pro+ ajoutent analyse, comparaison, exports et modèles prioritaires.",
+    "teamPlan": "Besoin d’un plan équipe ou rédaction ?",
+    "getInTouch": "Écrivez-nous"
+  },
+  "auditPage": {
+    "badge": "Gratuit · éducatif uniquement",
+    "title": "Auditez tout contrat avant de signer.",
+    "subtitle": "Collez bail, contrat, lettre d’embauche ou CGU. Nous renvoyons une grille de risque claire, les alertes, ce qui vous protège et la formulation exacte pour répondre.",
+    "step1_title": "Coller ou télécharger",
+    "step1_body": "PDF, texte ou collage — 5 Mo max, rien n’est stocké.",
+    "step2_title": "Choisir la juridiction",
+    "step2_body": "195 pays — audit contextualisé.",
+    "step3_title": "Recevoir le rapport",
+    "step3_body": "Risque, alertes, lignes de réponse et chat.",
+    "proLink": "Besoin d’historique ou de volume ? Voir Pro et Pro+",
+    "lawyerSection_title": "Besoin d’un conseil fiable ?",
+    "lawyerSection_body": "Cet audit est éducatif. Pour délais, négociations ou tribunal, parlez à un avocat agréé.",
+    "lawyerSection_cta": "Trouver un avocat"
+  },
+  "faqPage": {
+    "title": "BasicLaw, en réponses simples.",
+    "subtitle": "Ce que nous sommes — et ce que nous ne sommes pas."
+  },
+  "constitutionBrowse": {
+    "back": "Retour à BasicLaw",
+    "badge": "Bibliothèque des constitutions",
+    "title": "La constitution de chaque pays, au même endroit.",
+    "subtitle": "Cherchez parmi {count} juridictions. Filtrez par régime ou région. Lisez un résumé clair et ouvrez le texte officiel.",
+    "statCountries": "Pays",
+    "statLive": "Actifs",
+    "statPreview": "Aperçu"
+  },
+  "lawyerPage": {
+    "title": "Trouver un avocat",
+    "subtitle": "BasicLaw peut vous mettre en relation avec des avocats indépendants. Nous pouvons percevoir une commission si vous engagez un partenaire — cela finance la bibliothèque gratuite.",
+    "disclaimer_title": "Important",
+    "disclaimer_body": "BasicLaw n’est pas un cabinet et n’endosse aucun avocat. Le formulaire ne crée pas de relation avocat-client. Vérifiez le barreau local.",
+    "form_title": "Candidature réseau partenaire",
+    "form_hint": "Avocats : indiquez votre pays d’exercice ; nous revenons vers vous quand les références seront ouvertes.",
+    "fields": {
+      "name": "Nom complet",
+      "email": "Email",
+      "barNumber": "Numéro du barreau (optionnel)",
+      "country": "Pays principal d’exercice",
+      "practiceAreas": "Domaines de pratique",
+      "practiceAreasPlaceholder": "ex. immigration, travail, logement",
+      "submit": "Envoyer la candidature",
+      "submitting": "Envoi…",
+      "success": "Merci — nous avons enregistré votre demande."
+    },
+    "jurisdiction_note": "Pour un pays précis, commencez depuis la page constitution de ce pays.",
+    "chatCta": "Parler à un avocat"
+  },
+  "chatEmpty": {
+    "title": "Démarrer une conversation",
+    "body": "Posez des questions sur vos droits ou le fonctionnement du droit dans votre juridiction.",
+    "lawyerCta": "Besoin de représentation ? Trouver un avocat"
+  },
+  "topicPage": {
+    "breadcrumbHome": "BasicLaw",
+    "breadcrumbConstitutions": "Constitutions",
+    "eduOnlyStrong": "Strictement éducatif.",
+    "eduOnlyBody": "Les règles locales et la jurisprudence peuvent changer la réponse. Utilisez cette page pour vous orienter, puis consultez un avocat agréé en {country}.",
+    "faqHeading": "Questions fréquentes",
+    "askPrefill": "Question sur {country}",
+    "readConstitution": "Lire la constitution de {country}",
+    "jurisdiction": "Juridiction",
+    "constitutionOverview": "Vue constitutionnelle",
+    "sidebar_rights": "Vos droits",
+    "sidebar_police": "Contrôles policiers",
+    "sidebar_landlord": "Locataire & propriétaire",
+    "backToConstitution": "Retour à la constitution de {country}",
+    "labels": {
+      "rights": "Vos droits",
+      "police-stop": "Contrôles policiers",
+      "landlord": "Locataire & propriétaire"
+    },
+    "subtitles": {
+      "rights": "Guide clair de vos droits constitutionnels",
+      "police-stop": "Que dire, que montrer, vos obligations",
+      "landlord": "Dépôts, expulsions, réparations et limites du bail"
+    },
+    "headings": {
+      "rightsInCountry": "Vos droits en {country}",
+      "policeInCountry": "Contrôles policiers en {country}",
+      "landlordInCountry": "Droit du logement en {country}"
+    },
+    "findLawyerCta": "Trouver un avocat"
+  },
+  "constitutionDetail": {
+    "backAll": "Toutes les constitutions",
+    "eduSummaryLead": "Résumé éducatif.",
+    "eduSummaryBody": "Croisez toujours avec le texte officiel lié ci-dessous. Les constitutions évoluent ; cette page peut être en retard.",
+    "plainLanguage": "En langage clair",
+    "keyPrinciples": "Principes clés",
+    "howLegalWorks": "Comment fonctionne {system}",
+    "atAGlance": "En un coup d’œil",
+    "capital": "Capitale",
+    "region": "Région",
+    "languages": "Langues",
+    "statusLabel": "Statut sur BasicLaw",
+    "officialSource": "Source officielle",
+    "readFullText": "Texte intégral",
+    "askQuestion": "Question sur {country}",
+    "findLawyerCta": "Trouver un avocat en {country}",
+    "guidesHeading": "Guides clairs pour {country}",
+    "readGuide": "Lire le guide",
+    "sources": "Sources",
+    "sourcesMissing": "Les liens primaires sont encore en cours d’ajout.",
+    "corrections": "Une erreur ? Écrivez corrections@basiclaw.app.",
+    "bottomDisclaimer": "BasicLaw n’est pas un cabinet. Vérifiez toujours la source officielle.",
+    "adopted": "Adoptée",
+    "amended": "modifiée",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "topic_rights_title": "Vos droits",
+    "topic_rights_blurb": "Guide des droits qui vous protègent",
+    "topic_police_title": "Contrôles policiers",
+    "topic_police_blurb": "Que dire, que montrer, obligations",
+    "topic_landlord_title": "Locataire & propriétaire",
+    "topic_landlord_blurb": "Dépôts, expulsions, réparations",
+    "status_active": "Actif avec assistant complet",
+    "status_preview": "Résumé prêt · assistant en aperçu",
+    "status_planned": "Prévu — liste d’attente"
+  },
+  "countryBrowser": {
+    "placeholder": "Rechercher 195 pays par nom, capitale, langue…",
+    "allRegions": "Toutes les régions",
+    "allSystems": "Tous les systèmes juridiques",
+    "status": {
+      "active": "Actif",
+      "preview": "Aperçu",
+      "planned": "Prévu"
+    }
+  },
+  "pricingTiers": {
+    "monthly": "Mensuel",
+    "annual": "Annuel",
+    "annualSave": "· économisez ~17%",
+    "mostChosen": "Le plus choisi",
+    "startingCheckout": "Paiement…",
+    "subscribeTo": "S’abonner à {tier}",
+    "checkoutError": "Impossible de démarrer le paiement."
+  }
+}

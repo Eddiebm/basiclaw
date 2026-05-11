@@ -1,0 +1,175 @@
+{
+  "nav": {
+    "constitutions": "الدساتير",
+    "audit": "مراجعة",
+    "ask": "اسأل",
+    "learn": "تعلّم",
+    "pricing": "الأسعار",
+    "country": "البلد",
+    "countryAria": "اختر بلداً",
+    "searchCountriesPlaceholder": "ابحث بين 195 دولة…",
+    "popular": "الأكثر زيارة",
+    "browseLibrary": "تصفح المكتبة كاملة",
+    "askNow": "اسأل الآن",
+    "toggleMenu": "القائمة",
+    "toggleTheme": "المظهر",
+    "findLawyer": "ابحث عن محامٍ"
+  },
+  "hero": {
+    "badge": "{count} دستور · لغة واضحة",
+    "titleLead": "توقف عن تخمين ما تقوله القوانين عن",
+    "titleAccent": "حياتك",
+    "subtitle": "BasicLaw يحوّل دستور كل بلد والقوانين الأساسية إلى إجابات يفهمها الجميع.",
+    "ctaAudit": "مراجعة العقد مجاناً",
+    "ctaAsk": "اطرح سؤالاً",
+    "browseLink": "تصفح كل الدساتير ({count})",
+    "browseLead": "أو",
+    "tinyDisclaimer": "مجاني للقراءة. للتعليم فقط.",
+    "cardQA_title": "أسئلة قانونية",
+    "cardAudit_title": "مراجعة العقود",
+    "cardAudit_link": "ابدأ المراجعة",
+    "cardLibrary_title": "مكتبة الدساتير",
+    "cardLibrary_link": "افتح المكتبة",
+    "statsEducational": "تعليمي فقط",
+    "statsJurisdictions": "{count} ولايات قضائية",
+    "statsPlainLanguage": "لغة واضحة"
+  },
+  "footer": {
+    "tagline": "مكتبة الدساتير والحقوق بلغة واضحة لـ {count} دولة.",
+    "columns": {
+      "product": "المنتج",
+      "jurisdictions": "ولايات شائعة",
+      "company": "الشركة",
+      "legal": "قانوني"
+    },
+    "links": {
+      "constitutions": "الدساتير",
+      "audit": "مراجعة عقد",
+      "ask": "المساعد",
+      "documents": "مساعدة مستندات",
+      "pricing": "الأسعار",
+      "findLawyer": "ابحث عن محامٍ",
+      "us": "الولايات المتحدة",
+      "uk": "المملكة المتحدة",
+      "in": "الهند",
+      "ng": "نيجيريا",
+      "gh": "غانا",
+      "browseAll": "عرض الكل",
+      "about": "من نحن",
+      "faq": "الأسئلة الشائعة",
+      "blog": "مدونة",
+      "contact": "تواصل",
+      "privacy": "الخصوصية",
+      "terms": "الشروط",
+      "disclaimer": "إخلاء مسؤولية",
+      "cookies": "ملفات تعريف الارتباط"
+    },
+    "copyright": "© {year} BasicLaw — للتعليم فقط.",
+    "builtFor": "للجميع في كل مكان."
+  },
+  "trustDisclaimer": {
+    "title": "الثقة والشفافية",
+    "lead": "BasicLaw منصة تعليمية وليست مكتب محاماة.",
+    "whatWeDo_title": "ما نقدمه",
+    "whatWeDont_title": "ما لا نقدمه",
+    "important": "للمسائل الجدية استشر محامياً مرخصاً في ولايتك القضائية.",
+    "ctaFindLawyer": "ابحث عن محامٍ مرخّص"
+  },
+  "pricingPage": {
+    "title": "أسعار تستحق من أول مرة تتجنب فيها اتصالاً.",
+    "subtitle": "BasicLaw يغطي {count} دولة مجاناً.",
+    "teamPlan": "هل تحتاج خطة فريق؟",
+    "getInTouch": "تواصل معنا",
+    "badge": "لأسئلة يومية"
+  },
+  "auditPage": {
+    "badge": "مجاني · تعليمي",
+    "title": "راجع أي عقد قبل التوقيع.",
+    "subtitle": "الصق عقد الإيجار أو الشروط واحصل على تقييم مخاطر واضح.",
+    "step1_title": "الصق أو ارفع",
+    "step1_body": "PDF/نص — حتى 5 ميجابايت.",
+    "step2_title": "اختر الولاية القضائية",
+    "step2_body": "195 دولة.",
+    "step3_title": "احصل على التقرير",
+    "step3_body": "المخاطر والتحذيرات والخطوات التالية.",
+    "proLink": "حجم أكبر؟ انظر Pro",
+    "lawyerSection_title": "تحتاج مشورة موثوقة؟",
+    "lawyerSection_body": "المراجعة تعليمية. للمحكمة أو المواعيد النهائية تحدث مع محامٍ.",
+    "lawyerSection_cta": "ابحث عن محامٍ"
+  },
+  "faqPage": {
+    "title": "BasicLaw بإجابات مباشرة.",
+    "subtitle": "ما نحن عليه وما لسنا."
+  },
+  "constitutionBrowse": {
+    "back": "العودة إلى BasicLaw",
+    "badge": "مكتبة الدساتير",
+    "title": "دستور كل بلد في مكان واحد.",
+    "subtitle": "ابحث بين {count} ولاية قضائية مع تصفية.",
+    "statCountries": "الدول",
+    "statLive": "مباشر",
+    "statPreview": "معاينة"
+  },
+  "lawyerPage": {
+    "title": "ابحث عن محامٍ",
+    "subtitle": "يمكننا ربطك بمحامين مستقلين؛ قد نتلقى رسماً عند التعاقد مع شريك — هذا يبقي المكتبة مجانية.",
+    "disclaimer_title": "مهم",
+    "disclaimer_body": "BasicLaw ليس مكتب محاماة ولا يؤيد محامين محددين. النموذج لا ينشئ علاقة موكل.",
+    "form_title": "طلب الانضمام لشبكة الشركاء",
+    "form_hint": "المحامون: اذكروا بلد الممارسة.",
+    "fields": {
+      "name": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "barNumber": "رقم النقابة (اختياري)",
+      "country": "البلد الأساسي",
+      "practiceAreas": "مجالات الممارسة",
+      "practiceAreasPlaceholder": "مثل الهجرة أو العمل",
+      "submit": "إرسال الطلب",
+      "submitting": "جارٍ الإرسال…",
+      "success": "شكراً — سجّلنا طلبك."
+    },
+    "jurisdiction_note": "لبلد محدد ابدأ من صفحة دستور ذلك البلد.",
+    "chatCta": "تحدث مع محامٍ"
+  },
+  "chatEmpty": {
+    "title": "ابدأ محادثة",
+    "body": "اسأل عن حقوقك أو كيف يعمل القانون في ولايتك.",
+    "lawyerCta": "تحتاج تمثيلاً؟ ابحث عن محامٍ"
+  },
+  "topicPage": {
+    "headings": {
+      "rightsInCountry": "حقوقك في {country}",
+      "policeInCountry": "توقيف الشرطة في {country}",
+      "landlordInCountry": "قانون الإيجار في {country}"
+    },
+    "labels": {
+      "rights": "حقوقك",
+      "police-stop": "توقيف الشرطة",
+      "landlord": "المستأجر والمالك"
+    },
+    "findLawyerCta": "ابحث عن محامٍ"
+  },
+  "constitutionDetail": {
+    "guidesHeading": "أدلة واضحة لـ {country}",
+    "findLawyerCta": "ابحث عن محامٍ في {country}",
+    "sources": "المصادر",
+    "plainLanguage": "بلغة واضحة",
+    "keyPrinciples": "المبادئ الأساسية",
+    "askQuestion": "سؤال عن {country}",
+    "readFullText": "النص الكامل",
+    "officialSource": "المصدر الرسمي",
+    "backAll": "جميع الدساتير"
+  },
+  "countryBrowser": {
+    "placeholder": "ابحث بين 195 دولة…",
+    "allRegions": "كل المناطق",
+    "allSystems": "كل الأنظمة"
+  },
+  "pricingTiers": {
+    "monthly": "شهري",
+    "annual": "سنوي",
+    "mostChosen": "الأكثر اختياراً",
+    "subscribeTo": "اشترك في {tier}",
+    "checkoutError": "تعذر بدء الدفع."
+  }
+}

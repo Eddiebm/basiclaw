@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { ArrowRight, Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { BillingCadence, StripeTierId } from "@/lib/stripe-config";
@@ -87,6 +88,7 @@ const PAID_TIERS: PaidTier[] = [
 ];
 
 export function PricingClient() {
+  const tp = useTranslations("pricingTiers");
   const [cadence, setCadence] = useState<BillingCadence>("monthly");
   const [loadingTier, setLoadingTier] = useState<StripeTierId | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -110,7 +112,7 @@ export function PricingClient() {
         window.location.assign(json.url);
         return;
       }
-      setError(json.message ?? json.error ?? "Could not start checkout. Please try again.");
+      setError(json.message ?? json.error ?? tp("checkoutError"));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Network error");
     } finally {
@@ -131,7 +133,7 @@ export function PricingClient() {
                 : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
             }`}
           >
-            Monthly
+            {tp("monthly")}
           </button>
           <button
             type="button"
@@ -142,7 +144,7 @@ export function PricingClient() {
                 : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
             }`}
           >
-            Annual <span className="text-[var(--primary)]">\u00b7 save ~17%</span>
+            {tp("annual")} <span className="text-[var(--primary)]">{tp("annualSave")}</span>
           </button>
         </div>
       </div>
@@ -208,6 +210,7 @@ function PaidTierCard({
   loading: boolean;
   onCheckout: () => void;
 }) {
+  const tp = useTranslations("pricingTiers");
   const pricing = cadence === "annual" ? tier.annual : tier.monthly;
   const isAnnual = cadence === "annual";
   return (
@@ -220,7 +223,7 @@ function PaidTierCard({
     >
       {tier.highlight && (
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold">
-          <Star className="h-3 w-3" aria-hidden /> Most chosen
+          <Star className="h-3 w-3" aria-hidden /> {tp("mostChosen")}
         </span>
       )}
       <p className="text-xs uppercase tracking-wider text-[var(--muted-foreground)]">{tier.tagline}</p>
@@ -249,7 +252,7 @@ function PaidTierCard({
         className="mt-8 w-full justify-between"
         variant={tier.highlight ? "default" : "outline"}
       >
-        {loading ? "Starting checkout\u2026" : `Subscribe to ${tier.tagline}`}
+        {loading ? tp("startingCheckout") : tp("subscribeTo", { tier: tier.tagline })}
         <ArrowRight className="h-4 w-4" />
       </Button>
     </div>

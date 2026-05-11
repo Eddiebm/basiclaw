@@ -2,15 +2,18 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { TopicPage } from "@/components/topics/TopicPage";
 import { COUNTRIES } from "@/data/countries";
+import { routing } from "@/i18n/routing";
 import { getCountry } from "@/lib/jurisdictions";
 import { getTopicContent } from "@/lib/topic-content";
 
-type RouteParams = { country: string };
+type RouteParams = { locale: string; country: string };
 
 export const dynamicParams = false;
 
 export function generateStaticParams(): RouteParams[] {
-  return COUNTRIES.map((country) => ({ country: country.code.toLowerCase() }));
+  return routing.locales.flatMap((locale) =>
+    COUNTRIES.map((country) => ({ locale, country: country.code.toLowerCase() }))
+  );
 }
 
 export async function generateMetadata({
@@ -18,25 +21,25 @@ export async function generateMetadata({
 }: {
   params: Promise<RouteParams>;
 }): Promise<Metadata> {
-  const { country: code } = await params;
+  const { locale, country: code } = await params;
   const country = getCountry(code);
   if (!country) return { title: "Not found" };
-  const title = `What to Do When Police Stop You in ${country.name}`;
-  const description = `A calm, plain-language guide to police stops in ${country.name} \u2014 what you must do, what you can refuse, and how to document it.`;
+  const title = `Tenant Rights and Landlord Rules in ${country.name}`;
+  const description = `Deposits, evictions, repairs, rent increases \u2014 the basic rules every tenant and landlord in ${country.name} should know.`;
   return {
     title,
     description,
-    alternates: { canonical: `/${country.code.toLowerCase()}/police-stop` },
+    alternates: { canonical: `/${locale}/${country.code.toLowerCase()}/landlord` },
     openGraph: {
       title: `${country.flag} ${title}`,
       description,
-      url: `/${country.code.toLowerCase()}/police-stop`,
+      url: `/${locale}/${country.code.toLowerCase()}/landlord`,
       type: "article",
     },
   };
 }
 
-export default async function CountryPoliceStopPage({
+export default async function CountryLandlordPage({
   params,
 }: {
   params: Promise<RouteParams>;
@@ -44,6 +47,6 @@ export default async function CountryPoliceStopPage({
   const { country: code } = await params;
   const country = getCountry(code);
   if (!country) notFound();
-  const content = getTopicContent(country, "police-stop");
-  return <TopicPage country={country} topic="police-stop" content={content} />;
+  const content = getTopicContent(country, "landlord");
+  return <TopicPage country={country} topic="landlord" content={content} />;
 }

@@ -1,4 +1,7 @@
-import Link from "next/link";
+"use client";
+
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -10,6 +13,7 @@ import {
   ShieldAlert,
   Sparkles,
 } from "lucide-react";
+import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { Button } from "@/components/ui/Button";
@@ -41,18 +45,6 @@ export interface TopicContent {
   prefilledQuestion: string;
 }
 
-const TOPIC_LABELS: Record<TopicSlug, string> = {
-  rights: "Your rights",
-  "police-stop": "Police stops",
-  landlord: "Tenant & landlord",
-};
-
-const TOPIC_SUBTITLE: Record<TopicSlug, string> = {
-  rights: "Plain-language guide to your constitutional rights",
-  "police-stop": "What to say, what to show, what you must do",
-  landlord: "Deposits, evictions, repairs, and what your lease can't override",
-};
-
 const TOPIC_ICON: Record<TopicSlug, React.ComponentType<{ className?: string; "aria-hidden"?: boolean }>> = {
   rights: Sparkles,
   "police-stop": ShieldAlert,
@@ -68,6 +60,7 @@ export function TopicPage({
   topic: TopicSlug;
   content: TopicContent;
 }) {
+  const t = useTranslations("topicPage");
   const lastVerified = getLastVerified(country);
   const formattedLastVerified = new Date(lastVerified).toLocaleDateString("en-GB", {
     year: "numeric",
@@ -75,12 +68,17 @@ export function TopicPage({
     day: "numeric",
   });
   const Icon = TOPIC_ICON[topic];
+  const topicLabel = t(`labels.${topic}`);
+  const topicSubtitle = t(`subtitles.${topic}`);
+  const headingKey =
+    topic === "rights" ? "rightsInCountry" : topic === "police-stop" ? "policeInCountry" : "landlordInCountry";
+  const pageHeading = t(`headings.${headingKey}`, { country: country.name });
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "BasicLaw", item: "/" },
+      { "@type": "ListItem", position: 1, name: "BasicLaw", item: "https://basiclaw.app/" },
       {
         "@type": "ListItem",
         position: 2,
@@ -90,7 +88,7 @@ export function TopicPage({
       {
         "@type": "ListItem",
         position: 3,
-        name: TOPIC_LABELS[topic],
+        name: topicLabel,
         item: `/${country.code.toLowerCase()}/${topic}`,
       },
     ],
@@ -125,9 +123,9 @@ export function TopicPage({
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[1fr_320px] gap-10">
           <div>
             <nav aria-label="Breadcrumb" className="text-xs text-[var(--muted-foreground)] mb-4 flex items-center gap-2">
-              <Link href="/" className="hover:text-[var(--foreground)]">BasicLaw</Link>
+              <Link href="/" className="hover:text-[var(--foreground)]">{t("breadcrumbHome")}</Link>
               <span aria-hidden>/</span>
-              <Link href="/constitutions" className="hover:text-[var(--foreground)]">Constitutions</Link>
+              <Link href="/constitutions" className="hover:text-[var(--foreground)]">{t("breadcrumbConstitutions")}</Link>
               <span aria-hidden>/</span>
               <Link
                 href={`/constitutions/${country.code.toLowerCase()}`}
@@ -136,16 +134,16 @@ export function TopicPage({
                 {country.flag} {country.name}
               </Link>
               <span aria-hidden>/</span>
-              <span className="text-[var(--foreground)]">{TOPIC_LABELS[topic]}</span>
+              <span className="text-[var(--foreground)]">{topicLabel}</span>
             </nav>
 
             <header className="mb-8">
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] text-xs font-medium mb-3">
                 <Icon className="h-3.5 w-3.5" aria-hidden />
-                {TOPIC_SUBTITLE[topic]}
+                {topicSubtitle}
               </span>
               <h1 className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] leading-tight">
-                {content.title}
+                {pageHeading}
               </h1>
               <p className="mt-4 text-lg text-[var(--muted-foreground)]">{content.intro}</p>
             </header>
@@ -156,7 +154,8 @@ export function TopicPage({
             >
               <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
               <p>
-                <strong className="font-semibold">Educational only.</strong> Local rules, recent amendments, and case-law nuance can change the answer for your specific situation. Use this page to understand the landscape, then talk to a licensed lawyer in {country.name} for advice you can act on.
+                <strong className="font-semibold">{t("eduOnlyStrong")}</strong>{" "}
+                {t("eduOnlyBody", { country: country.name })}
               </p>
             </div>
 
@@ -182,7 +181,7 @@ export function TopicPage({
             <section className="mt-10 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
               <h2 className="text-xl font-semibold text-[var(--foreground)] mb-5 flex items-center gap-2">
                 <BookOpen className="h-5 w-5 text-[var(--primary)]" aria-hidden />
-                Frequently asked questions
+                {t("faqHeading")}
               </h2>
               <dl className="divide-y divide-[var(--border)]/60">
                 {content.faqs.map((faq) => (
@@ -194,31 +193,39 @@ export function TopicPage({
               </dl>
             </section>
 
-            <div className="mt-10 flex flex-col sm:flex-row gap-3">
+            <div className="mt-10 flex flex-col sm:flex-row gap-3 flex-wrap">
               <Button asChild className="gap-2">
                 <Link
                   href={`/chat?country=${country.code.toLowerCase()}&q=${encodeURIComponent(content.prefilledQuestion)}`}
                 >
                   <MessageCircle className="h-4 w-4" />
-                  Ask a question about {country.name}
+                  {t("askPrefill", { country: country.name })}
                 </Link>
               </Button>
               <Button asChild variant="outline" className="gap-2">
                 <Link href={`/constitutions/${country.code.toLowerCase()}`}>
                   <Library className="h-4 w-4" />
-                  Read {country.name}&apos;s constitution
+                  {t("readConstitution", { country: country.name })}
                 </Link>
               </Button>
+              <LawyerCtaLink
+                href={`/find-a-lawyer?country=${country.code.toLowerCase()}`}
+                source="topic_page"
+                className="inline-flex items-center justify-center gap-2 rounded-md border border-[var(--border)] bg-transparent px-4 py-2 text-sm font-medium text-[var(--foreground)] hover:bg-[var(--accent)] transition-colors"
+              >
+                <Scale className="h-4 w-4" />
+                {t("findLawyerCta")}
+              </LawyerCtaLink>
             </div>
 
             <p className="mt-6 text-xs text-[var(--muted-foreground)]">
-              Last verified <time dateTime={lastVerified}>{formattedLastVerified}</time>. Spotted something wrong? Email <a href={`mailto:corrections@basiclaw.app?subject=Correction%3A%20${encodeURIComponent(country.name)}%20${encodeURIComponent(TOPIC_LABELS[topic])}`} className="underline underline-offset-2">corrections@basiclaw.app</a>.
+              {t("lastVerified", { date: formattedLastVerified })}
             </p>
           </div>
 
           <aside className="space-y-4">
             <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sticky top-24">
-              <p className="text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-2">Jurisdiction</p>
+              <p className="text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-2">{t("jurisdiction")}</p>
               <p className="text-2xl mb-1" aria-hidden>{country.flag}</p>
               <p className="font-semibold text-[var(--foreground)]">{country.name}</p>
               <p className="text-sm text-[var(--muted-foreground)] mb-4">
@@ -229,25 +236,25 @@ export function TopicPage({
                   href={`/constitutions/${country.code.toLowerCase()}`}
                   className="flex items-center justify-between text-sm hover:text-[var(--primary)]"
                 >
-                  Constitution overview <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                  {t("constitutionOverview")} <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                 </Link>
                 <Link
                   href={`/${country.code.toLowerCase()}/rights`}
                   className="flex items-center justify-between text-sm hover:text-[var(--primary)]"
                 >
-                  Your rights <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                  {t("sidebar_rights")} <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                 </Link>
                 <Link
                   href={`/${country.code.toLowerCase()}/police-stop`}
                   className="flex items-center justify-between text-sm hover:text-[var(--primary)]"
                 >
-                  Police stops <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                  {t("sidebar_police")} <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                 </Link>
                 <Link
                   href={`/${country.code.toLowerCase()}/landlord`}
                   className="flex items-center justify-between text-sm hover:text-[var(--primary)]"
                 >
-                  Tenant &amp; landlord <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                  {t("sidebar_landlord")} <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                 </Link>
               </div>
             </div>
@@ -259,7 +266,7 @@ export function TopicPage({
             className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
-            Back to {country.name}&apos;s constitution
+            {t("backToConstitution", { country: country.name })}
           </Link>
         </div>
       </article>

@@ -1,0 +1,175 @@
+{
+  "nav": {
+    "constitutions": "宪法",
+    "audit": "审查",
+    "ask": "提问",
+    "learn": "学习",
+    "pricing": "定价",
+    "country": "国家",
+    "countryAria": "选择国家",
+    "searchCountriesPlaceholder": "搜索195个国家…",
+    "popular": "热门",
+    "browseLibrary": "浏览完整文库",
+    "askNow": "立即提问",
+    "toggleMenu": "菜单",
+    "toggleTheme": "主题",
+    "findLawyer": "找律师"
+  },
+  "hero": {
+    "badge": "{count}部宪法 · 通俗易懂",
+    "titleLead": "别再猜测法律对你的",
+    "titleAccent": "生活",
+    "subtitle": "BasicLaw把各国宪法与核心法律变成人人都能读懂的答案。",
+    "ctaAudit": "免费合同审查",
+    "ctaAsk": "提出问题",
+    "browseLink": "浏览全部{count}部宪法",
+    "browseLead": "或",
+    "tinyDisclaimer": "免费阅读。仅供教育参考。",
+    "cardQA_title": "法律问答",
+    "cardAudit_title": "合同审查",
+    "cardAudit_link": "开始审查",
+    "cardLibrary_title": "宪法文库",
+    "cardLibrary_link": "打开文库",
+    "statsEducational": "仅供教育",
+    "statsJurisdictions": "{count}个司法辖区",
+    "statsPlainLanguage": "通俗易懂"
+  },
+  "footer": {
+    "tagline": "面向{count}个国家的通俗宪法与权利文库。",
+    "columns": {
+      "product": "产品",
+      "jurisdictions": "热门辖区",
+      "company": "公司",
+      "legal": "法律信息"
+    },
+    "links": {
+      "constitutions": "宪法",
+      "audit": "合同审查",
+      "ask": "助手",
+      "documents": "文档帮助",
+      "pricing": "定价",
+      "findLawyer": "找律师",
+      "us": "美国",
+      "uk": "英国",
+      "in": "印度",
+      "ng": "尼日利亚",
+      "gh": "加纳",
+      "browseAll": "浏览全部",
+      "about": "关于",
+      "faq": "常见问题",
+      "blog": "博客",
+      "contact": "联系",
+      "privacy": "隐私",
+      "terms": "条款",
+      "disclaimer": "免责声明",
+      "cookies": "Cookie"
+    },
+    "copyright": "© {year} BasicLaw — 仅供教育参考。",
+    "builtFor": "面向所有人。"
+  },
+  "trustDisclaimer": {
+    "title": "信任与透明",
+    "lead": "BasicLaw是教育平台，不是律师事务所。",
+    "whatWeDo_title": "我们做什么",
+    "whatWeDont_title": "我们不做什么",
+    "important": "重大事项请咨询当地执业律师。",
+    "ctaFindLawyer": "寻找执业律师"
+  },
+  "pricingPage": {
+    "title": "让你第一次不必打电话就值回票价。",
+    "subtitle": "BasicLaw免费覆盖{count}个国家。",
+    "teamPlan": "需要团队方案？",
+    "getInTouch": "联系我们",
+    "badge": "面向日常法律问题"
+  },
+  "auditPage": {
+    "badge": "免费 · 仅供教育",
+    "title": "签字前先审查任何合同。",
+    "subtitle": "粘贴租约、合同或条款，获取易懂的风险评估。",
+    "step1_title": "粘贴或上传",
+    "step1_body": "PDF/文本 — 最大5MB。",
+    "step2_title": "选择司法辖区",
+    "step2_body": "支持195个国家。",
+    "step3_title": "获取报告",
+    "step3_body": "风险、红旗与下一步。",
+    "proLink": "需要批量？查看 Pro",
+    "lawyerSection_title": "需要更可靠的法律意见？",
+    "lawyerSection_body": "审查仅供教育。诉讼或截止期限请咨询律师。",
+    "lawyerSection_cta": "找律师"
+  },
+  "faqPage": {
+    "title": "BasicLaw，直白解答。",
+    "subtitle": "我们是什么，不是什么。"
+  },
+  "constitutionBrowse": {
+    "back": "返回 BasicLaw",
+    "badge": "宪法文库",
+    "title": "各国宪法，一站汇集。",
+    "subtitle": "搜索{count}个司法辖区并按区域筛选。",
+    "statCountries": "国家",
+    "statLive": "在线",
+    "statPreview": "预览"
+  },
+  "lawyerPage": {
+    "title": "找律师",
+    "subtitle": "我们可以引荐独立律师；如您聘请合作律师我们可能收取推荐费——这有助于维持文库免费。",
+    "disclaimer_title": "重要提示",
+    "disclaimer_body": "BasicLaw不是律师事务所，也不背书特定律师。表单不产生律师-客户关系，请核实执业资格。",
+    "form_title": "合作伙伴申请",
+    "form_hint": "律师请注明执业国家。",
+    "fields": {
+      "name": "姓名",
+      "email": "邮箱",
+      "barNumber": "执业证号（可选）",
+      "country": "主要执业国家",
+      "practiceAreas": "业务领域",
+      "practiceAreasPlaceholder": "例如移民、劳动、租房",
+      "submit": "提交申请",
+      "submitting": "提交中…",
+      "success": "谢谢 — 我们已记录您的申请。"
+    },
+    "jurisdiction_note": "若针对特定国家，请从该国宪法页开始。",
+    "chatCta": "与律师沟通"
+  },
+  "chatEmpty": {
+    "title": "开始对话",
+    "body": "提问权利概念或当地法律运作方式。",
+    "lawyerCta": "需要代理？找律师"
+  },
+  "topicPage": {
+    "headings": {
+      "rightsInCountry": "{country}中的权利",
+      "policeInCountry": "{country}中的警察盘查",
+      "landlordInCountry": "{country}的租房法律"
+    },
+    "labels": {
+      "rights": "权利",
+      "police-stop": "警察盘查",
+      "landlord": "租客与房东"
+    },
+    "findLawyerCta": "找律师"
+  },
+  "constitutionDetail": {
+    "guidesHeading": "{country}的通俗指南",
+    "findLawyerCta": "在{country}找律师",
+    "sources": "来源",
+    "plainLanguage": "通俗摘要",
+    "keyPrinciples": "关键原则",
+    "askQuestion": "关于{country}的问题",
+    "readFullText": "全文",
+    "officialSource": "官方来源",
+    "backAll": "全部宪法"
+  },
+  "countryBrowser": {
+    "placeholder": "搜索195个国家…",
+    "allRegions": "所有地区",
+    "allSystems": "所有法系"
+  },
+  "pricingTiers": {
+    "monthly": "按月",
+    "annual": "按年",
+    "mostChosen": "最受欢迎",
+    "subscribeTo": "订阅{tier}",
+    "checkoutError": "无法开始结账。"
+  }
+}

@@ -1,57 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, HelpCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { track } from "@/lib/analytics";
 
-export const FAQ_ITEMS = [
-  {
-    q: "Is BasicLaw a substitute for a lawyer?",
-    a: "No. BasicLaw is educational. We help you understand what the law says, but only a licensed lawyer in your jurisdiction can give legal advice on your specific situation. We tell you when to find one.",
-  },
-  {
-    q: "Which countries are supported?",
-    a: "All 195 internationally recognised countries are in the library, with a plain-language summary of the constitution, key principles, and links to the official text. The interactive assistant is rolling out country by country — start with the United States, Ghana, and Nigeria today.",
-  },
-  {
-    q: "Where do the constitutions come from?",
-    a: "We summarise from the official primary source where available, and link to the Comparative Constitutions Project (constituteproject.org) for the full English text. Constitutional law changes — always verify against the official version before relying on a provision.",
-  },
-  {
-    q: "How does BasicLaw stay accurate?",
-    a: "Each constitution entry includes the year of adoption and the most recent amendment we are aware of. Where a constitution has been suspended, contested, or replaced by a transitional charter, we say so directly in the summary.",
-  },
-  {
-    q: "Is BasicLaw free?",
-    a: "The Constitution Library and most of the Q&A is free to read. Pro and Pro+ tiers add document analysis, multi-jurisdiction comparison, saved chats, and priority models — see the pricing page for details.",
-  },
-  {
-    q: "Can I use BasicLaw answers in court or in a filing?",
-    a: "No. BasicLaw answers are designed to help you understand legal concepts and frame the right questions to ask a lawyer. They should not be cited as legal authority or used as a substitute for legal representation.",
-  },
-];
+const FAQ_KEYS = ["i1", "i2", "i3", "i4", "i5", "i6"] as const;
 
 export function HomeFAQ() {
+  const t = useTranslations("homeFaq");
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const items = useMemo(
+    () =>
+      FAQ_KEYS.map((key) => ({
+        key,
+        q: t(`items.${key}.q`),
+        a: t(`items.${key}.a`),
+      })),
+    [t]
+  );
+
   return (
     <section className="py-20" id="faq">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] text-xs font-medium mb-4">
             <HelpCircle className="h-3.5 w-3.5" aria-hidden />
-            Frequently asked
+            {t("badge")}
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-[var(--foreground)]">
-            What people ask before they trust us
-          </h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-[var(--foreground)]">{t("title")}</h2>
         </div>
         <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] divide-y divide-[var(--border)]/60 overflow-hidden">
-          {FAQ_ITEMS.map((item, index) => {
+          {items.map((item, index) => {
             const isOpen = openIndex === index;
             return (
               <motion.div
-                key={item.q}
+                key={item.key}
                 initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -101,7 +87,7 @@ export function HomeFAQ() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "FAQPage",
-            mainEntity: FAQ_ITEMS.map((item) => ({
+            mainEntity: items.map((item) => ({
               "@type": "Question",
               name: item.q,
               acceptedAnswer: { "@type": "Answer", text: item.a },

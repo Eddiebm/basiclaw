@@ -1,0 +1,175 @@
+{
+  "nav": {
+    "constitutions": "Constituições",
+    "audit": "Auditoria",
+    "ask": "Perguntar",
+    "learn": "Aprender",
+    "pricing": "Preços",
+    "country": "País",
+    "countryAria": "Escolher um país",
+    "searchCountriesPlaceholder": "Buscar 195 países…",
+    "popular": "Populares",
+    "browseLibrary": "Ver biblioteca completa",
+    "askNow": "Perguntar agora",
+    "toggleMenu": "Menu",
+    "toggleTheme": "Tema",
+    "findLawyer": "Encontrar advogado"
+  },
+  "hero": {
+    "badge": "{count} constituições · linguagem simples",
+    "titleLead": "Pare de adivinhar o que a lei diz sobre",
+    "titleAccent": "sua vida",
+    "subtitle": "BasicLaw transforma a constituição e leis centrais de cada país em respostas claras para qualquer pessoa.",
+    "ctaAudit": "Auditar contrato grátis",
+    "ctaAsk": "Fazer uma pergunta",
+    "browseLink": "ver todas as {count} constituições",
+    "browseLead": "ou",
+    "tinyDisclaimer": "Grátis para ler. Somente educativo.",
+    "cardQA_title": "Perguntas jurídicas",
+    "cardAudit_title": "Auditoria de contratos",
+    "cardAudit_link": "Rodar auditoria",
+    "cardLibrary_title": "Biblioteca de Constituições",
+    "cardLibrary_link": "Abrir biblioteca",
+    "statsEducational": "Somente educativo",
+    "statsJurisdictions": "{count} jurisdições",
+    "statsPlainLanguage": "Linguagem simples"
+  },
+  "footer": {
+    "tagline": "Biblioteca de constituições para {count} países.",
+    "columns": {
+      "product": "Produto",
+      "jurisdictions": "Jurisdições",
+      "company": "Empresa",
+      "legal": "Legal"
+    },
+    "links": {
+      "constitutions": "Constituições",
+      "audit": "Auditar contrato",
+      "ask": "Assistente",
+      "documents": "Documentos",
+      "pricing": "Preços",
+      "findLawyer": "Encontrar advogado",
+      "us": "Estados Unidos",
+      "uk": "Reino Unido",
+      "in": "Índia",
+      "ng": "Nigéria",
+      "gh": "Gana",
+      "browseAll": "Ver tudo",
+      "about": "Sobre",
+      "faq": "FAQ",
+      "blog": "Blog",
+      "contact": "Contato",
+      "privacy": "Privacidade",
+      "terms": "Termos",
+      "disclaimer": "Aviso legal",
+      "cookies": "Cookies"
+    },
+    "copyright": "© {year} BasicLaw — somente educativo.",
+    "builtFor": "Para todos, em todo lugar."
+  },
+  "trustDisclaimer": {
+    "title": "Confiança e transparência",
+    "lead": "BasicLaw é educacional, não um escritório de advocacia.",
+    "whatWeDo_title": "O que fazemos",
+    "whatWeDont_title": "O que não fazemos",
+    "important": "Para casos sérios, consulte um advogado licenciado na sua jurisdição.",
+    "ctaFindLawyer": "Encontrar advogado licenciado"
+  },
+  "pricingPage": {
+    "title": "Preços que se pagam na primeira vez que você evita uma ligação.",
+    "subtitle": "BasicLaw cobre {count} países grátis.",
+    "teamPlan": "Precisa de um plano equipe?",
+    "getInTouch": "Fale conosco",
+    "badge": "Para perguntas jurídicas do dia a dia"
+  },
+  "auditPage": {
+    "badge": "Grátis · educativo",
+    "title": "Audite qualquer contrato antes de assinar.",
+    "subtitle": "Cole contrato, carta ou termos para um relatório claro de risco.",
+    "step1_title": "Colar ou enviar",
+    "step1_body": "PDF/texto — até 5 MB.",
+    "step2_title": "Escolher jurisdição",
+    "step2_body": "195 países.",
+    "step3_title": "Receber relatório",
+    "step3_body": "Risco, alertas e próximos passos.",
+    "proLink": "Volume? Veja Pro e Pro+",
+    "lawyerSection_title": "Precisa de um conselho confiável?",
+    "lawyerSection_body": "Esta auditoria é educativa. Para prazos ou tribunal, fale com um advogado.",
+    "lawyerSection_cta": "Encontrar advogado"
+  },
+  "faqPage": {
+    "title": "BasicLaw em respostas diretas.",
+    "subtitle": "O que somos e o que não somos."
+  },
+  "constitutionBrowse": {
+    "back": "Voltar ao BasicLaw",
+    "badge": "Biblioteca de Constituições",
+    "title": "A constituição de cada país, num só lugar.",
+    "subtitle": "Busque {count} jurisdições com filtros.",
+    "statCountries": "Países",
+    "statLive": "Ao vivo",
+    "statPreview": "Prévia"
+  },
+  "lawyerPage": {
+    "title": "Encontrar advogado",
+    "subtitle": "Podemos apresentar advogados independentes. Podemos receber taxa de indicação — isso mantém a biblioteca gratuita.",
+    "disclaimer_title": "Importante",
+    "disclaimer_body": "BasicLaw não é escritório nem endossa advogados. O formulário não cria relação advogado-cliente.",
+    "form_title": "Candidatura à rede de parceiros",
+    "form_hint": "Advogados: informe onde atuam.",
+    "fields": {
+      "name": "Nome completo",
+      "email": "Email",
+      "barNumber": "Número da OAB / ordem (opcional)",
+      "country": "País principal",
+      "practiceAreas": "Áreas",
+      "practiceAreasPlaceholder": "ex.: trabalhista, imigração",
+      "submit": "Enviar",
+      "submitting": "Enviando…",
+      "success": "Obrigado — registramos sua candidatura."
+    },
+    "jurisdiction_note": "Para um país específico, comece pela página da constituição.",
+    "chatCta": "Falar com advogado"
+  },
+  "chatEmpty": {
+    "title": "Comece uma conversa",
+    "body": "Pergunte sobre conceitos jurídicos e direitos na sua jurisdição.",
+    "lawyerCta": "Precisa de representação? Encontrar advogado"
+  },
+  "topicPage": {
+    "headings": {
+      "rightsInCountry": "Seus direitos em {country}",
+      "policeInCountry": "Abordagens policiais em {country}",
+      "landlordInCountry": "Locação em {country}"
+    },
+    "labels": {
+      "rights": "Seus direitos",
+      "police-stop": "Abordagens",
+      "landlord": "Inquilino e locador"
+    },
+    "findLawyerCta": "Encontrar advogado"
+  },
+  "constitutionDetail": {
+    "guidesHeading": "Guias claros para {country}",
+    "findLawyerCta": "Encontrar advogado em {country}",
+    "sources": "Fontes",
+    "plainLanguage": "Em linguagem simples",
+    "keyPrinciples": "Princípios-chave",
+    "askQuestion": "Pergunta sobre {country}",
+    "readFullText": "Texto integral",
+    "officialSource": "Fonte oficial",
+    "backAll": "Todas as constituições"
+  },
+  "countryBrowser": {
+    "placeholder": "Buscar 195 países…",
+    "allRegions": "Todas as regiões",
+    "allSystems": "Todos os sistemas"
+  },
+  "pricingTiers": {
+    "monthly": "Mensal",
+    "annual": "Anual",
+    "mostChosen": "Mais escolhido",
+    "subscribeTo": "Assinar {tier}",
+    "checkoutError": "Não foi possível iniciar o checkout."
+  }
+}

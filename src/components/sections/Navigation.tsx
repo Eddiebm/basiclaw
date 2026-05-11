@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight,
@@ -15,20 +14,24 @@ import {
   Sun,
   X,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Toggle } from "@/components/ui/Toggle";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { searchCountries, getPopularCountries } from "@/lib/jurisdictions";
 
-const NAV_LINKS = [
-  { href: "/constitutions", label: "Constitutions" },
-  { href: "/audit", label: "Audit" },
-  { href: "/chat", label: "Ask" },
-  { href: "/learn", label: "Learn" },
-  { href: "/pricing", label: "Pricing" },
+const NAV_HREFS = [
+  { href: "/constitutions", key: "constitutions" as const },
+  { href: "/audit", key: "audit" as const },
+  { href: "/chat", key: "ask" as const },
+  { href: "/learn", key: "learn" as const },
+  { href: "/pricing", key: "pricing" as const },
+  { href: "/find-a-lawyer", key: "findLawyer" as const },
 ];
 
 export function Navigation() {
+  const t = useTranslations("nav");
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const [isCountryOpen, setIsCountryOpen] = useState(false);
@@ -58,12 +61,12 @@ export function Navigation() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <Scale className="h-8 w-8 text-[var(--primary)]" />
-            <span className="text-xl font-bold text-[var(--foreground)]">BasicLaw</span>
+            <Scale className="h-8 w-8 text-[var(--primary)]" aria-hidden />
+            <span className="text-xl font-bold text-[var(--foreground)]">{t("brand")}</span>
           </Link>
 
           <div className="hidden md:flex md:items-center md:gap-7">
-            {NAV_LINKS.map((link) => (
+            {NAV_HREFS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -73,7 +76,7 @@ export function Navigation() {
                     : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                 }`}
               >
-                {link.label}
+                {t(link.key)}
               </Link>
             ))}
           </div>
@@ -88,7 +91,7 @@ export function Navigation() {
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--accent)] text-sm text-[var(--foreground)] hover:border-[var(--primary)] transition-colors"
               >
                 <Globe className="h-4 w-4 text-[var(--muted-foreground)]" aria-hidden />
-                Country
+                {t("country")}
                 <ChevronDown className={`h-3.5 w-3.5 transition-transform ${isCountryOpen ? "rotate-180" : ""}`} aria-hidden />
               </button>
               <AnimatePresence>
@@ -99,7 +102,7 @@ export function Navigation() {
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.15 }}
                     role="dialog"
-                    aria-label="Choose a country"
+                    aria-label={t("countryAria")}
                     className="absolute right-0 mt-2 w-80 rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-lg overflow-hidden"
                   >
                     <div className="p-3">
@@ -108,8 +111,8 @@ export function Navigation() {
                         type="search"
                         value={query}
                         onChange={(event) => setQuery(event.target.value)}
-                        placeholder="Search 195 countries…"
-                        aria-label="Search countries"
+                        placeholder={t("searchCountriesPlaceholder")}
+                        aria-label={t("searchCountriesAria")}
                         className="w-full h-10 px-3 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                       />
                     </div>
@@ -131,7 +134,7 @@ export function Navigation() {
                       ) : (
                         <>
                           <p className="px-4 pt-1 pb-2 text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">
-                            Popular
+                            {t("popular")}
                           </p>
                           <ul className="px-2 pb-2 space-y-0.5">
                             {popular.map((country) => (
@@ -154,7 +157,7 @@ export function Navigation() {
                         href="/constitutions"
                         className="flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium text-[var(--primary)] hover:bg-[var(--accent)]/60 transition-colors"
                       >
-                        Browse the full library
+                        {t("browseLibrary")}
                         <Library className="h-4 w-4" aria-hidden />
                       </Link>
                     </div>
@@ -163,10 +166,12 @@ export function Navigation() {
               </AnimatePresence>
             </div>
 
+            <LanguageSwitcher />
+
             <Toggle
               pressed={theme === "dark"}
               onPressedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-label="Toggle theme"
+              aria-label={t("toggleTheme")}
               className="h-9 w-9"
             >
               <AnimatePresence mode="wait">
@@ -193,14 +198,14 @@ export function Navigation() {
             </Toggle>
             <Button asChild className="hidden md:inline-flex">
               <Link href="/chat">
-                Ask now <ArrowRight className="h-4 w-4" />
+                {t("askNow")} <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <button
               type="button"
               className="md:hidden p-2 text-[var(--foreground)]"
               onClick={() => setIsOpen(!isOpen)}
-              aria-label="Toggle menu"
+              aria-label={t("toggleMenu")}
               aria-expanded={isOpen}
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -216,19 +221,19 @@ export function Navigation() {
               className="md:hidden py-4 border-t border-[var(--border)]"
             >
               <div className="flex flex-col gap-3">
-                {NAV_LINKS.map((link) => (
+                {NAV_HREFS.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     className="text-sm font-medium text-[var(--foreground)]"
                     onClick={() => setIsOpen(false)}
                   >
-                    {link.label}
+                    {t(link.key)}
                   </Link>
                 ))}
                 <Button asChild className="w-full mt-2">
                   <Link href="/chat">
-                    Ask now <ArrowRight className="h-4 w-4" />
+                    {t("askNow")} <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
               </div>

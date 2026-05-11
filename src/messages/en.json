@@ -1,0 +1,327 @@
+{
+  "nav": {
+    "brand": "BasicLaw",
+    "constitutions": "Constitutions",
+    "audit": "Audit",
+    "ask": "Ask",
+    "learn": "Learn",
+    "pricing": "Pricing",
+    "country": "Country",
+    "countryAria": "Choose a country",
+    "searchCountriesPlaceholder": "Search 195 countries…",
+    "searchCountriesAria": "Search countries",
+    "popular": "Popular",
+    "browseLibrary": "Browse the full library",
+    "askNow": "Ask now",
+    "toggleMenu": "Toggle menu",
+    "toggleTheme": "Toggle theme",
+    "findLawyer": "Find a lawyer"
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "locales": {
+      "en": "English",
+      "es": "Español",
+      "fr": "Français",
+      "ar": "العربية",
+      "pt": "Português",
+      "hi": "हिन्दी",
+      "zh": "中文"
+    }
+  },
+  "hero": {
+    "badge": "{count} constitutions · plain language · zero jargon",
+    "titleLead": "Stop guessing what the law says about",
+    "titleAccent": "your life",
+    "subtitle": "BasicLaw turns the constitution and core laws of every country in the world into clear answers anyone can read. No subscriptions to a lawyer just to know your rights.",
+    "ctaAudit": "Audit my contract free",
+    "ctaAsk": "Ask a question",
+    "browseLink": "browse all {count} constitutions",
+    "browseLead": "or",
+    "tinyDisclaimer": "Free to read. Educational only — never a substitute for a licensed lawyer.",
+    "cardQA_title": "Legal Q&A",
+    "cardQA_body": "Ask a question in plain language. Get a clear, jurisdiction-aware answer with the disclaimer baked in.",
+    "cardAudit_title": "Contract audit",
+    "cardAudit_body": "Paste a lease, contract, or notice. Get a risk grade, the top red flags, and the exact pushback to put in writing.",
+    "cardAudit_link": "Run an audit",
+    "cardLibrary_title": "The Constitution Library",
+    "cardLibrary_body": "Every country, summarised in plain language with key principles and links to the official source.",
+    "cardLibrary_link": "Open library",
+    "statsEducational": "Educational only",
+    "statsJurisdictions": "{count} jurisdictions",
+    "statsPlainLanguage": "Plain language"
+  },
+  "footer": {
+    "tagline": "The plain-language constitution and rights library for {count} countries. Civic infrastructure for the digital age.",
+    "columns": {
+      "product": "Product",
+      "jurisdictions": "Popular jurisdictions",
+      "company": "Company",
+      "legal": "Legal"
+    },
+    "links": {
+      "constitutions": "Constitutions",
+      "audit": "Audit a contract",
+      "ask": "Ask the assistant",
+      "documents": "Document help",
+      "pricing": "Pricing",
+      "findLawyer": "Find a lawyer",
+      "us": "United States",
+      "uk": "United Kingdom",
+      "in": "India",
+      "ng": "Nigeria",
+      "gh": "Ghana",
+      "browseAll": "Browse all",
+      "about": "About",
+      "faq": "FAQ",
+      "blog": "Blog",
+      "contact": "Contact",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "disclaimer": "Disclaimer",
+      "cookies": "Cookie Policy"
+    },
+    "copyright": "© {year} BasicLaw. Educational only — not a substitute for a licensed lawyer.",
+    "builtFor": "Built for everyone, everywhere."
+  },
+  "trustDisclaimer": {
+    "title": "Trust & Transparency",
+    "lead": "BasicLaw is an educational platform, not a law firm. We help you understand legal concepts, but we don't provide legal advice or representation.",
+    "whatWeDo_title": "What We Do",
+    "whatWeDo_items": "Explain legal concepts in plain language|Help you understand legal procedures|Share educational resources|Guide you to professional help when needed",
+    "whatWeDont_title": "What We Don't Do",
+    "whatWeDont_items": "Provide legal advice|Represent you in court|Guarantee outcomes|Replace licensed attorneys",
+    "important": "For serious legal matters, always consult with a licensed attorney in your jurisdiction. Legal issues can have significant consequences, and professional guidance is invaluable.",
+    "ctaFindLawyer": "Find a licensed lawyer"
+  },
+  "pricingPage": {
+    "badge": "Built for everyday legal questions",
+    "title": "Pricing that pays for itself the first time you don't need to call.",
+    "subtitle": "BasicLaw covers all {count} countries for free. Pro and Pro+ add the heavier lifting — document analysis, comparison, exports, and priority models.",
+    "teamPlan": "Need a Team or Newsroom plan?",
+    "getInTouch": "Get in touch"
+  },
+  "auditPage": {
+    "badge": "Free · educational only",
+    "title": "Audit any contract before you sign it.",
+    "subtitle": "Paste your lease, contract, employment letter, or terms. We'll return a plain-language risk grade, the top red flags, what's actually in your favour, and the exact wording to push back with.",
+    "step1_title": "Paste or upload",
+    "step1_body": "PDF, text, or paste — 5 MB max, never stored.",
+    "step2_title": "Pick a jurisdiction",
+    "step2_body": "195 countries supported — the audit is country-aware.",
+    "step3_title": "Get your report",
+    "step3_body": "Risk grade, red flags, push-back lines, and follow-up chat.",
+    "proLink": "Need bulk audits or saved history? See Pro and Pro+",
+    "lawyerSection_title": "Want advice you can rely on?",
+    "lawyerSection_body": "This audit is educational. For filing deadlines, negotiations, or court, talk to a licensed lawyer in your jurisdiction.",
+    "lawyerSection_cta": "Find a lawyer"
+  },
+  "faqPage": {
+    "title": "BasicLaw, in plain answers.",
+    "subtitle": "What we are, what we are not, and what to expect."
+  },
+  "homeFaq": {
+    "badge": "Frequently asked",
+    "title": "What people ask before they trust us",
+    "items": {
+      "i1": {
+        "q": "Is BasicLaw a substitute for a lawyer?",
+        "a": "No. BasicLaw is educational. We help you understand what the law says, but only a licensed lawyer in your jurisdiction can give legal advice on your specific situation. We tell you when to find one."
+      },
+      "i2": {
+        "q": "Which countries are supported?",
+        "a": "All 195 internationally recognised countries are in the library, with a plain-language summary of the constitution, key principles, and links to the official text. The interactive assistant is rolling out country by country — start with the United States, Ghana, and Nigeria today."
+      },
+      "i3": {
+        "q": "Where do the constitutions come from?",
+        "a": "We summarise from the official primary source where available, and link to the Comparative Constitutions Project (constituteproject.org) for the full English text. Constitutional law changes — always verify against the official version before relying on a provision."
+      },
+      "i4": {
+        "q": "How does BasicLaw stay accurate?",
+        "a": "Each constitution entry includes the year of adoption and the most recent amendment we are aware of. Where a constitution has been suspended, contested, or replaced by a transitional charter, we say so directly in the summary."
+      },
+      "i5": {
+        "q": "Is BasicLaw free?",
+        "a": "The Constitution Library and most of the Q&A is free to read. Pro and Pro+ tiers add document analysis, multi-jurisdiction comparison, saved chats, and priority models — see the pricing page for details."
+      },
+      "i6": {
+        "q": "Can I use BasicLaw answers in court or in a filing?",
+        "a": "No. BasicLaw answers are designed to help you understand legal concepts and frame the right questions to ask a lawyer. They should not be cited as legal authority or used as a substitute for legal representation."
+      }
+    }
+  },
+  "constitutionBrowse": {
+    "back": "Back to BasicLaw",
+    "badge": "The Constitution Library",
+    "title": "Every country's constitution, in one place.",
+    "subtitle": "Search {count} jurisdictions. Filter by region or legal system. Read a plain-language summary, the key principles, and link straight to the official text.",
+    "statCountries": "Countries",
+    "statLive": "Live now",
+    "statPreview": "Preview"
+  },
+  "constitutionDetail": {
+    "backAll": "All constitutions",
+    "eduSummaryLead": "Educational summary.",
+    "eduSummaryBody": "Always cross-reference the official text linked below before relying on any clause. Constitutions are amended, suspended, and reinterpreted; this page may not reflect the very latest changes.",
+    "plainLanguage": "In plain language",
+    "keyPrinciples": "Key principles",
+    "howLegalWorks": "How {system} works",
+    "atAGlance": "At a glance",
+    "capital": "Capital",
+    "region": "Region",
+    "languages": "Languages",
+    "statusLabel": "Status on BasicLaw",
+    "officialSource": "Official source",
+    "readFullText": "Read full text",
+    "askQuestion": "Ask a question about {country}",
+    "findLawyerCta": "Find a lawyer in {country}",
+    "guidesHeading": "Plain-language guides for {country}",
+    "readGuide": "Read guide",
+    "sources": "Sources",
+    "sourcesMissing": "Primary-source links are still being added for this jurisdiction. In the meantime, please consult the official government gazette or parliament website.",
+    "corrections": "Spotted something wrong? Email corrections@basiclaw.app with the article reference and we'll update the page.",
+    "bottomDisclaimer": "BasicLaw is not a law firm. Constitutional provisions can be amended, suspended, or interpreted differently by domestic courts. Verify with the official source before relying on any provision.",
+    "adopted": "Adopted",
+    "amended": "amended",
+    "previous": "Previous",
+    "next": "Next",
+    "topic_rights_title": "Your rights",
+    "topic_rights_blurb": "Plain-language guide to the constitutional rights that protect you",
+    "topic_police_title": "Police stops",
+    "topic_police_blurb": "What to say, what to show, what you must do (and what you don't)",
+    "topic_landlord_title": "Tenant & landlord",
+    "topic_landlord_blurb": "Deposit rules, evictions, repairs, and what your lease can't override",
+    "status_active": "Live with full assistant support",
+    "status_preview": "Constitutional summary ready · assistant in preview",
+    "status_planned": "Planned — join the waitlist"
+  },
+  "topicPage": {
+    "breadcrumbHome": "BasicLaw",
+    "breadcrumbConstitutions": "Constitutions",
+    "eduOnlyStrong": "Educational only.",
+    "eduOnlyBody": "Local rules, recent amendments, and case-law nuance can change the answer for your specific situation. Use this page to understand the landscape, then talk to a licensed lawyer in {country} for advice you can act on.",
+    "faqHeading": "Frequently asked questions",
+    "askPrefill": "Ask a question about {country}",
+    "readConstitution": "Read {country}'s constitution",
+    "lastVerified": "Last verified {date}. Spotted something wrong? Email corrections@basiclaw.app.",
+    "jurisdiction": "Jurisdiction",
+    "constitutionOverview": "Constitution overview",
+    "sidebar_rights": "Your rights",
+    "sidebar_police": "Police stops",
+    "sidebar_landlord": "Tenant & landlord",
+    "backToConstitution": "Back to {country}'s constitution",
+    "labels": {
+      "rights": "Your rights",
+      "police-stop": "Police stops",
+      "landlord": "Tenant & landlord"
+    },
+    "subtitles": {
+      "rights": "Plain-language guide to your constitutional rights",
+      "police-stop": "What to say, what to show, what you must do",
+      "landlord": "Deposits, evictions, repairs, and what your lease can't override"
+    },
+    "headings": {
+      "rightsInCountry": "Your rights in {country}",
+      "policeInCountry": "Police stops in {country}",
+      "landlordInCountry": "Tenant & landlord law in {country}"
+    },
+    "findLawyerCta": "Find a lawyer"
+  },
+  "lawyerPage": {
+    "title": "Find a lawyer",
+    "subtitle": "BasicLaw can introduce you to independent lawyers and legal practices. We may earn a referral fee when you hire a partner — this helps keep the library free.",
+    "disclaimer_title": "Important",
+    "disclaimer_body": "BasicLaw is not a law firm and does not endorse any particular lawyer. Listing or intake does not create an attorney–client relationship. Always verify licensing with your local bar.",
+    "form_title": "Apply to join the partner network",
+    "form_hint": "Lawyers and firms: tell us where you practise and we will follow up when we open referrals in your jurisdiction.",
+    "fields": {
+      "name": "Full name",
+      "email": "Email",
+      "barNumber": "Bar number (optional)",
+      "country": "Primary country of practice",
+      "countrySelectPlaceholder": "Choose a country…",
+      "practiceAreas": "Practice areas",
+      "practiceAreasPlaceholder": "e.g. immigration, employment, housing",
+      "submit": "Submit application",
+      "submitting": "Submitting…",
+      "success": "Thanks — we logged your application."
+    },
+    "jurisdiction_note": "Looking for help in a specific country? Start from that country’s constitution page for jurisdiction-aware context.",
+    "chatCta": "Talk to a lawyer"
+  },
+  "chatEmpty": {
+    "title": "Start a Conversation",
+    "body": "Ask questions about legal concepts, your rights, or how the law works in your jurisdiction.",
+    "lawyerCta": "Need representation? Find a lawyer"
+  },
+  "pricingTiers": {
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "annualSave": "· save ~17%",
+    "mostChosen": "Most chosen",
+    "startingCheckout": "Starting checkout…",
+    "subscribeTo": "Subscribe to {tier}",
+    "checkoutError": "Could not start checkout. Please try again.",
+    "free": {
+      "name": "Know Your Rights",
+      "tagline": "Free forever",
+      "price": "$0",
+      "cadence": "always",
+      "description": "Read every constitution. Ask the basics. Walk into a meeting with a lawyer already informed.",
+      "features": [
+        "Browse every country's constitution",
+        "Plain-language summaries and key principles",
+        "Ask the legal assistant (rate-limited)",
+        "Country-by-country rights, police, and tenant guides",
+        "1 contract audit / month — plain-language risk report"
+      ],
+      "cta": "Start with a free audit"
+    },
+    "pro": {
+      "name": "Stop Paying By The Hour",
+      "tagline": "Pro",
+      "monthlyPrice": "$12",
+      "monthlyCadence": "per month",
+      "annualPrice": "$120",
+      "annualCadence": "per year",
+      "perMonth": "$10/mo",
+      "savings": "Save $24",
+      "description": "For people facing a contract, a notice, or a legal question that actually matters this week.",
+      "features": [
+        "Everything in Know Your Rights",
+        "Unlimited contract audits + saved history",
+        "Side-by-side jurisdiction comparison",
+        "Save and revisit your chats",
+        "Higher-context models, no daily caps"
+      ]
+    },
+    "plus": {
+      "name": "Operate With Confidence",
+      "tagline": "Pro+",
+      "monthlyPrice": "$39",
+      "monthlyCadence": "per month",
+      "annualPrice": "$390",
+      "annualCadence": "per year",
+      "perMonth": "$32.50/mo",
+      "savings": "Save $78",
+      "description": "For founders, journalists, advocates, and small teams who need legal context across many countries.",
+      "features": [
+        "Everything in Pro",
+        "Bulk audit (10 documents / month)",
+        "Custom jurisdiction watchlists",
+        "Citation-grade output and exports",
+        "Priority email support"
+      ]
+    }
+  },
+  "countryBrowser": {
+    "placeholder": "Search 195 countries by name, capital, language, region…",
+    "allRegions": "All regions",
+    "allSystems": "All legal systems",
+    "status": {
+      "active": "Live",
+      "preview": "Preview",
+      "planned": "Planned"
+    }
+  }
+}
