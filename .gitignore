@@ -12,5 +12,7 @@ pnpm-lock.yaml
 --store-dir/
 .vercel
 
-# Browser extension is built separately (parallel worker); keep out of main app commits
-extension/
+# Browser extension build artefacts (source lives in /extension and IS committed)
+extension/node_modules/
+extension/.wxt/
+extension/.output/
