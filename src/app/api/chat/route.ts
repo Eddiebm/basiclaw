@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         "X-Title": "BasicLaw \u2014 Legal Information Assistant",
       },
       body: JSON.stringify({
-        model: process.env.OPENROUTER_MODEL || "deepseek/deepseek-r1:free",
+        model: process.env.OPENROUTER_MODEL || "openai/gpt-oss-120b:free",
         messages,
         max_tokens: 1500,
         temperature: 0.5,

@@ -175,7 +175,7 @@ export async function POST(request: Request) {
         "X-Title": "BasicLaw \u2014 Audit",
       },
       body: JSON.stringify({
-        model: process.env.OPENROUTER_AUDIT_MODEL || process.env.OPENROUTER_MODEL || "deepseek/deepseek-chat-v3.1:free",
+        model: process.env.OPENROUTER_AUDIT_MODEL || process.env.OPENROUTER_MODEL || "openai/gpt-oss-120b:free",
         messages: [
           { role: "system", content: "You output strictly valid JSON. No prose. No markdown." },
           { role: "user", content: prompt },
