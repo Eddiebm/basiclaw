@@ -306,6 +306,22 @@ export default async function ConstitutionDetailPage({
             </div>
           </section>
 
+          {country.code === "US" && (
+            <section className="mb-10 rounded-3xl border border-[var(--primary)]/25 bg-[var(--primary)]/5 p-6 sm:p-8">
+              <h2 className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] mb-2 flex items-center gap-2">
+                <MapPin className="h-4 w-4" aria-hidden />
+                {t("usStatesTitle")}
+              </h2>
+              <p className="text-sm text-[var(--foreground)] leading-relaxed mb-4 max-w-3xl">{t("usStatesBody")}</p>
+              <Button asChild>
+                <Link href="/us/states">
+                  {t("usStatesCta")}
+                  <ArrowRight className="h-4 w-4" aria-hidden />
+                </Link>
+              </Button>
+            </section>
+          )}
+
           <section
             aria-labelledby="sources-heading"
             className="mb-10 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8"

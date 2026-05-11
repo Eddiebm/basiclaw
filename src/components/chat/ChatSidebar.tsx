@@ -23,7 +23,7 @@ export function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const { sessions, currentSessionId, createSession, deleteSession, setCurrentSession } = useChat();
   const searchParams = useSearchParams();
   const initialJurisdiction = (() => {
-    const param = searchParams.get("country");
+    const param = searchParams.get("jurisdiction") ?? searchParams.get("country");
     if (param && getCountry(param)) return param.toLowerCase();
     return "us";
   })();

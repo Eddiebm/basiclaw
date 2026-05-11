@@ -24,6 +24,7 @@ import { AuditNavDropdown } from "@/components/navigation/AuditNavDropdown";
 
 const NAV_LINKS = [
   { href: "/constitutions", key: "constitutions" as const },
+  { href: "/us/states", key: "usStates" as const },
   { special: "auditTools" as const },
   { href: "/chat", key: "ask" as const },
   { href: "/learn", key: "learn" as const },

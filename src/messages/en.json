@@ -16,6 +16,7 @@
     "toggleMenu": "Toggle menu",
     "toggleTheme": "Toggle theme",
     "findLawyer": "Find a lawyer",
+    "usStates": "US States",
     "auditToolsMenu": "Audit tools",
     "auditGeneral": "General contract audit",
     "auditLease": "Lease audit",
@@ -70,6 +71,7 @@
     },
     "links": {
       "constitutions": "Constitutions",
+      "usStates": "US States",
       "audit": "Audit a contract",
       "auditLease": "Lease audit",
       "auditEmployment": "Employment audit",
@@ -308,7 +310,10 @@
     "status_active": "Live with full assistant support",
     "status_preview": "Constitutional summary ready · assistant in preview",
     "status_planned": "Planned — join the waitlist",
-    "lastVerifiedIntro": "Last verified"
+    "lastVerifiedIntro": "Last verified",
+    "usStatesTitle": "State-by-state guides (US)",
+    "usStatesBody": "Rights, police stops, landlord rules, and employment basics can change the moment you cross a state line. Jump into all 50 states + DC.",
+    "usStatesCta": "Open US state index"
   },
   "topicPage": {
     "breadcrumbHome": "BasicLaw",
@@ -462,5 +467,59 @@
     "live": "Live",
     "lookingFor": "Looking for something specific?",
     "noMatches": "No matches — try another spelling."
+  },
+  "usStatesIndex": {
+    "backToUsConstitution": "Back to US constitution overview",
+    "metaTitle": "US States — rights, police, landlord, employment | BasicLaw",
+    "metaDescription": "Plain-language legal guides for all 50 US states and DC: rights, police stops, landlord–tenant, and employment basics.",
+    "badge": "United States",
+    "title": "Pick a state or district",
+    "subtitle": "Each page layers state-specific notes on top of the US overview. Educational only — verify against local counsel and current statutes.",
+    "searchPlaceholder": "Search by state name or code…",
+    "searchAria": "Search US states",
+    "topicsLead": "Four topics per state",
+    "topic_rights": "Rights",
+    "topic_police": "Police stop",
+    "topic_landlord": "Landlord / tenant",
+    "topic_employment": "Employment",
+    "mapHint": "Click a state below — or use search.",
+    "openState": "Open {state}"
+  },
+  "usStateTopicPage": {
+    "breadcrumbHome": "BasicLaw",
+    "breadcrumbUs": "United States constitution",
+    "breadcrumbStates": "US States",
+    "eduOnlyStrong": "Educational only.",
+    "eduOnlyBody": "State and local rules change quickly. Use this page to orient yourself in {state}, then talk to a licensed lawyer for advice you can rely on.",
+    "faqHeading": "Frequently asked questions",
+    "askPrefill": "Ask about {state}",
+    "readUsConstitution": "Read the US constitution overview",
+    "findLawyerCta": "Find a lawyer",
+    "jurisdiction": "Jurisdiction",
+    "capitalLabel": "Capital",
+    "usConstitution": "US constitution overview",
+    "allStates": "All US states",
+    "backToStates": "Back to US states",
+    "pendingTitle": "State-specific summary in progress",
+    "pendingBody": "We have not yet published a build-time summary for {state}. Ask the assistant for a state-aware walkthrough, or check back after we run an editorial pass.",
+    "pendingCta": "Open chat with US + state context",
+    "labels": {
+      "rights": "Your rights",
+      "police-stop": "Police stops",
+      "landlord": "Tenant & landlord",
+      "employment": "Employment"
+    },
+    "subtitles": {
+      "rights": "Plain-language guide with a {state} lens",
+      "police-stop": "Street encounters — {state} notes on top of US patterns",
+      "landlord": "Deposits, notices, and evictions — start here for {state}",
+      "employment": "At-will, wages, and handbooks — {state} framing"
+    },
+    "headings": {
+      "rights": "Your rights in {state}",
+      "police-stop": "Police stops in {state}",
+      "landlord": "Tenant & landlord rules in {state}",
+      "employment": "Employment basics in {state}"
+    }
   }
 }

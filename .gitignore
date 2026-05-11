@@ -11,3 +11,6 @@ dist/
 pnpm-lock.yaml
 --store-dir/
 .vercel
+
+# Browser extension is built separately (parallel worker); keep out of main app commits
+extension/

@@ -15,6 +15,8 @@ export type AnalyticsEvent =
   | "checkout_completed"
   | "faq_expanded"
   | "topic_page_viewed"
+  | "us_state_topic_viewed"
+  | "compare_viewed"
   | "lawyer_cta_clicked";
 
 let initialised = false;
