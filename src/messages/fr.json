@@ -15,7 +15,10 @@
     "toggleMenu": "Menu",
     "toggleTheme": "Thème",
     "findLawyer": "Trouver un avocat",
-    "learnCompareConstitutions": "Comparer deux pays"
+    "learnCompareConstitutions": "Comparer deux pays",
+    "developersMenu": "Développeurs",
+    "developersEmbed": "Widget intégré",
+    "developersExtension": "Extension navigateur"
   },
   "hero": {
     "badge": "{count} constitutions · langage clair · zéro jargon",
@@ -335,5 +338,37 @@
       "religious-freedom": "Liberté religieuse",
       "free-expression": "Liberté d’expression"
     }
+  },
+  "embedPage": {
+    "metaTitle": "Embed BasicLaw — developers",
+    "metaDescription": "Drop-in iframe widgets for Ask BasicLaw and contract audit. Themeable, auto-resizing, and free for educational sites.",
+    "heroTitle": "Embed BasicLaw on your site",
+    "heroSubtitle": "Reach readers where they already are — blogs, NGO resource pages, law school clinics, and tenant-rights hubs. Two iframe widgets, one script loader, no API keys required to start.",
+    "configTitle": "Build your snippet",
+    "variant": "Widget",
+    "variantAsk": "Ask BasicLaw (Q&A)",
+    "variantAudit": "Audit my contract",
+    "country": "Default country",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto (system)",
+    "accent": "Accent colour (optional hex)",
+    "accentPlaceholder": "#2563eb",
+    "border": "Corners",
+    "borderRounded": "Rounded",
+    "borderSquare": "Square",
+    "auditType": "Audit preset",
+    "previewTitle": "Live preview",
+    "iframeTitle": "Snippet — iframe",
+    "loaderTitle": "Snippet — script loader (auto-resize)",
+    "copyHint": "Copy and paste into your HTML. The loader listens for resize messages only from the BasicLaw origin derived from the script URL.",
+    "useCasesTitle": "Where this helps",
+    "useCasesIntro": "Typical embed hosts:",
+    "useCase1": "Legal aid and tenant unions — jurisdiction-aware Q&A beside housing guides.",
+    "useCase2": "Immigration and refugee NGOs — plain-language rights answers linked from intake pages.",
+    "useCase3": "University clinics and pro bono blogs — contract red-flag callouts without sending readers away.",
+    "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
+    "healthLink": "Health check endpoint: "
   }
 }

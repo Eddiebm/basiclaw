@@ -51,7 +51,11 @@
     "extension": "Browser extension",
     "auditMobileGroup": "Audits",
     "libraryLegalIndex": "The Index",
-    "libraryLegalIndexDesc": "Every country scored on legal literacy signals — educational only."
+    "libraryLegalIndexDesc": "Every country scored on legal literacy signals — educational only.",
+    "answers": "Community answers",
+    "developersMenu": "Developers",
+    "developersEmbed": "Embed widget",
+    "developersExtension": "Browser extension"
   },
   "languageSwitcher": {
     "label": "Language",
@@ -898,6 +902,78 @@
       "snippetRefLabel": "BasicLaw educational snippet (no external statute URL)"
     }
   },
+  "answers": {
+    "archive": {
+      "metaTitle": "Community legal answers",
+      "metaDescription": "Search plain-language answers reviewed by the community — educational only, not legal advice.",
+      "title": "Community answers",
+      "subtitle": "Educational Q&A from BasicLaw users who chose to publish. Always verify against official sources.",
+      "searchPlaceholder": "Search questions…",
+      "jurisdictionLabel": "Jurisdiction",
+      "sortRecent": "Most recent",
+      "sortVotes": "Top voted",
+      "submitSearch": "Search",
+      "sortLabel": "Sort",
+      "prevPage": "Previous",
+      "nextPage": "Next",
+      "allJurisdictions": "All jurisdictions",
+      "empty": "No public answers match yet. Ask in chat and publish yours when ready.",
+      "cardCta": "Open answer",
+      "votes": "{count} upvotes"
+    },
+    "detail": {
+      "metaTitle": "Answer — BasicLaw",
+      "backToArchive": "Back to community answers",
+      "notFoundTitle": "Answer not found",
+      "notFoundBody": "This answer may be private or was removed.",
+      "disclaimer": "Educational. Always verify against official sources. Not legal advice.",
+      "verifiedLine": "Accuracy reviewed by {name} ({jurisdiction})",
+      "askRelated": "Ask a related question",
+      "shareX": "Share on X",
+      "shareLinkedIn": "Share on LinkedIn",
+      "copyLink": "Copy link",
+      "embedSnippet": "Embed snippet",
+      "embedHelp": "Uses the BasicLaw embed widget with this answer id prefilled."
+    },
+    "chat": {
+      "cachedBadge": "Saved community answer ({score})",
+      "voteUpAria": "Thumbs up",
+      "voteDownAria": "Thumbs down",
+      "saveToLibrary": "Save to my library",
+      "savedToggleOn": "Saved — remove",
+      "makePublic": "Make public",
+      "publicBadge": "Public",
+      "signInToSave": "Sign in to save answers to your library",
+      "relatedTitle": "Related saved answers",
+      "relatedScore": "Match {score}",
+      "suggestTitle": "Recently asked in your jurisdiction",
+      "suggestTop": "Most upvoted near you",
+      "suggestOpenChat": "Ask this",
+      "suggestView": "View"
+    },
+    "publishModal": {
+      "title": "Review before publishing",
+      "lead": "This is how your question and answer preview will appear publicly. Emails and phone-like numbers are redacted.",
+      "questionLabel": "Question",
+      "answerPreviewLabel": "Answer preview",
+      "disclaimer": "Published answers are anonymous on the public page (no account details).",
+      "cancel": "Cancel",
+      "confirm": "Publish"
+    },
+    "dashboard": {
+      "tabTitle": "Saved answers",
+      "tabSubtitle": "Private copies from chat (and any you published).",
+      "empty": "No saved answers yet.",
+      "publicBadge": "Public",
+      "privateBadge": "Private",
+      "open": "Open",
+      "publish": "Publish",
+      "unpublish": "Make private",
+      "delete": "Delete",
+      "votes": "{up}↑ {down}↓",
+      "publishConfirm": "Publish this anonymised Q&A to the public archive? Preview:"
+    }
+  },
   "errors": {
     "title": "Something went wrong",
     "body": "This section hit an unexpected error. You can try again, or go back to the home page.",
@@ -1269,5 +1345,37 @@
     "submitting": "Submitting…",
     "success": "Thanks — we received your application and will reply by email when configured.",
     "error": "Something went wrong. Please try again."
+  },
+  "embedPage": {
+    "metaTitle": "Embed BasicLaw — developers",
+    "metaDescription": "Drop-in iframe widgets for Ask BasicLaw and contract audit. Themeable, auto-resizing, and free for educational sites.",
+    "heroTitle": "Embed BasicLaw on your site",
+    "heroSubtitle": "Reach readers where they already are — blogs, NGO resource pages, law school clinics, and tenant-rights hubs. Two iframe widgets, one script loader, no API keys required to start.",
+    "configTitle": "Build your snippet",
+    "variant": "Widget",
+    "variantAsk": "Ask BasicLaw (Q&A)",
+    "variantAudit": "Audit my contract",
+    "country": "Default country",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeAuto": "Auto (system)",
+    "accent": "Accent colour (optional hex)",
+    "accentPlaceholder": "#2563eb",
+    "border": "Corners",
+    "borderRounded": "Rounded",
+    "borderSquare": "Square",
+    "auditType": "Audit preset",
+    "previewTitle": "Live preview",
+    "iframeTitle": "Snippet — iframe",
+    "loaderTitle": "Snippet — script loader (auto-resize)",
+    "copyHint": "Copy and paste into your HTML. The loader listens for resize messages only from the BasicLaw origin derived from the script URL.",
+    "useCasesTitle": "Where this helps",
+    "useCasesIntro": "Typical embed hosts:",
+    "useCase1": "Legal aid and tenant unions — jurisdiction-aware Q&A beside housing guides.",
+    "useCase2": "Immigration and refugee NGOs — plain-language rights answers linked from intake pages.",
+    "useCase3": "University clinics and pro bono blogs — contract red-flag callouts without sending readers away.",
+    "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
+    "healthLink": "Health check endpoint: "
   }
 }

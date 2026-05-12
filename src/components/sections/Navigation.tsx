@@ -21,6 +21,7 @@ import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { searchCountries, getPopularCountries } from "@/lib/jurisdictions";
 import { AuditNavDropdown } from "@/components/navigation/AuditNavDropdown";
+import { DevelopersNavDropdown } from "@/components/navigation/DevelopersNavDropdown";
 import { LearnNavDropdown } from "@/components/navigation/LearnNavDropdown";
 
 const NAV_LINKS = [
@@ -29,6 +30,7 @@ const NAV_LINKS = [
   { special: "auditTools" as const },
   { href: "/chat", key: "ask" as const },
   { special: "learnLibrary" as const },
+  { special: "developersTools" as const },
   { href: "/pricing", key: "pricing" as const },
   { href: "/find-a-lawyer", key: "findLawyer" as const },
 ] as const;
@@ -73,6 +75,8 @@ export function Navigation() {
               "special" in link ? (
                 link.special === "auditTools" ? (
                   <AuditNavDropdown key="audit-tools" variant="desktop" />
+                ) : link.special === "developersTools" ? (
+                  <DevelopersNavDropdown key="developers-tools" variant="desktop" />
                 ) : (
                   <LearnNavDropdown key="learn-library" variant="desktop" />
                 )
@@ -236,6 +240,8 @@ export function Navigation() {
                   "special" in link ? (
                     link.special === "auditTools" ? (
                       <AuditNavDropdown key="audit-tools-m" variant="mobile" onNavigate={() => setIsOpen(false)} />
+                    ) : link.special === "developersTools" ? (
+                      <DevelopersNavDropdown key="developers-tools-m" variant="mobile" onNavigate={() => setIsOpen(false)} />
                     ) : (
                       <LearnNavDropdown key="learn-library-m" variant="mobile" onNavigate={() => setIsOpen(false)} />
                     )

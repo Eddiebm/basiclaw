@@ -23,6 +23,7 @@ const LOCALIZED_STATIC = [
   "/documents",
   "/us/states",
   "/extension",
+  "/embed",
   "/about",
   "/blog",
   "/privacy",
