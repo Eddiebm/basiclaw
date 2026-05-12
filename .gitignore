@@ -16,3 +16,6 @@ pnpm-lock.yaml
 extension/node_modules/
 extension/.wxt/
 extension/.output/
+*.tsbuildinfo
+
+.basiclaw-local-store/
