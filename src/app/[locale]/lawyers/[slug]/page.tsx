@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
@@ -98,8 +99,14 @@ export default async function LawyerProfilePage({ params }: { params: Promise<{ 
           <header className="flex flex-col sm:flex-row gap-6 items-start">
             <div className="h-24 w-24 rounded-full overflow-hidden border border-[var(--border)] bg-[var(--muted)] shrink-0">
               {row.headshotUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={row.headshotUrl} alt="" className="h-full w-full object-cover" width={96} height={96} />
+                <Image
+                  src={row.headshotUrl}
+                  alt=""
+                  width={96}
+                  height={96}
+                  unoptimized
+                  className="h-full w-full object-cover"
+                />
               ) : (
                 <div className="h-full w-full flex items-center justify-center text-2xl font-semibold text-[var(--muted-foreground)]">
                   {row.name.slice(0, 1)}

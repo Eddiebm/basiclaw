@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { COUNTRIES } from "@/data/countries";
 import { getAllCitizenQuestions } from "@/data/questions/load-questions";
-import { buildOgImageUrl } from "@/lib/og-image-url";
+import { buildOgImagePath } from "@/lib/og-image-url";
 import { routing } from "@/i18n/routing";
 import { PressContactForm } from "./PressContactForm";
 
@@ -119,38 +120,62 @@ export default async function PressPage({ params }: { params: Promise<{ locale: 
             <div className="grid sm:grid-cols-2 gap-4">
               <figure className="space-y-1">
                 <figcaption className="text-xs text-[var(--muted-foreground)]">{t("ogChat")}</figcaption>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={buildOgImageUrl(site, { kind: "default", title: "Ask BasicLaw", subtitle: "Chat preview" })}
+                <Image
+                  src={buildOgImagePath({
+                    kind: "default",
+                    title: t("ogImageAskTitle"),
+                    subtitle: t("ogImageChatSubtitle"),
+                  })}
                   alt=""
-                  className="rounded-lg border border-[var(--border)] w-full"
+                  width={1200}
+                  height={630}
+                  unoptimized
+                  className="rounded-lg border border-[var(--border)] w-full h-auto"
                 />
               </figure>
               <figure className="space-y-1">
                 <figcaption className="text-xs text-[var(--muted-foreground)]">{t("ogAudit")}</figcaption>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={buildOgImageUrl(site, { kind: "audit", title: "Audit", subtitle: "Red flags" })}
+                <Image
+                  src={buildOgImagePath({
+                    kind: "audit",
+                    title: t("ogImageAuditTitle"),
+                    subtitle: t("ogImageAuditSubtitle"),
+                  })}
                   alt=""
-                  className="rounded-lg border border-[var(--border)] w-full"
+                  width={1200}
+                  height={630}
+                  unoptimized
+                  className="rounded-lg border border-[var(--border)] w-full h-auto"
                 />
               </figure>
               <figure className="space-y-1">
                 <figcaption className="text-xs text-[var(--muted-foreground)]">{t("ogConstitution")}</figcaption>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={buildOgImageUrl(site, { kind: "constitution", title: "Constitution", subtitle: "Plain language" })}
+                <Image
+                  src={buildOgImagePath({
+                    kind: "constitution",
+                    title: t("ogImageConstitutionTitle"),
+                    subtitle: t("ogImageConstitutionSubtitle"),
+                  })}
                   alt=""
-                  className="rounded-lg border border-[var(--border)] w-full"
+                  width={1200}
+                  height={630}
+                  unoptimized
+                  className="rounded-lg border border-[var(--border)] w-full h-auto"
                 />
               </figure>
               <figure className="space-y-1">
                 <figcaption className="text-xs text-[var(--muted-foreground)]">{t("ogQuestions")}</figcaption>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={buildOgImageUrl(site, { kind: "questions", title: "Questions", subtitle: "Library" })}
+                <Image
+                  src={buildOgImagePath({
+                    kind: "questions",
+                    title: t("ogImageQuestionsTitle"),
+                    subtitle: t("ogImageQuestionsSubtitle"),
+                  })}
                   alt=""
-                  className="rounded-lg border border-[var(--border)] w-full"
+                  width={1200}
+                  height={630}
+                  unoptimized
+                  className="rounded-lg border border-[var(--border)] w-full h-auto"
                 />
               </figure>
             </div>

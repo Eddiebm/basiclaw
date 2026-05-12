@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -43,8 +44,14 @@ export function ChatLawyerDirectoryWidget({ countryCode }: { countryCode: string
           <li key={l.slug} className="flex items-center gap-3 rounded-xl border border-border/60 bg-background/60 p-2">
             <div className="h-10 w-10 rounded-full overflow-hidden bg-muted shrink-0 border border-border">
               {l.headshotUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={l.headshotUrl} alt="" className="h-full w-full object-cover" width={40} height={40} />
+                <Image
+                  src={l.headshotUrl}
+                  alt=""
+                  width={40}
+                  height={40}
+                  unoptimized
+                  className="h-full w-full object-cover"
+                />
               ) : (
                 <div className="h-full w-full flex items-center justify-center text-xs font-semibold text-muted-foreground">{l.name.slice(0, 1)}</div>
               )}

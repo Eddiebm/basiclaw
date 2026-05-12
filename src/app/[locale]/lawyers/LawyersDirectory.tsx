@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -257,8 +258,14 @@ function LawyerCard({ lawyer }: { lawyer: DirectoryLawyerWithRegion }) {
         <div className="flex gap-3">
           <div className="h-14 w-14 rounded-full overflow-hidden bg-[var(--muted)] shrink-0 border border-[var(--border)]">
             {lawyer.headshotUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element -- external partner URLs
-              <img src={lawyer.headshotUrl} alt="" className="h-full w-full object-cover" width={56} height={56} />
+              <Image
+                src={lawyer.headshotUrl}
+                alt=""
+                width={56}
+                height={56}
+                unoptimized
+                className="h-full w-full object-cover"
+              />
             ) : (
               <div className="h-full w-full flex items-center justify-center text-lg font-semibold text-[var(--muted-foreground)]">
                 {lawyer.name.slice(0, 1)}

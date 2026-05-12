@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState, type MouseEvent } from "react";
 import { Loader2, ShieldAlert } from "lucide-react";
 import { COUNTRIES } from "@/data/countries";
@@ -150,8 +151,14 @@ export function EmbedAuditClient({
       <div className="space-y-3">
         {logoUrl ? (
           <div className="flex justify-center border-b border-[var(--border)] pb-3">
-            {/* eslint-disable-next-line @next/next/no-img-element -- tenant-supplied arbitrary HTTPS URL */}
-            <img src={logoUrl} alt="" className="h-9 max-w-[min(100%,12rem)] object-contain" />
+            <Image
+              src={logoUrl}
+              alt=""
+              width={192}
+              height={36}
+              unoptimized
+              className="h-9 max-w-[min(100%,12rem)] w-auto object-contain"
+            />
           </div>
         ) : null}
         <p className="text-sm text-muted-foreground">

@@ -42,6 +42,12 @@ npx wait-on http://127.0.0.1:3000
 npm run test:e2e
 ```
 
+Bundle analysis (local):
+
+```bash
+npm run analyze
+```
+
 ## Environment variables
 
 | Group | Variable | Required? | Purpose |

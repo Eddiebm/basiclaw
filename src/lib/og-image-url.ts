@@ -19,6 +19,22 @@ export type BuildOgImageUrlOptions = {
   overall?: string;
 };
 
+/** Same query string as {@link buildOgImageUrl} but as a same-origin path for `next/image`. */
+export function buildOgImagePath(opts: BuildOgImageUrlOptions): string {
+  const q = new URLSearchParams({
+    kind: String(opts.kind),
+    title: opts.title,
+    subtitle: opts.subtitle,
+  });
+  if (opts.flagA) q.set("flagA", opts.flagA);
+  if (opts.flagB) q.set("flagB", opts.flagB);
+  if (opts.topic) q.set("topic", opts.topic);
+  if (opts.flag) q.set("flag", opts.flag);
+  if (opts.grade) q.set("grade", opts.grade);
+  if (opts.overall) q.set("overall", opts.overall);
+  return `/og?${q.toString()}`;
+}
+
 /** Absolute URL for the dynamic `/og` Open Graph image route. */
 export function buildOgImageUrl(site: string, opts: BuildOgImageUrlOptions): string {
   const base = site.replace(/\/$/, "");
