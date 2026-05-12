@@ -30,6 +30,7 @@ export function DemandLetterGeneratorClient() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<AuditReport | null>(null);
+  const [signedSharePath, setSignedSharePath] = useState<string | null>(null);
   const [paywall, setPaywall] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
 
@@ -69,6 +70,7 @@ export function DemandLetterGeneratorClient() {
 
     setSubmitting(true);
     setReport(null);
+    setSignedSharePath(null);
     track("audit_started", {
       auditType: "demand_letter",
       audit_type: "demand_letter",
@@ -92,6 +94,7 @@ export function DemandLetterGeneratorClient() {
         error?: string;
         message?: string;
         upgradeUrl?: string;
+        shareHref?: string;
       };
       if (res.status === 429) {
         const upgrade = json.upgradeUrl?.trim();
@@ -102,10 +105,14 @@ export function DemandLetterGeneratorClient() {
         setPaywall(true);
         setError(json.message ?? t("paywallBody"));
         track("demand_letter_paywall", { jurisdiction, reason: json.error ?? "quota" });
+        track("form_submit_error", { form: "demand_letter", reason: "quota_429" });
         return;
       }
       if (json.report) {
         setReport(json.report);
+        const sh = json.shareHref?.trim();
+        setSignedSharePath(sh?.startsWith("/") ? sh : null);
+        track("form_submit_success", { form: "demand_letter" });
         track("audit_completed", {
           auditType: json.report.auditType,
           audit_type: json.report.auditType,
@@ -116,9 +123,11 @@ export function DemandLetterGeneratorClient() {
         });
       } else {
         setError(json.message ?? json.error ?? t("failed"));
+        track("form_submit_error", { form: "demand_letter", reason: "no_report" });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : t("network"));
+      track("form_submit_error", { form: "demand_letter", reason: "exception" });
     } finally {
       setSubmitting(false);
     }
@@ -128,6 +137,7 @@ export function DemandLetterGeneratorClient() {
     setReport(null);
     setError(null);
     setPaywall(false);
+    setSignedSharePath(null);
   }
 
   if (report) {
@@ -135,6 +145,7 @@ export function DemandLetterGeneratorClient() {
       <div className="space-y-6">
         <AuditReportCard
           report={report}
+          signedSharePath={signedSharePath}
           onShared={() =>
             track("audit_shared", {
               auditType: report.auditType,

@@ -35,7 +35,9 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<AuditReport | null>(null);
+  const [signedSharePath, setSignedSharePath] = useState<string | null>(null);
   const [quotaHint, setQuotaHint] = useState<string | null>(null);
+  const [quotaUpgradePath, setQuotaUpgradePath] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
 
@@ -74,6 +76,8 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
   async function submit() {
     setError(null);
     setQuotaHint(null);
+    setQuotaUpgradePath(null);
+    setSignedSharePath(null);
     if (!file && text.trim().length < 200) {
       setError(t("pasteMin"));
       return;
@@ -111,14 +115,26 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
           }),
         });
       }
-      const json = (await res.json()) as { report?: AuditReport; error?: string; message?: string; upgradeUrl?: string };
+      const json = (await res.json()) as {
+        report?: AuditReport;
+        error?: string;
+        message?: string;
+        upgradeUrl?: string;
+        shareHref?: string;
+      };
       if (res.status === 429) {
         setQuotaHint(json.message ?? json.error ?? t("auditFailed"));
+        const up = json.upgradeUrl?.trim();
+        setQuotaUpgradePath(up?.startsWith("/") ? up : null);
         setError(null);
+        track("form_submit_error", { form: "audit", reason: "quota_429" });
         return;
       }
       if (json.report) {
         setReport(json.report);
+        const sh = json.shareHref?.trim();
+        setSignedSharePath(sh?.startsWith("/") ? sh : null);
+        track("form_submit_success", { form: "audit" });
         track("audit_completed", {
           auditType: json.report.auditType,
           audit_type: json.report.auditType,
@@ -129,9 +145,11 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
         });
       } else {
         setError(json.message ?? json.error ?? t("auditFailed"));
+        track("form_submit_error", { form: "audit", reason: "no_report" });
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : t("networkError"));
+      track("form_submit_error", { form: "audit", reason: "exception" });
     } finally {
       setSubmitting(false);
     }
@@ -141,6 +159,8 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
     setReport(null);
     setError(null);
     setQuotaHint(null);
+    setQuotaUpgradePath(null);
+    setSignedSharePath(null);
   }
 
   if (report) {
@@ -148,6 +168,7 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
       <div className="space-y-6">
         <AuditReportCard
           report={report}
+          signedSharePath={signedSharePath}
           onShared={() =>
             track("audit_shared", {
               auditType: report.auditType,
@@ -292,7 +313,7 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 text-sm text-[var(--foreground)] space-y-3">
           <p>{quotaHint}</p>
           <Button asChild>
-            <Link href="/pricing">
+            <Link href={quotaUpgradePath ?? "/pricing"}>
               {t("quotaUpgradeCta")}
               <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
             </Link>

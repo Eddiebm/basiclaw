@@ -3,6 +3,7 @@
 import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ArrowRight, FileQuestion } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { AuditReportCard } from "@/components/audit/AuditReportCard";
@@ -24,6 +25,7 @@ function decodeLegacyFragment(hash: string): AuditReport | null {
 }
 
 export function SharedAuditClient() {
+  const t = useTranslations("sharedAuditPage");
   const searchParams = useSearchParams();
   const token = searchParams.get("t")?.trim() ?? "";
   const [state, setState] = useState<{ loaded: boolean; report: AuditReport | null; error: string | null }>({
@@ -66,15 +68,13 @@ export function SharedAuditClient() {
     return (
       <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-8 text-center">
         <FileQuestion className="mx-auto h-10 w-10 text-[var(--muted-foreground)]" aria-hidden />
-        <p className="mt-4 font-semibold text-[var(--foreground)]">No audit found in this link.</p>
+        <p className="mt-4 font-semibold text-[var(--foreground)]">{t("notFoundTitle")}</p>
         <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-          {error === "invalid_token"
-            ? "This share link is invalid or has expired."
-            : "The link may have been truncated by the messaging app you used. Ask the sender to share again from their BasicLaw dashboard."}
+          {error === "invalid_token" ? t("invalidTokenBody") : t("truncatedBody")}
         </p>
         <Button asChild className="mt-6 gap-2">
           <Link href="/audit">
-            Run your own audit <ArrowRight className="h-4 w-4" />
+            {t("runOwnCta")} <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>
       </div>
@@ -87,7 +87,7 @@ export function SharedAuditClient() {
       <div className="text-center">
         <Button asChild className="gap-2">
           <Link href="/audit">
-            Audit your own document <ArrowRight className="h-4 w-4" />
+            {t("auditOwnCta")} <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>
       </div>

@@ -1,5 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
+import { routing } from "@/i18n/routing";
+import { buildSharedAuditHref, createSharedAuditToken } from "@/lib/shared-audit-url";
 import {
   MIN_TEXT_CHARS,
   normaliseAuditType,
@@ -142,13 +144,18 @@ export async function POST(request: Request) {
     }
 
     const report = outcome.report as AuditReport;
+    const auditId = randomUUID();
+    const rawLoc = (locale ?? "en").toLowerCase().split("-")[0] ?? "en";
+    const safeLocale = (routing.locales as readonly string[]).includes(rawLoc) ? rawLoc : "en";
+
+    let shareHref: string | undefined;
     if (userId) {
       const title =
         report.documentType?.trim() ||
         extracted.documentType?.trim() ||
         `${report.auditType} audit`;
       await saveAuditForUser({
-        id: randomUUID(),
+        id: auditId,
         userId,
         auditType: report.auditType,
         jurisdiction: report.jurisdictionCode,
@@ -156,6 +163,7 @@ export async function POST(request: Request) {
         report,
         updatedAt: new Date().toISOString(),
       });
+      shareHref = buildSharedAuditHref(safeLocale, createSharedAuditToken(userId, auditId));
     }
 
     await incrementUsage("audit", userId, ipHash).catch(() => {
@@ -167,7 +175,7 @@ export async function POST(request: Request) {
       });
     }
 
-    return NextResponse.json({ report });
+    return NextResponse.json(shareHref ? { report, shareHref } : { report });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error("[audit] error", message);
