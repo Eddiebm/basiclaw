@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { verifyEmbedEventToken } from "@/lib/embed-event-token";
 
 const ALLOWED = new Set([
   "embed_loaded",
@@ -24,12 +25,18 @@ export async function POST(request: NextRequest) {
   const rest = { ...body };
   delete rest.event;
   delete rest.referrer;
+
+  const auth = request.headers.get("authorization");
+  const bearer = auth?.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : "";
+  const signedTenantId = bearer ? verifyEmbedEventToken(bearer) : null;
+
   console.log(
     JSON.stringify({
       type: "embed_telemetry",
       event,
       referer: refererHeader,
       parentReferrer,
+      signedTenantId,
       ...rest,
     })
   );

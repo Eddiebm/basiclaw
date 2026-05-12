@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { routing } from "@/i18n/routing";
 import { buildSharedAuditHref, createSharedAuditToken } from "@/lib/shared-audit-url";
 import {
@@ -10,14 +10,17 @@ import {
 import type { AuditReport, AuditType } from "@/lib/audit-types";
 import { getCurrentUserId } from "@/lib/auth-config";
 import { getUserPlanForUserId } from "@/lib/entitlements";
+import { limitsForEmbedTenantPlan, limitsForPlan } from "@/lib/limits";
 import {
   checkAdvancedAuditPaywall,
-  checkAuditQuota,
-  checkDemandLetterQuota,
+  checkAuditQuotaAgainstLimits,
+  checkDemandLetterQuotaAgainstLimits,
   pricingPathForLocale,
   quotaJsonBody,
 } from "@/lib/quota-check";
 import { clientIp, hashIpForUsage } from "@/lib/request-ip";
+import { resolveEmbedTenantForRequest } from "@/lib/embed-tenant-resolve";
+import { usageSubjectForEmbed } from "@/lib/embed-usage-subject";
 import { getUsage, incrementUsage, saveAuditForUser } from "@/lib/storage";
 
 export const runtime = "nodejs";
@@ -39,7 +42,7 @@ interface AuditRequestPayload {
 }
 
 async function extractFromForm(
-  form: FormData
+  form: globalThis.FormData
 ): Promise<{ text: string; jurisdiction: string; documentType?: string; auditType: AuditType; filename?: string }> {
   const file = form.get("file");
   const text = (form.get("text") as string | null) ?? "";
@@ -83,17 +86,20 @@ async function extractFromJson(
   };
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const locale = request.headers.get("x-basiclaw-locale")?.trim() ?? null;
     const contentType = request.headers.get("content-type") ?? "";
     let extracted: { text: string; jurisdiction: string; documentType?: string; auditType: AuditType };
+    let form: globalThis.FormData | null = null;
+    let jsonRecord: Record<string, unknown> | null = null;
+
     if (contentType.includes("multipart/form-data")) {
-      const form = await request.formData();
+      form = (await request.formData()) as globalThis.FormData;
       extracted = await extractFromForm(form);
     } else {
-      const payload = (await request.json()) as AuditRequestPayload;
-      extracted = await extractFromJson(payload);
+      jsonRecord = (await request.json()) as Record<string, unknown>;
+      extracted = await extractFromJson(jsonRecord as AuditRequestPayload);
     }
 
     if (!extracted.text || extracted.text.length < MIN_TEXT_CHARS) {
@@ -103,12 +109,21 @@ export async function POST(request: Request) {
       );
     }
 
+    const embedRes = await resolveEmbedTenantForRequest(request, jsonRecord, form);
+    if (!embedRes.ok) {
+      return NextResponse.json({ error: embedRes.error }, { status: embedRes.status });
+    }
+    const embedTenant = embedRes.tenant;
+
     const userId = await getCurrentUserId();
     const ipHash = hashIpForUsage(clientIp(request));
-    const plan = await getUserPlanForUserId(userId);
-    const usage = await getUsage(userId, ipHash);
+    const billingPlan = await getUserPlanForUserId(userId);
+    const { usageUserId, usageIpHash } = usageSubjectForEmbed(embedTenant, userId, ipHash);
+    const usage = await getUsage(usageUserId, usageIpHash);
+    const L = embedTenant ? limitsForEmbedTenantPlan(embedTenant.plan) : limitsForPlan(billingPlan);
+    const effectivePlan = embedTenant ? (embedTenant.plan === "pro" ? "pro" : "free") : billingPlan;
 
-    const paywall = checkAdvancedAuditPaywall(plan, extracted.auditType);
+    const paywall = checkAdvancedAuditPaywall(effectivePlan, extracted.auditType);
     if (!paywall.ok) {
       return NextResponse.json(
         { error: "paywall", message: paywall.message, upgradeUrl: pricingPathForLocale(locale) },
@@ -116,13 +131,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const aq = checkAuditQuota(plan, usage);
+    const aq = checkAuditQuotaAgainstLimits(L, usage);
     if (!aq.ok) {
       return NextResponse.json(quotaJsonBody(aq.message, locale), { status: 429 });
     }
 
     if (extracted.auditType === "demand_letter") {
-      const dq = checkDemandLetterQuota(plan, usage);
+      const dq = checkDemandLetterQuotaAgainstLimits(L, usage);
       if (!dq.ok) {
         return NextResponse.json(quotaJsonBody(dq.message, locale), { status: 429 });
       }
@@ -166,11 +181,11 @@ export async function POST(request: Request) {
       shareHref = buildSharedAuditHref(safeLocale, createSharedAuditToken(userId, auditId));
     }
 
-    await incrementUsage("audit", userId, ipHash).catch(() => {
+    await incrementUsage("audit", usageUserId, usageIpHash).catch(() => {
       /* non-fatal */
     });
     if (extracted.auditType === "demand_letter") {
-      await incrementUsage("demand_letter", userId, ipHash).catch(() => {
+      await incrementUsage("demand_letter", usageUserId, usageIpHash).catch(() => {
         /* non-fatal */
       });
     }

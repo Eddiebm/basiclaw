@@ -5,12 +5,14 @@ import { Loader2, Send } from "lucide-react";
 import { COUNTRIES } from "@/data/countries";
 import { getCountry } from "@/lib/jurisdictions";
 import type { EmbedBorderParam, EmbedThemeParam } from "@/lib/embed-params";
+import type { EmbedTelemetryOpts } from "@/lib/embed-telemetry-client";
 import { sendEmbedTelemetry } from "@/lib/embed-telemetry-client";
 import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 import { Button } from "@/components/ui/Button";
 import { EmbedVisualShell } from "@/components/embed/EmbedVisualShell";
 import { EmbedPoweredBy } from "@/components/embed/EmbedPoweredBy";
 import { routing } from "@/i18n/routing";
+import type { EmbedTenantPlan } from "@/lib/embed-tenants";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
 
@@ -33,14 +35,23 @@ export function EmbedAskClient({
   border,
   initialCountry,
   localeParam,
+  embedApiKey = null,
+  embedEventToken = null,
+  tenantPlan = null,
+  logoUrl = null,
 }: {
   theme: EmbedThemeParam;
   accentCss: string | null;
   border: EmbedBorderParam;
   initialCountry: string;
   localeParam: string | null;
+  embedApiKey?: string | null;
+  embedEventToken?: string | null;
+  tenantPlan?: EmbedTenantPlan | null;
+  logoUrl?: string | null;
 }) {
   const locale = useMemo(() => normaliseLocale(localeParam), [localeParam]);
+  const telOpts = useMemo<EmbedTelemetryOpts>(() => ({ authToken: embedEventToken }), [embedEventToken]);
   const sortedCountries = useMemo(
     () => [...COUNTRIES].sort((a, b) => a.name.localeCompare(b.name)),
     []
@@ -54,15 +65,18 @@ export function EmbedAskClient({
   const [error, setError] = useState<{ message: string; upgradeUrl?: string | null } | null>(null);
 
   useEffect(() => {
-    sendEmbedTelemetry("embed_loaded", { variant: "ask", jurisdiction: defaultCode });
-  }, [defaultCode]);
+    sendEmbedTelemetry("embed_loaded", { variant: "ask", jurisdiction: defaultCode }, telOpts);
+  }, [defaultCode, telOpts]);
 
-  const onResultClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
-    const t = event.target as HTMLElement;
-    const a = t.closest("a");
-    if (!a?.href) return;
-    sendEmbedTelemetry("embed_link_clicked", { target: "answer_markdown", href: a.href });
-  }, []);
+  const onResultClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      const t = event.target as HTMLElement;
+      const a = t.closest("a");
+      if (!a?.href) return;
+      sendEmbedTelemetry("embed_link_clicked", { target: "answer_markdown", href: a.href }, telOpts);
+    },
+    [telOpts]
+  );
 
   async function submit() {
     const message = input.trim();
@@ -71,15 +85,22 @@ export function EmbedAskClient({
     setAnswer(null);
     setCitations(null);
     setLoading(true);
-    sendEmbedTelemetry("embed_question_asked", { jurisdiction, length: message.length });
+    sendEmbedTelemetry("embed_question_asked", { jurisdiction, length: message.length }, telOpts);
     try {
+      const refer = typeof document !== "undefined" ? document.referrer || "" : "";
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-basiclaw-locale": locale,
+          ...(embedApiKey ? { "x-basiclaw-embed-key": embedApiKey } : {}),
         },
-        body: JSON.stringify({ message, jurisdiction }),
+        body: JSON.stringify({
+          message,
+          jurisdiction,
+          embedReferrer: refer,
+          ...(embedApiKey ? { embedApiKey } : {}),
+        }),
       });
       if (res.status === 429) {
         const j = (await res.json().catch(() => null)) as {
@@ -92,6 +113,10 @@ export function EmbedAskClient({
         });
         return;
       }
+      if (res.status === 401 || res.status === 403) {
+        setError({ message: "This embed key is not valid for this site, or the parent origin is not allow-listed." });
+        return;
+      }
       if (!res.ok) {
         setError({ message: "Something went wrong. Please try again." });
         return;
@@ -99,7 +124,7 @@ export function EmbedAskClient({
       const data = (await res.json()) as { response?: string; citations?: CitationLite[] };
       setAnswer(typeof data.response === "string" ? data.response : "");
       setCitations(Array.isArray(data.citations) ? data.citations : null);
-      sendEmbedTelemetry("embed_answer_received", { jurisdiction, ok: true });
+      sendEmbedTelemetry("embed_answer_received", { jurisdiction, ok: true }, telOpts);
     } catch {
       setError({ message: "Network error. Check your connection and try again." });
     } finally {
@@ -110,9 +135,17 @@ export function EmbedAskClient({
   const upgradeHref =
     error?.upgradeUrl?.startsWith("/") === true ? `${SITE}${error.upgradeUrl}` : error?.upgradeUrl ?? `${SITE}/${locale}/pricing`;
 
+  const poweredByCompact = tenantPlan === "pro" && Boolean(logoUrl);
+
   return (
     <EmbedVisualShell theme={theme} accentCss={accentCss} border={border}>
       <div className="space-y-3">
+        {logoUrl ? (
+          <div className="flex justify-center border-b border-[var(--border)] pb-3">
+            {/* eslint-disable-next-line @next/next/no-img-element -- tenant-supplied arbitrary HTTPS URL */}
+            <img src={logoUrl} alt="" className="h-9 max-w-[min(100%,12rem)] object-contain" />
+          </div>
+        ) : null}
         <p className="text-sm text-muted-foreground">
           Ask a plain-language legal question for the selected country. Educational information only — not legal advice.
         </p>
@@ -152,7 +185,7 @@ export function EmbedAskClient({
               target="_blank"
               rel="noopener noreferrer"
               className="mt-2 inline-block font-medium text-primary underline-offset-2 hover:underline"
-              onClick={() => sendEmbedTelemetry("embed_link_clicked", { target: "upgrade", href: upgradeHref })}
+              onClick={() => sendEmbedTelemetry("embed_link_clicked", { target: "upgrade", href: upgradeHref }, telOpts)}
             >
               View plans on BasicLaw
             </a>
@@ -176,7 +209,9 @@ export function EmbedAskClient({
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-primary underline-offset-2 hover:underline"
-                            onClick={() => sendEmbedTelemetry("embed_link_clicked", { target: "citation", href: c.url ?? "" })}
+                            onClick={() =>
+                              sendEmbedTelemetry("embed_link_clicked", { target: "citation", href: c.url ?? "" }, telOpts)
+                            }
                           >
                             Link
                           </a>
@@ -191,7 +226,7 @@ export function EmbedAskClient({
           </div>
         )}
       </div>
-      <EmbedPoweredBy />
+      <EmbedPoweredBy compact={poweredByCompact} authToken={embedEventToken} />
     </EmbedVisualShell>
   );
 }

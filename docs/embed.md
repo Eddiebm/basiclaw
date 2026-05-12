@@ -1,88 +1,51 @@
-# BasicLaw embed widgets
+# BasicLaw embed (iframe)
 
-Third-party sites can embed **Ask BasicLaw** (jurisdiction-aware Q&A) or **Audit my contract** (paste-text risk read) using a simple `<iframe>` or the auto-resize **loader script**.
+Embeddable widgets live at:
 
-## URLs
+- `GET /embed/ask` — plain-language legal Q&A (educational, not legal advice).
+- `GET /embed/audit` — short contract / clause risk read.
 
-| Surface | URL pattern |
-|---------|-------------|
-| Q&A widget (iframe) | `https://basiclaw.app/embed/ask?country=US&theme=light` |
-| Audit widget (iframe) | `https://basiclaw.app/embed/audit?country=GH&theme=auto&auditType=general` |
-| Loader script | `https://basiclaw.app/embed/loader.js` |
-| Developer landing (snippets + live preview) | `https://basiclaw.app/en/embed` (locale prefix required) |
-| Health check (JSON) | `https://basiclaw.app/api/embed/health` |
+Build iframe URLs on your origin with query parameters (see the in-app **Embed** developer page under each locale).
 
-Replace the host with your deployment’s `NEXT_PUBLIC_SITE_URL` when self-hosting.
+## Optional API key (`?key=`)
 
-## Iframe snippet (simple)
+Admins can create **embed tenants** via:
 
-```html
-<iframe
-  src="https://basiclaw.app/embed/ask?country=US&theme=light&border=rounded"
-  style="width:100%;height:560px;border:0"
-  loading="lazy"
-  title="BasicLaw"
-></iframe>
-```
+- `POST /api/embed/tenants` (Clerk admin or `ADMIN_EMAILS`) — body: `{ "label": "My site", "allowedOrigins": ["https://example.com"], "plan": "free" | "pro" }`.
+- `GET /api/embed/tenants` — list tenants (no secret key material; only `keyPrefix`).
 
-Recommended starting height: **520–640px** for Q&A, **640–800px** for audit (long paste). The loader script adjusts height automatically.
+The response includes a **raw API key once** (`blw_…`). Store it server-side; only a SHA-256 hash is persisted.
 
-## Loader snippet (auto-resize)
+### Passing the key
 
-The loader inserts an iframe into the first `[data-basiclaw-embed]` container and listens for `postMessage` events shaped as:
+- Query: `?key=blw_…` on `/embed/ask` or `/embed/audit`, and/or
+- Header on API calls: `x-basiclaw-embed-key: blw_…`, and/or
+- JSON body fields: `embedApiKey`, `embedReferrer` (see below), and/or
+- `Authorization: Bearer blw_…` (only if the token starts with `blw_`; other Bearer tokens are left alone).
 
-```json
-{ "source": "basiclaw", "type": "resize", "height": 1234 }
-```
+### Parent origin allow-list
 
-Only messages whose `event.origin` matches the script’s origin (derived from `loader.js` URL) are applied.
+If the tenant has a non-empty `allowedOrigins`, every `/api/chat` and `/api/audit` request must include **`embedReferrer`** set to a full URL (typically `document.referrer` from the iframe). Its **origin** must match one of the configured origins. Empty `allowedOrigins` disables this check (useful for local testing).
 
-```html
-<script
-  async
-  src="https://basiclaw.app/embed/loader.js"
-  data-variant="ask"
-  data-country="GH"
-  data-theme="auto"
-  data-border="rounded"
-  data-locale="en"
-></script>
-<div data-basiclaw-embed></div>
-```
+## Rate limits
 
-### Loader `data-*` attributes
+Without a key, anonymous IP limits apply as for the public site. With a valid key, usage is counted per **tenant** (`free` ≈ default caps; `pro` = higher chat/audit limits).
 
-| Attribute | Values | Notes |
-|-----------|--------|-------|
-| `data-variant` | `ask`, `audit` | Required for behaviour |
-| `data-country` / `data-jurisdiction` | ISO alpha-2, e.g. `us`, `gh` | Default jurisdiction |
-| `data-theme` | `light`, `dark`, `auto` | |
-| `data-accent` | `#RGB` or `#RRGGBB` | Optional; tints primary actions |
-| `data-border` | `rounded`, `square` | |
-| `data-locale` | `en`, `es`, … | Passed to quota/pricing links |
-| `data-audit-type` | `general`, `lease`, `employment`, `terms`, … | Audit widget only |
+## Pro branding
 
-## Query parameters (iframe URLs)
+Tenants on `plan: "pro"` may add:
 
-Same knobs as the loader: `country`, `theme`, `accent`, `border`, `locale`, `auditType`.
+- `?logo=https://…` — HTTPS logo URL, shown above the widget.
+- `?accent=#RRGGBB` — widget accent (validated hex).
 
-## Security & privacy
+Free tenants ignore `logo` / `accent` for branding; the default **Powered by BasicLaw** footer stays visible (Pro + logo uses a shorter attribution line).
 
-- Widgets run **only inside the iframe**; the parent page cannot read BasicLaw cookies or tokens.
-- Embed HTML routes send a **strict Content-Security-Policy**, **`noindex`**, and **do not load PostHog** in the parent shell. Optional usage telemetry is posted to `/api/embed/event` from inside the iframe and **logged server-side** (and can be wired to PostHog separately if desired).
-- Voice / read-aloud is **off** in embed surfaces to reduce surprise autoplay.
+## Signed telemetry (`EMBED_JWT_SECRET`)
 
-## Fair use
+When `EMBED_JWT_SECRET` is set, the server issues an **embed event token** for validated embed pages. The iframe client sends it as:
 
-Anonymous embed traffic shares the same **IP-based rate limits** as the main site. On `429`, the widget shows a short message and a link to BasicLaw pricing.
+`Authorization: Bearer <token>`
 
-## FAQ
+on `POST /api/embed/event`. The token is an HMAC-signed JSON payload (`tid` = tenant id, `exp` = expiry). Logs include `signedTenantId` when verification succeeds so usage can be attributed even if the iframe is reframed.
 
-**Can I remove the “Powered by BasicLaw” footer?**  
-Not in the free embed; attribution keeps users oriented to the source and disclaimer context.
-
-**Will this slow my page?**  
-Use `loading="lazy"` on the iframe and load the script `async`. The iframe is isolated; cost is mainly one extra document and network calls when the user interacts.
-
-**Can I pass my site’s name?**  
-Not yet; referer and optional future signed tokens are the v2 direction (see product roadmap).
+If `EMBED_JWT_SECRET` is unset, telemetry still works but **no signed attribution** is available.

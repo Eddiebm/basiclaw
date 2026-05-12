@@ -18,3 +18,17 @@ export function parseAccentHex(value: string | null | undefined): string | null 
 export function parseEmbedBorder(value: string | null | undefined): EmbedBorderParam {
   return value?.toLowerCase() === "square" ? "square" : "rounded";
 }
+
+/** Only https URLs; used for Pro embed branding. */
+export function parseEmbedLogoUrl(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const s = value.trim();
+  if (s.length > 2048) return null;
+  try {
+    const u = new URL(s);
+    if (u.protocol !== "https:") return null;
+    return u.toString();
+  } catch {
+    return null;
+  }
+}

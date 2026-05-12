@@ -8,12 +8,14 @@ import { MIN_TEXT_CHARS, normaliseAuditType } from "@/lib/audit-engine";
 import type { AuditReport, RiskGrade } from "@/lib/audit-types";
 import { RISK_GRADE_COLOR, RISK_GRADE_LABEL } from "@/lib/audit-types";
 import type { EmbedBorderParam, EmbedThemeParam } from "@/lib/embed-params";
+import type { EmbedTelemetryOpts } from "@/lib/embed-telemetry-client";
 import { sendEmbedTelemetry } from "@/lib/embed-telemetry-client";
 import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 import { Button } from "@/components/ui/Button";
 import { EmbedVisualShell } from "@/components/embed/EmbedVisualShell";
 import { EmbedPoweredBy } from "@/components/embed/EmbedPoweredBy";
 import { routing } from "@/i18n/routing";
+import type { EmbedTenantPlan } from "@/lib/embed-tenants";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
 
@@ -29,6 +31,10 @@ export function EmbedAuditClient({
   initialCountry,
   auditTypeParam,
   localeParam,
+  embedApiKey = null,
+  embedEventToken = null,
+  tenantPlan = null,
+  logoUrl = null,
 }: {
   theme: EmbedThemeParam;
   accentCss: string | null;
@@ -36,8 +42,13 @@ export function EmbedAuditClient({
   initialCountry: string;
   auditTypeParam: string | null;
   localeParam: string | null;
+  embedApiKey?: string | null;
+  embedEventToken?: string | null;
+  tenantPlan?: EmbedTenantPlan | null;
+  logoUrl?: string | null;
 }) {
   const locale = useMemo(() => normaliseLocale(localeParam), [localeParam]);
+  const telOpts = useMemo<EmbedTelemetryOpts>(() => ({ authToken: embedEventToken }), [embedEventToken]);
   const auditType = normaliseAuditType(auditTypeParam);
   const sortedCountries = useMemo(
     () => [...COUNTRIES].sort((a, b) => a.name.localeCompare(b.name)),
@@ -51,15 +62,18 @@ export function EmbedAuditClient({
   const [error, setError] = useState<{ message: string; upgradeUrl?: string | null } | null>(null);
 
   useEffect(() => {
-    sendEmbedTelemetry("embed_loaded", { variant: "audit", jurisdiction: initialCountry.toLowerCase(), auditType });
-  }, [auditType, initialCountry]);
+    sendEmbedTelemetry("embed_loaded", { variant: "audit", jurisdiction: initialCountry.toLowerCase(), auditType }, telOpts);
+  }, [auditType, initialCountry, telOpts]);
 
-  const onSummaryClick = useCallback((event: MouseEvent<HTMLDivElement>) => {
-    const t = event.target as HTMLElement;
-    const a = t.closest("a");
-    if (!a?.href) return;
-    sendEmbedTelemetry("embed_link_clicked", { target: "audit_summary", href: a.href });
-  }, []);
+  const onSummaryClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      const t = event.target as HTMLElement;
+      const a = t.closest("a");
+      if (!a?.href) return;
+      sendEmbedTelemetry("embed_link_clicked", { target: "audit_summary", href: a.href }, telOpts);
+    },
+    [telOpts]
+  );
 
   async function runAudit() {
     const trimmed = text.trim();
@@ -72,18 +86,22 @@ export function EmbedAuditClient({
     setError(null);
     setReport(null);
     setLoading(true);
-    sendEmbedTelemetry("embed_audit_run", { jurisdiction, auditType, length: trimmed.length });
+    sendEmbedTelemetry("embed_audit_run", { jurisdiction, auditType, length: trimmed.length }, telOpts);
     try {
+      const refer = typeof document !== "undefined" ? document.referrer || "" : "";
       const res = await fetch("/api/audit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "x-basiclaw-locale": locale,
+          ...(embedApiKey ? { "x-basiclaw-embed-key": embedApiKey } : {}),
         },
         body: JSON.stringify({
           text: trimmed,
           jurisdiction,
           auditType,
+          embedReferrer: refer,
+          ...(embedApiKey ? { embedApiKey } : {}),
         }),
       });
       if (res.status === 429) {
@@ -97,6 +115,10 @@ export function EmbedAuditClient({
         });
         return;
       }
+      if (res.status === 401 || res.status === 403) {
+        setError({ message: "This embed key is not valid for this site, or the parent origin is not allow-listed." });
+        return;
+      }
       if (!res.ok) {
         const j = (await res.json().catch(() => null)) as { message?: string } | null;
         setError({ message: j?.message ?? "Audit failed. Try again with clearer text." });
@@ -108,7 +130,7 @@ export function EmbedAuditClient({
         return;
       }
       setReport(data.report);
-      sendEmbedTelemetry("embed_answer_received", { variant: "audit", jurisdiction, ok: true });
+      sendEmbedTelemetry("embed_answer_received", { variant: "audit", jurisdiction, ok: true }, telOpts);
     } catch {
       setError({ message: "Network error. Check your connection and try again." });
     } finally {
@@ -121,10 +143,17 @@ export function EmbedAuditClient({
 
   const grade = report?.overallRiskGrade as RiskGrade | undefined;
   const gradeClass = grade ? RISK_GRADE_COLOR[grade] : "";
+  const poweredByCompact = tenantPlan === "pro" && Boolean(logoUrl);
 
   return (
     <EmbedVisualShell theme={theme} accentCss={accentCss} border={border}>
       <div className="space-y-3">
+        {logoUrl ? (
+          <div className="flex justify-center border-b border-[var(--border)] pb-3">
+            {/* eslint-disable-next-line @next/next/no-img-element -- tenant-supplied arbitrary HTTPS URL */}
+            <img src={logoUrl} alt="" className="h-9 max-w-[min(100%,12rem)] object-contain" />
+          </div>
+        ) : null}
         <p className="text-sm text-muted-foreground">
           Paste a clause or short contract excerpt. BasicLaw returns an educational risk read — not legal advice.
         </p>
@@ -165,7 +194,7 @@ export function EmbedAuditClient({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 inline-block font-medium text-primary underline-offset-2 hover:underline"
-                onClick={() => sendEmbedTelemetry("embed_link_clicked", { target: "upgrade", href: upgradeHref })}
+                onClick={() => sendEmbedTelemetry("embed_link_clicked", { target: "upgrade", href: upgradeHref }, telOpts)}
               >
                 View plans on BasicLaw
               </a>
@@ -198,7 +227,9 @@ export function EmbedAuditClient({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-primary underline-offset-2 hover:underline"
-                onClick={() => sendEmbedTelemetry("embed_link_clicked", { target: "full_audit", href: `${SITE}/${locale}/audit` })}
+                onClick={() =>
+                  sendEmbedTelemetry("embed_link_clicked", { target: "full_audit", href: `${SITE}/${locale}/audit` }, telOpts)
+                }
               >
                 audit suite on BasicLaw
               </a>
@@ -207,7 +238,7 @@ export function EmbedAuditClient({
           </div>
         )}
       </div>
-      <EmbedPoweredBy />
+      <EmbedPoweredBy compact={poweredByCompact} authToken={embedEventToken} />
     </EmbedVisualShell>
   );
 }

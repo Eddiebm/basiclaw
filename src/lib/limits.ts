@@ -40,3 +40,18 @@ export function isAdvancedAuditTypeBlocked(plan: BillingPlan, auditType: string)
   const { advancedAuditTypes } = limitsForPlan(plan);
   return !advancedAuditTypes;
 }
+
+export type EmbedTenantPlan = "free" | "pro";
+
+/** Rate limits for embed API keys (`free` ≈ site free tier; `pro` = higher caps). */
+export function limitsForEmbedTenantPlan(plan: EmbedTenantPlan): PlanLimits {
+  if (plan === "pro") {
+    return {
+      chatsPerDay: 80,
+      auditsPerMonth: 40,
+      demandLettersPerDay: 3,
+      advancedAuditTypes: true,
+    };
+  }
+  return limitsForPlan("free");
+}

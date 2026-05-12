@@ -6,12 +6,16 @@ import { formatSnippetsForPrompt, getRankedSnippetsByEmbedding, loadSnippetsForC
 import { formatLandmarkCasesForPrompt, getRankedLandmarkCasesByEmbedding, loadLandmarkCasesForCountry } from "@/lib/landmark-cases";
 import { getCurrentUserId } from "@/lib/auth-config";
 import { getUserPlanForUserId } from "@/lib/entitlements";
-import { quotaJsonBody, checkChatQuota } from "@/lib/quota-check";
+import { limitsForPlan, limitsForEmbedTenantPlan } from "@/lib/limits";
+import { checkChatQuotaAgainstLimits, quotaJsonBody } from "@/lib/quota-check";
 import { embedQueryForRag } from "@/lib/query-embed";
 import { getMeta, loadSnippetEmbeddingsFile } from "@/lib/rag-embeddings";
 import { clientIp, hashIpForUsage } from "@/lib/request-ip";
 import { findSimilarPublicAnswers, saveChatExchangeAsAnswer, type SavedCitation } from "@/lib/saved-answers";
 import { getUsage, incrementUsage } from "@/lib/storage";
+import { generateChatCompletionText } from "@/lib/llm-chat-completion";
+import { usageSubjectForEmbed } from "@/lib/embed-usage-subject";
+import { resolveEmbedTenantForRequest } from "@/lib/embed-tenant-resolve";
 
 const SNIPPET_TOP_K = 4;
 const CASE_TOP_K = 3;
@@ -108,11 +112,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
+    const bodyRecord = body as Record<string, unknown>;
+    const embedRes = await resolveEmbedTenantForRequest(request, bodyRecord);
+    if (!embedRes.ok) {
+      return NextResponse.json({ error: embedRes.error }, { status: embedRes.status });
+    }
+    const embedTenant = embedRes.tenant;
+
     const userId = await getCurrentUserId();
     const ipHash = hashIpForUsage(clientIp(request));
-    const plan = await getUserPlanForUserId(userId);
-    const usage = await getUsage(userId, ipHash);
-    const cq = checkChatQuota(plan, usage);
+    const { usageUserId, usageIpHash } = usageSubjectForEmbed(embedTenant, userId, ipHash);
+    const billingPlan = await getUserPlanForUserId(userId);
+    const usage = await getUsage(usageUserId, usageIpHash);
+    const L = embedTenant ? limitsForEmbedTenantPlan(embedTenant.plan) : limitsForPlan(billingPlan);
+    const cq = checkChatQuotaAgainstLimits(L, usage);
     if (!cq.ok) {
       return NextResponse.json(quotaJsonBody(cq.message, locale), { status: 429 });
     }
@@ -134,7 +147,7 @@ export async function POST(request: NextRequest) {
         url: cite.url,
         kind: (cite.kind === "case" ? "case" : "snippet") as "snippet" | "case",
       }));
-      await incrementUsage("chat", userId, ipHash).catch(() => {
+      await incrementUsage("chat", usageUserId, usageIpHash).catch(() => {
         /* non-fatal */
       });
       return NextResponse.json({
@@ -196,13 +209,14 @@ export async function POST(request: NextRequest) {
       { role: "user", content: userContent },
     ];
 
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    const hasLlm =
+      Boolean(process.env.AI_GATEWAY_API_KEY?.trim()) || Boolean(process.env.OPENROUTER_API_KEY?.trim());
 
-    if (!apiKey) {
-      await incrementUsage("chat", userId, ipHash).catch(() => {
+    if (!hasLlm) {
+      await incrementUsage("chat", usageUserId, usageIpHash).catch(() => {
         /* non-fatal */
       });
-      const fallbackText = `I understand you're asking about ${jurisdictionInfo.name} law. However, the AI service is not configured properly. Please ensure the OPENROUTER_API_KEY environment variable is set.\n\nFor educational purposes regarding ${jurisdictionInfo.name} (${jurisdictionInfo.legalSystem}): ${jurisdictionInfo.description}`;
+      const fallbackText = `I understand you're asking about ${jurisdictionInfo.name} law. However, the AI service is not configured properly. Please set AI_GATEWAY_API_KEY (preferred) or OPENROUTER_API_KEY on the server.\n\nFor educational purposes regarding ${jurisdictionInfo.name} (${jurisdictionInfo.legalSystem}): ${jurisdictionInfo.description}`;
       let savedAnswerId: string | undefined;
       let isPublicSaved = false;
       if (userId) {
@@ -236,35 +250,20 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app",
-        "X-Title": "BasicLaw - Legal Information Assistant",
-      },
-      body: JSON.stringify({
-        model: process.env.OPENROUTER_MODEL || "openai/gpt-oss-20b:free",
-        messages,
-        max_tokens: 1500,
+    let assistantResponse: string;
+    try {
+      const { text } = await generateChatCompletionText({
+        messages: messages as Array<{ role: "system" | "user" | "assistant"; content: string }>,
+        maxTokens: 1500,
         temperature: 0.5,
-      }),
-    });
-
-    if (!openRouterResponse.ok) {
-      const errorData = await openRouterResponse.text();
-      console.error("OpenRouter API error:", errorData);
+      });
+      assistantResponse = text;
+    } catch (e) {
+      console.error("Chat LLM error:", e);
       return NextResponse.json({ error: "Failed to get response from AI service" }, { status: 500 });
     }
 
-    const data = await openRouterResponse.json();
-    const assistantResponse =
-      data.choices?.[0]?.message?.content ||
-      data.choices?.[0]?.text ||
-      "I apologise, but I couldn't generate a response. Please try again.";
-
-    await incrementUsage("chat", userId, ipHash).catch(() => {
+    await incrementUsage("chat", usageUserId, usageIpHash).catch(() => {
       /* non-fatal */
     });
 
