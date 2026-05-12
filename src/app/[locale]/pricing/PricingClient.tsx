@@ -8,92 +8,15 @@ import { Button } from "@/components/ui/Button";
 import type { BillingCadence, StripeTierId } from "@/lib/stripe-config";
 import { track } from "@/lib/analytics";
 
-interface PaidTier {
-  id: StripeTierId;
-  name: string;
-  tagline: string;
-  monthly: { price: string; cadence: string };
-  annual: { price: string; cadence: string; perMonth: string; savings: string };
-  description: string;
-  features: string[];
-  highlight: boolean;
-}
-
-interface FreeTier {
-  id: "free";
-  name: string;
-  tagline: string;
-  price: string;
-  cadence: string;
-  description: string;
-  features: string[];
-  highlight: boolean;
-  cta: { label: string; href: string };
-}
-
-const FREE_TIER: FreeTier = {
-  id: "free",
-  name: "Know Your Rights",
-  tagline: "Free forever",
-  price: "$0",
-  cadence: "always",
-  description:
-    "Read every constitution. Ask the basics. Walk into a meeting with a lawyer already informed.",
-  features: [
-    "Browse every country's constitution",
-    "Plain-language summaries and key principles",
-    "Ask the legal assistant (rate-limited)",
-    "Country-by-country rights, police, and tenant guides",
-    "3 contract audits / month \u2014 plain-language risk report",
-    "1 demand-letter outline / day (structured generator)",
-  ],
-  highlight: false,
-  cta: { label: "Start with a free audit", href: "/audit" },
-};
-
-const PAID_TIERS: PaidTier[] = [
-  {
-    id: "pro",
-    name: "Stop Paying By The Hour",
-    tagline: "Pro",
-    monthly: { price: "$12", cadence: "per month" },
-    annual: { price: "$120", cadence: "per year", perMonth: "$10/mo", savings: "Save $24" },
-    description:
-      "For people facing a contract, a notice, or a legal question that actually matters this week.",
-    features: [
-      "Everything in Know Your Rights",
-      "Unlimited contract audits + saved history",
-      "Side-by-side jurisdiction comparison",
-      "Save and revisit your chats",
-      "Higher-context models, no daily caps",
-      "Unlimited demand-letter generator runs",
-    ],
-    highlight: true,
-  },
-  {
-    id: "plus",
-    name: "Operate With Confidence",
-    tagline: "Pro+",
-    monthly: { price: "$39", cadence: "per month" },
-    annual: { price: "$390", cadence: "per year", perMonth: "$32.50/mo", savings: "Save $78" },
-    description:
-      "For founders, journalists, advocates, and small teams who need legal context across many countries.",
-    features: [
-      "Everything in Pro",
-      "Bulk audit (10 documents / month)",
-      "Custom jurisdiction watchlists",
-      "Citation-grade output and exports",
-      "Priority email support",
-    ],
-    highlight: false,
-  },
-];
-
 export function PricingClient() {
-  const tp = useTranslations("pricingTiers");
+  const pp = useTranslations("pricingPage");
   const [cadence, setCadence] = useState<BillingCadence>("monthly");
   const [loadingTier, setLoadingTier] = useState<StripeTierId | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const freeFeatures = pp.raw("free.features") as string[];
+  const proFeatures = pp.raw("pro.features") as string[];
+  const plusFeatures = pp.raw("plus.features") as string[];
 
   useEffect(() => {
     track("pricing_viewed");
@@ -114,18 +37,18 @@ export function PricingClient() {
         window.location.assign(json.url);
         return;
       }
-      setError(json.message ?? json.error ?? tp("checkoutError"));
+      setError(json.message ?? json.error ?? pp("checkoutError"));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Network error");
+      setError(err instanceof Error ? err.message : pp("networkError"));
     } finally {
       setLoadingTier(null);
     }
   }
 
   return (
-    <div>
-      <div className="flex justify-center mb-8">
-        <div className="inline-flex p-1 rounded-full bg-[var(--accent)] border border-[var(--border)]">
+    <div className="mx-auto max-w-6xl">
+      <div className="flex justify-center mb-10">
+        <div className="inline-flex p-1 rounded-full border border-[var(--border)] bg-[var(--surface-glass)] shadow-[0_1px_0_oklch(0_0_0/0.04)] backdrop-blur-sm">
           <button
             type="button"
             onClick={() => setCadence("monthly")}
@@ -135,7 +58,7 @@ export function PricingClient() {
                 : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
             }`}
           >
-            {tp("monthly")}
+            {pp("tiersMonthly")}
           </button>
           <button
             type="button"
@@ -146,115 +69,140 @@ export function PricingClient() {
                 : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
             }`}
           >
-            {tp("annual")} <span className="text-[var(--primary)]">{tp("annualSave")}</span>
+            {pp("tiersAnnual")} <span className="text-[var(--primary)]">{pp("tiersAnnualSave")}</span>
           </button>
         </div>
       </div>
 
       {error && (
-        <div className="mx-auto mb-6 max-w-2xl rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-900 dark:text-amber-200">
-          {error}
+        <div className="mx-auto mb-6 max-w-2xl space-y-3 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-900 dark:text-amber-200">
+          <p>{error}</p>
+          <p className="text-xs opacity-90">
+            {pp("checkoutFallbackLead")}{" "}
+            <Link href="/chat" className="font-medium underline underline-offset-2">
+              {pp("checkoutFallbackChat")}
+            </Link>
+            {" · "}
+            <Link href="/faq" className="font-medium underline underline-offset-2">
+              {pp("checkoutFallbackFaq")}
+            </Link>
+          </p>
         </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-3">
-        <FreeTierCard tier={FREE_TIER} />
-        {PAID_TIERS.map((tier) => (
+      <div className="grid gap-8 lg:grid-cols-12">
+        <div className="lg:col-span-4">
+          <div className="relative flex h-full flex-col rounded-[1.75rem] border border-[var(--border)] bg-[var(--card)]/90 p-6 sm:p-8 shadow-paper backdrop-blur-sm">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)]">{pp("free.tagline")}</p>
+            <h2 className="mt-2 font-editorial text-2xl text-[var(--foreground)] sm:text-3xl">{pp("free.tierName")}</h2>
+            <p className="mt-2 text-sm text-[var(--muted-foreground)]">{pp("free.description")}</p>
+            <p className="mt-6 flex items-baseline gap-1">
+              <span className="text-4xl font-bold text-[var(--foreground)]">{pp("free.price")}</span>
+              <span className="text-sm text-[var(--muted-foreground)]">/ {pp("free.cadence")}</span>
+            </p>
+            <ul className="mt-6 space-y-3 text-sm text-[var(--foreground)]">
+              {freeFeatures.map((feature) => (
+                <li key={feature} className="flex items-start gap-2">
+                  <Check className="h-4 w-4 text-[var(--primary)] flex-shrink-0 mt-0.5" aria-hidden />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+            {pp("free.footnote") ? (
+              <p className="mt-4 text-xs text-[var(--muted-foreground)]">{pp("free.footnote")}</p>
+            ) : null}
+            <Button asChild variant="outline" className="mt-8 w-full justify-between">
+              <Link href={pp("free.ctaHref")}>
+                {pp("free.ctaLabel")}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:col-span-8">
           <PaidTierCard
-            key={tier.id}
-            tier={tier}
+            tierId="pro"
             cadence={cadence}
-            loading={loadingTier === tier.id}
-            onCheckout={() => checkout(tier.id)}
+            loading={loadingTier === "pro"}
+            onCheckout={() => checkout("pro")}
+            features={proFeatures}
           />
-        ))}
+          <PaidTierCard
+            tierId="plus"
+            cadence={cadence}
+            loading={loadingTier === "plus"}
+            onCheckout={() => checkout("plus")}
+            features={plusFeatures}
+          />
+        </div>
       </div>
     </div>
   );
 }
 
-function FreeTierCard({ tier }: { tier: FreeTier }) {
-  return (
-    <div className="relative flex flex-col rounded-3xl border border-[var(--border)] shadow-sm bg-[var(--card)] p-6 sm:p-8">
-      <p className="text-xs uppercase tracking-wider text-[var(--muted-foreground)]">{tier.tagline}</p>
-      <h2 className="mt-1 text-xl font-bold text-[var(--foreground)]">{tier.name}</h2>
-      <p className="mt-2 text-sm text-[var(--muted-foreground)]">{tier.description}</p>
-      <p className="mt-6 flex items-baseline gap-1">
-        <span className="text-4xl font-bold text-[var(--foreground)]">{tier.price}</span>
-        <span className="text-sm text-[var(--muted-foreground)]">/ {tier.cadence}</span>
-      </p>
-      <ul className="mt-6 space-y-3 text-sm text-[var(--foreground)]">
-        {tier.features.map((feature) => (
-          <li key={feature} className="flex items-start gap-2">
-            <Check className="h-4 w-4 text-[var(--primary)] flex-shrink-0 mt-0.5" aria-hidden />
-            <span>{feature}</span>
-          </li>
-        ))}
-      </ul>
-      <Button asChild variant="outline" className="mt-8 w-full justify-between">
-        <Link href={tier.cta.href}>
-          {tier.cta.label}
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      </Button>
-    </div>
-  );
-}
-
 function PaidTierCard({
-  tier,
+  tierId,
   cadence,
   loading,
   onCheckout,
+  features,
 }: {
-  tier: PaidTier;
+  tierId: "pro" | "plus";
   cadence: BillingCadence;
   loading: boolean;
   onCheckout: () => void;
+  features: string[];
 }) {
-  const tp = useTranslations("pricingTiers");
-  const pricing = cadence === "annual" ? tier.annual : tier.monthly;
+  const pp = useTranslations("pricingPage");
+  const prefix = tierId;
   const isAnnual = cadence === "annual";
+  const price = isAnnual ? pp(`${prefix}.annualPrice`) : pp(`${prefix}.monthlyPrice`);
+  const cadenceLabel = isAnnual ? pp(`${prefix}.annualCadence`) : pp(`${prefix}.monthlyCadence`);
+  const highlight = tierId === "pro";
+
   return (
     <div
-      className={`relative flex flex-col rounded-3xl border bg-[var(--card)] p-6 sm:p-8 ${
-        tier.highlight
-          ? "border-[var(--primary)] shadow-xl ring-1 ring-[var(--primary)]/20"
-          : "border-[var(--border)] shadow-sm"
+      className={`relative flex h-full flex-col rounded-[1.75rem] border bg-[var(--card)]/95 p-6 sm:p-8 shadow-paper backdrop-blur-sm ${
+        highlight
+          ? "border-[var(--primary)]/50 ring-1 ring-[var(--primary)]/15 lg:scale-[1.02]"
+          : "border-[var(--border)]"
       }`}
     >
-      {tier.highlight && (
-        <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] text-xs font-semibold">
-          <Star className="h-3 w-3" aria-hidden /> {tp("mostChosen")}
+      {highlight && (
+        <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 rounded-full bg-[var(--primary)] px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--primary-foreground)]">
+          <Star className="h-3 w-3" aria-hidden /> {pp("mostChosen")}
         </span>
       )}
-      <p className="text-xs uppercase tracking-wider text-[var(--muted-foreground)]">{tier.tagline}</p>
-      <h2 className="mt-1 text-xl font-bold text-[var(--foreground)]">{tier.name}</h2>
-      <p className="mt-2 text-sm text-[var(--muted-foreground)]">{tier.description}</p>
+      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)]">{pp(`${prefix}.tagline`)}</p>
+      <h2 className="mt-2 font-editorial text-2xl text-[var(--foreground)] sm:text-3xl">{pp(`${prefix}.tierName`)}</h2>
+      <p className="mt-2 text-sm text-[var(--muted-foreground)]">{pp(`${prefix}.description`)}</p>
       <p className="mt-6 flex items-baseline gap-1">
-        <span className="text-4xl font-bold text-[var(--foreground)]">{pricing.price}</span>
-        <span className="text-sm text-[var(--muted-foreground)]">/ {pricing.cadence}</span>
+        <span className="text-4xl font-bold text-[var(--foreground)]">{price}</span>
+        <span className="text-sm text-[var(--muted-foreground)]">/ {cadenceLabel}</span>
       </p>
       {isAnnual && (
         <p className="mt-1 text-xs text-[var(--primary)] font-medium">
-          {tier.annual.perMonth} \u00b7 {tier.annual.savings}
+          {pp(`${prefix}.annualPerMonth`)} \u00b7 {pp(`${prefix}.annualSavings`)}
         </p>
       )}
       <ul className="mt-6 space-y-3 text-sm text-[var(--foreground)]">
-        {tier.features.map((feature) => (
+        {features.map((feature) => (
           <li key={feature} className="flex items-start gap-2">
             <Check className="h-4 w-4 text-[var(--primary)] flex-shrink-0 mt-0.5" aria-hidden />
             <span>{feature}</span>
           </li>
         ))}
       </ul>
+      {pp(`${prefix}.footnote`) ? (
+        <p className="mt-4 text-xs text-[var(--muted-foreground)]">{pp(`${prefix}.footnote`)}</p>
+      ) : null}
       <Button
         onClick={onCheckout}
         disabled={loading}
         className="mt-8 w-full justify-between"
-        variant={tier.highlight ? "default" : "outline"}
+        variant={highlight ? "default" : "outline"}
       >
-        {loading ? tp("startingCheckout") : tp("subscribeTo", { tier: tier.tagline })}
+        {loading ? pp("startingCheckout") : pp("subscribeTo", { tier: pp(`${prefix}.tagline`) })}
         <ArrowRight className="h-4 w-4" />
       </Button>
     </div>

@@ -94,11 +94,81 @@
     "ctaFindLawyer": "Buscar abogado colegiado"
   },
   "pricingPage": {
+    "issueLine": "BasicLaw Magazine · Membresía",
     "badge": "Para preguntas legales cotidianas",
     "title": "Precios que se pagan solos la primera vez que no necesitas llamar.",
     "subtitle": "BasicLaw cubre los {count} países gratis. Pro y Pro+ añaden análisis de documentos, comparación, exportaciones y modelos prioritarios.",
     "teamPlan": "¿Plan Team o Newsroom?",
-    "getInTouch": "Escríbenos"
+    "getInTouch": "Escríbenos",
+    "translationReview": "t:review — textos de tarifas traducidos automáticamente; revisión humana recomendada.",
+    "tiersMonthly": "Mensual",
+    "tiersAnnual": "Anual",
+    "tiersAnnualSave": "· ahorra ~17%",
+    "mostChosen": "El más elegido",
+    "startingCheckout": "Iniciando pago…",
+    "subscribeTo": "Suscribirse a {tier}",
+    "checkoutError": "No se pudo iniciar el pago. Inténtalo de nuevo.",
+    "networkError": "Error de red",
+    "checkoutFallbackLead": "Aún puedes usar BasicLaw gratis:",
+    "checkoutFallbackChat": "Abrir el asistente",
+    "checkoutFallbackFaq": "Leer FAQ de facturación",
+    "free": {
+      "tierName": "Conoce tus derechos",
+      "tagline": "Gratis para siempre",
+      "price": "$0",
+      "cadence": "siempre",
+      "description": "Lee todas las constituciones. Pregunta lo básico. Llega a la reunión con un abogado ya informado.",
+      "features": [
+        "Explora la constitución de cada país",
+        "Resúmenes claros y principios clave",
+        "Asistente legal (con límite de uso)",
+        "Guías por país: derechos, policía, arrendamiento y empleo",
+        "3 auditorías de contrato al mes — informe de riesgo claro",
+        "1 borrador de carta de reclamación al día (generador estructurado)"
+      ],
+      "ctaLabel": "Empieza con una auditoría gratis",
+      "ctaHref": "/audit",
+      "footnote": ""
+    },
+    "pro": {
+      "tierName": "Deja de pagar por horas",
+      "tagline": "Pro",
+      "monthlyPrice": "$12",
+      "monthlyCadence": "al mes",
+      "annualPrice": "$120",
+      "annualCadence": "al año",
+      "annualPerMonth": "$10/mes",
+      "annualSavings": "Ahorra $24",
+      "description": "Para quien afronta un contrato, un requerimiento o una duda legal que importa esta semana.",
+      "features": [
+        "Todo lo de Conoce tus derechos",
+        "Auditorías ilimitadas + historial guardado",
+        "Comparación lado a lado entre jurisdicciones",
+        "Guarda y retoma tus chats",
+        "Modelos con más contexto, sin tope diario",
+        "Generador de cartas de reclamación ilimitado"
+      ],
+      "footnote": ""
+    },
+    "plus": {
+      "tierName": "Opera con confianza",
+      "tagline": "Pro+",
+      "monthlyPrice": "$39",
+      "monthlyCadence": "al mes",
+      "annualPrice": "$390",
+      "annualCadence": "al año",
+      "annualPerMonth": "$32,50/mes",
+      "annualSavings": "Ahorra $78",
+      "description": "Para fundadores, periodistas, defensores y equipos que necesitan contexto legal en muchos países.",
+      "features": [
+        "Todo lo de Pro",
+        "Auditoría masiva (10 documentos al mes)",
+        "Listas de seguimiento por jurisdicción",
+        "Salida con citas y exportaciones",
+        "Soporte prioritario por email"
+      ],
+      "footnote": ""
+    }
   },
   "auditPage": {
     "badge": "Gratis · solo educativo",
