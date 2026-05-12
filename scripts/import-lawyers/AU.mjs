@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+/**
+ * AU lawyer-directory importer — NSW Law Society register focus (scaffolding).
+ * TOS_STATUS: see ./status-map.mjs (AU → restricted-personal-use-only).
+ */
+import { IMPORTER_STATUS } from "./status-map.mjs";
+import { parseImporterArgs, printDisabled, logImporterFlags } from "./_lib.mjs";
+
+const ISO2 = "AU";
+const TOS_STATUS = IMPORTER_STATUS[ISO2];
+
+console.log(`[${ISO2}] BasicLaw lawyer importer | TOS_STATUS=${TOS_STATUS}`);
+
+const args = parseImporterArgs(process.argv);
+logImporterFlags(ISO2, args);
+
+printDisabled(ISO2);
+process.exit(0);
