@@ -11,7 +11,9 @@
     "embed:snippets": "node scripts/embed-snippets.mjs",
     "embed:answers": "node scripts/embed-answers.mjs",
     "build:index": "node scripts/compute-legal-index.mjs",
-    "import:lawyers": "node scripts/import-lawyers/run-all.mjs"
+    "import:lawyers": "node scripts/import-lawyers/run-all.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed"
   },
   "dependencies": {
     "@ai-sdk/gateway": "^3.0.114",
@@ -43,6 +45,7 @@
     "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/pdf-parse": "^1.1.5",
@@ -52,6 +55,7 @@
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
     "tsx": "^4.19.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wait-on": "^9.0.10"
   }
 }

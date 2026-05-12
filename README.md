@@ -34,6 +34,14 @@ cp .env.example .env.local   # see Environment variables below
 npm run dev
 ```
 
+Smoke E2E (requires a running server on `BASE_URL`, default `http://localhost:3000`):
+
+```bash
+npm run build && npm run start &
+npx wait-on http://127.0.0.1:3000
+npm run test:e2e
+```
+
 ## Environment variables
 
 | Group | Variable | Required? | Purpose |
