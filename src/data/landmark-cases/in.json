@@ -1,0 +1,50 @@
+[
+  {
+    "id": "in-kesavananda-bharati",
+    "title": "Kesavananda Bharati v State of Kerala (1973)",
+    "year": 1973,
+    "summary": "Parliament can amend the Constitution but cannot destroy its 'basic structure'.",
+    "principle": "Basic structure doctrine limiting amendment power.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Kesavananda_Bharati_v._State_of_Kerala"
+  },
+  {
+    "id": "in-maneka-gandhi",
+    "title": "Maneka Gandhi v Union of India (1978)",
+    "year": 1978,
+    "summary": "Passport impoundment case expanding Article 21 due process and connecting fundamental rights.",
+    "principle": "Personal liberty, fair procedure, and interlinked fundamental rights.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Maneka_Gandhi_v._Union_of_India"
+  },
+  {
+    "id": "in-vishaka-v-rajasthan",
+    "title": "Vishaka v State of Rajasthan (1997)",
+    "year": 1997,
+    "summary": "Supreme Court laid down workplace sexual harassment guidelines until legislation.",
+    "principle": "Gender equality, dignity, and international instruments in domestic law.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Vishaka_and_others_v_State_of_Rajasthan"
+  },
+  {
+    "id": "in-puttaswamy",
+    "title": "Justice K.S. Puttaswamy v Union of India (2017)",
+    "year": 2017,
+    "summary": "Recognised privacy as a fundamental right flowing from dignity and autonomy.",
+    "principle": "Constitutional right to privacy.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Right_to_Privacy_(Indian_constitutional_law)"
+  },
+  {
+    "id": "in-s-r-bommai",
+    "title": "S.R. Bommai v Union of India (1994)",
+    "year": 1994,
+    "summary": "Federal intervention under President's Rule must meet judicially reviewable standards.",
+    "principle": "Federalism and judicial review of emergency-style central takeovers.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/S._R._Bommai_v._Union_of_India"
+  },
+  {
+    "id": "in-minerva-mills",
+    "title": "Minerva Mills v Union of India (1980)",
+    "year": 1980,
+    "summary": "Reinforced basic structure limits and balance between Parts III and IV of the Constitution.",
+    "principle": "Harmony of fundamental rights and directive principles within basic structure.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Minerva_Mills_v._Union_of_India"
+  }
+]

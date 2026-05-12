@@ -1,0 +1,58 @@
+[
+  {
+    "id": "gb-entick-v-carrington",
+    "title": "Entick v Carrington (1765)",
+    "year": 1765,
+    "summary": "General warrants to search and seize papers were unlawful; executive power is limited by law.",
+    "principle": "Rule of law constraints on executive search and seizure.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Entick_v_Carrington"
+  },
+  {
+    "id": "gb-donoghue-v-stevenson",
+    "title": "Donoghue v Stevenson (1932)",
+    "year": 1932,
+    "summary": "Established the modern law of negligence and the 'neighbour principle' in the House of Lords.",
+    "principle": "Duty of care in tort shaping private-law obligations.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Donoghue_v_Stevenson"
+  },
+  {
+    "id": "gb-ridge-v-baldwin",
+    "title": "Ridge v Baldwin (1964)",
+    "year": 1964,
+    "summary": "Public office-holders are entitled to natural justice before dismissal in many contexts.",
+    "principle": "Procedural fairness in public employment decisions.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Ridge_v_Baldwin"
+  },
+  {
+    "id": "gb-factortame-no2",
+    "title": "R (Factortame Ltd) v Secretary of State for Transport (No 2) (1991)",
+    "year": 1991,
+    "summary": "EU law could disapply inconsistent UK statutes and courts could grant interim relief—central to supremacy debates.",
+    "principle": "Interaction of EU and domestic law before Brexit-era changes.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/R_v_Secretary_of_State_for_Transport,_ex_parte_Factortame"
+  },
+  {
+    "id": "gb-belmarsh-case",
+    "title": "A v Secretary of State for the Home Department (Belmarsh, 2004)",
+    "year": 2004,
+    "summary": "House of Lords reviewed indefinite detention of non-UK nationals under anti-terror legislation.",
+    "principle": "Liberty, proportionality, and detention without trial in security contexts.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/A_and_others_v_Secretary_of_State_for_the_Home_Department"
+  },
+  {
+    "id": "gb-r-v-secretary-of-state-ex-parte-simms",
+    "title": "R v Secretary of State for the Home Department, ex parte Simms (1999)",
+    "year": 1999,
+    "summary": "Common law may fill gaps where legislation is silent; prisoners' access to media for innocence claims discussed.",
+    "principle": "Rights-consistent interpretation and common-law constitutionalism.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/R_v_Secretary_of_State_for_the_Home_Department,_ex_parte_Simms"
+  },
+  {
+    "id": "gb-r-v-shayler",
+    "title": "R v Shayler (2002)",
+    "year": 2002,
+    "summary": "Official Secrets Act restrictions assessed for compatibility with ECHR free-expression rights.",
+    "principle": "National security secrecy versus freedom of expression.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/R_v_Shayler"
+  }
+]

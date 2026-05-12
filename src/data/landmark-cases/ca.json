@@ -1,0 +1,58 @@
+[
+  {
+    "id": "ca-reference-re-secession-quebec",
+    "title": "Reference Re Secession of Quebec (1998)",
+    "year": 1998,
+    "summary": "The Supreme Court of Canada clarified that secession would require constitutional amendment and negotiation, not unilateral declaration alone.",
+    "principle": "Federalism, democracy, and constitutional amendment in national unity questions.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Reference_Re_Secession_of_Quebec"
+  },
+  {
+    "id": "ca-r-v-okes",
+    "title": "R v Oakes (1986)",
+    "year": 1986,
+    "summary": "Landmark proportionality test for limits on Charter rights under section 1.",
+    "principle": "Section 1 Oakes test for reasonable limits on rights.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/R_v_Oakes"
+  },
+  {
+    "id": "ca-vriend-v-alberta",
+    "title": "Vriend v Alberta (1998)",
+    "year": 1998,
+    "summary": "Reading sexual orientation into provincial human rights law to align with Charter equality values.",
+    "principle": "Equality and inclusion under the Charter.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Vriend_v_Alberta"
+  },
+  {
+    "id": "ca-carter-v-canada",
+    "title": "Carter v Canada (2015)",
+    "year": 2015,
+    "summary": "Criminal prohibitions on physician-assisted dying were unconstitutional in defined circumstances.",
+    "principle": "Liberty, autonomy, and section 7 life, liberty, and security of the person.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Carter_v_Canada_(Attorney_General)"
+  },
+  {
+    "id": "ca-hutterian-brethren",
+    "title": "Alberta v Hutterian Brethren of Wilson Colony (2009)",
+    "year": 2009,
+    "summary": "Balanced mandatory photo requirements for drivers' licences against religious freedom claims.",
+    "principle": "Section 2(a) religious freedom and proportionate limits.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Alberta_v_Hutterian_Brethren_of_Wilson_Colony"
+  },
+  {
+    "id": "ca-dolphin-delivery",
+    "title": "Retail, Wholesale and Department Store Union v Dolphin Delivery (1986)",
+    "year": 1986,
+    "summary": "Early Charter-era guidance on application of Charter rights to private litigation.",
+    "principle": "Horizontal effect and Charter application scope.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/RWDSU_v_Dolphin_Delivery_Ltd."
+  },
+  {
+    "id": "ca-little-sisters",
+    "title": "Little Sisters Book and Art Emporium v Canada (2000)",
+    "year": 2000,
+    "summary": "Customs censorship of LGBTQ literature engaged freedom of expression and equality.",
+    "principle": "Expression, equality, and administrative decision-making.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Little_Sisters_Book_and_Art_Emporium_v._Canada_(Minister_of_Justice)"
+  }
+]

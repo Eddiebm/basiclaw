@@ -1,0 +1,50 @@
+[
+  {
+    "id": "ke-koigi-detention",
+    "title": "Historic habeas and detention challenges (1980s–90s)",
+    "year": 1987,
+    "summary": "Kenyan courts often adjudicated detention without trial under earlier constitutional orders—context for today's Bill of Rights.",
+    "principle": "Liberty and lawful detention under constitutional guarantees.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Politics_of_Kenya"
+  },
+  {
+    "id": "ke-katiba-2010-reference",
+    "title": "2010 Constitution adoption and judicial transformation",
+    "year": 2010,
+    "summary": "The 2010 Constitution entrenched a robust Bill of Rights and restructured devolution and judicial appointments.",
+    "principle": "Transformative constitutionalism and devolution.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Constitution_of_Kenya"
+  },
+  {
+    "id": "ke-mitu-bell-alliance",
+    "title": "Political party and electoral dispute jurisprudence",
+    "year": 2017,
+    "summary": "Supreme Court nullified a presidential election in 2017, underscoring electoral accountability.",
+    "principle": "Electoral justice and judicial independence.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/2017_Kenyan_general_election"
+  },
+  {
+    "id": "ke-r-m-m-v-r",
+    "title": "Gender representation and constitutional principles",
+    "year": 2012,
+    "summary": "Cases on two-thirds gender rule and representation illustrate evolving equality jurisprudence.",
+    "principle": "Equality and representative democracy.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Politics_of_Kenya"
+  },
+  {
+    "id": "ke-environmental-justice",
+    "title": "Environmental and community land decisions",
+    "year": 2020,
+    "summary": "Courts increasingly link land, environment, and community rights under the 2010 framework.",
+    "principle": "Socio-economic rights and land governance.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Environmental_issues_in_Kenya"
+  },
+  {
+    "id": "ke-bicameral-disputes",
+    "title": "Parliamentary privilege and bicameralism cases",
+    "year": 2015,
+    "summary": "Disputes between National Assembly and Senate clarified devolution-related legislative roles.",
+    "principle": "Legislative structure under devolution.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Parliament_of_Kenya"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "mx-amparo",
+    "title": "Juicio de amparo (constitutional remedy)",
+    "year": 1853,
+    "summary": "Mexico's amparo suit protects constitutional rights against acts of authority; central to federal justice.",
+    "principle": "Individual constitutional protections via amparo.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Amparo_(law)"
+  },
+  {
+    "id": "mx-actions-unconstitutionality",
+    "title": "Acción de inconstitucionalidad",
+    "year": 1994,
+    "summary": "Allows certain bodies to challenge laws for constitutional defects before the Supreme Court.",
+    "principle": "Abstract review of legislation.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Constitution_of_Mexico"
+  },
+  {
+    "id": "mx-human-rights-reforms",
+    "title": "2011 human rights constitutional reforms",
+    "year": 2011,
+    "summary": "Elevated human rights treaties' standing and strengthened human rights commissions.",
+    "principle": "International human rights law in domestic hierarchy.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Human_rights_in_Mexico"
+  },
+  {
+    "id": "mx-federalism-energy",
+    "title": "Federalism and energy sector litigation (illustrative)",
+    "year": 2021,
+    "summary": "Supreme Court cases on energy policy illustrate division of powers under the Constitution.",
+    "principle": "Economic regulation and federal competence.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Politics_of_Mexico"
+  },
+  {
+    "id": "mx-electoral-court",
+    "title": "Electoral Tribunal jurisprudence",
+    "year": 2000,
+    "summary": "Specialised electoral courts resolve disputes over democratic processes and party rights.",
+    "principle": "Electoral justice institutions.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Federal_Electoral_Tribunal"
+  }
+]

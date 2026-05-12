@@ -1,5 +1,5 @@
 import type { ConstitutionSnippet } from "@/lib/constitution-snippets";
-import { rankSnippetsForTopicQuery } from "@/lib/constitution-snippets";
+import { getRankedSnippetsByEmbedding } from "@/lib/constitution-snippets";
 import type { Country } from "@/data/types";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { getLastVerified, getSources } from "@/lib/jurisdictions";
@@ -44,23 +44,27 @@ function topicPrincipleRegex(topic: CompareTopic): RegExp {
   }
 }
 
-function pickBestSnippet(topic: CompareTopic, snippets: ConstitutionSnippet[]): ConstitutionSnippet | null {
-  const ranked = rankSnippetsForTopicQuery(TOPIC_SNIPPET_QUERY[topic], snippets, 3);
+async function pickBestSnippet(
+  topic: CompareTopic,
+  countryCode: string,
+  snippets: ConstitutionSnippet[]
+): Promise<ConstitutionSnippet | null> {
+  const ranked = await getRankedSnippetsByEmbedding(TOPIC_SNIPPET_QUERY[topic], countryCode, snippets, 3);
   if (ranked.length === 0) return null;
   return ranked[0] ?? null;
 }
 
-export function buildCompareSide(
+export async function buildCompareSide(
   country: Country,
   topic: CompareTopic,
   snippets: ConstitutionSnippet[]
-): CompareSidePayload {
+): Promise<CompareSidePayload> {
   const c = country.constitution;
   const re = topicPrincipleRegex(topic);
   const matched = pickPrinciples(country, re).slice(0, 8);
   const principles = matched.length > 0 ? matched : c.keyPrinciples.slice(0, 6);
 
-  const snippet = pickBestSnippet(topic, snippets);
+  const snippet = await pickBestSnippet(topic, country.code, snippets);
   let sectionHeading: string;
   let sectionBody: string;
 

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "za-government-v-grootboom",
+    "title": "Government of the Republic of South Africa v Grootboom (2000)",
+    "year": 2000,
+    "summary": "Courts may require government programmes to meet minimum core socio-economic rights obligations over time.",
+    "principle": "Justiciable socio-economic rights and progressive realisation.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Government_of_the_Republic_of_South_Africa_v_Grootboom"
+  },
+  {
+    "id": "za-minister-health-tac",
+    "title": "Minister of Health v Treatment Action Campaign (2002)",
+    "year": 2002,
+    "summary": "Government must roll out nevirapine to reduce mother-to-child HIV transmission where medically indicated.",
+    "principle": "Health rights and reasonable state measures.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Minister_of_Health_v_Treatment_Action_Campaign"
+  },
+  {
+    "id": "za-s-v-makwanyane",
+    "title": "S v Makwanyane (1995)",
+    "year": 1995,
+    "summary": "Constitutional Court abolished the death penalty as inconsistent with dignity and rights culture.",
+    "principle": "Right to life and dignity in criminal justice.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/S_v_Makwanyane"
+  },
+  {
+    "id": "za-certification-judgment",
+    "title": "Certification of the Constitution (1996)",
+    "year": 1996,
+    "summary": "Constitutional Court certified the final Constitution complied with constitutional principles.",
+    "principle": "Founding legitimacy of the 1996 Constitution.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Constitution_of_South_Africa"
+  },
+  {
+    "id": "za-occupiers-v-51",
+    "title": "Occupiers of 51 Olivia Road v City of Johannesburg (2008)",
+    "year": 2008,
+    "summary": "Meaningful engagement required before evictions affecting access to adequate housing.",
+    "principle": "Housing rights and eviction procedure.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/South_African_property_law"
+  },
+  {
+    "id": "za-glenister-v-president",
+    "title": "Glenister v President (2011)",
+    "year": 2011,
+    "summary": "Independence of anti-corruption bodies assessed against constitutional rule-of-law values.",
+    "principle": "Independent institutions supporting democracy.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Glenister_v_President"
+  },
+  {
+    "id": "za-economic-freedom-fighters",
+    "title": "EFF v Speaker of the National Assembly (illustrative parliamentary disputes)",
+    "year": 2016,
+    "summary": "Courts sometimes referee parliamentary discipline against constitutional free-speech guarantees for members.",
+    "principle": "Parliamentary privilege versus open democracy.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Economic_Freedom_Fighters"
+  }
+]

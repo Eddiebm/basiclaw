@@ -1,0 +1,50 @@
+[
+  {
+    "id": "br-adpf-153-favelas",
+    "title": "ADPF 153 (favela removals and dignity)",
+    "year": 2015,
+    "summary": "Supreme Federal Court addressed forced evictions and housing dignity in urban communities.",
+    "principle": "Dignity, housing, and proportionate state action.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Supreme_Federal_Court_(Brazil)"
+  },
+  {
+    "id": "br-direct-action-unconstitutionality",
+    "title": "ADI (Ação Direta de Inconstitucionalidade) framework",
+    "year": 1993,
+    "summary": "Brazil concentrates abstract constitutional review of statutes in the STF via ADIs.",
+    "principle": "Concentrated constitutional review.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Brazilian_constitutional_law"
+  },
+  {
+    "id": "br-mandado-seguranca",
+    "title": "Mandado de segurança (writ of security)",
+    "year": 1988,
+    "summary": "Constitutional writ protecting a clear and certain right against illegal abuse of authority.",
+    "principle": "Individual remedies against public power.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Mandado_de_seguran%C3%A7a"
+  },
+  {
+    "id": "br-stf-pension-reform",
+    "title": "Pension reform constitutionality challenges",
+    "year": 2019,
+    "summary": "STF reviewed EC 103/2019 changes balancing social security sustainability and acquired rights debates.",
+    "principle": "Social rights and constitutional amendments.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Constitution_of_Brazil"
+  },
+  {
+    "id": "br-environmental-licensing",
+    "title": "Environmental licensing and indigenous lands (illustrative STF docket)",
+    "year": 2021,
+    "summary": "Cases link environmental protection, consultation, and indigenous constitutional rights.",
+    "principle": "Environment, indigenous peoples, and participation.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Indigenous_peoples_in_Brazil"
+  },
+  {
+    "id": "br-party-fidelity",
+    "title": "Electoral party loyalty rules (illustrative)",
+    "year": 2007,
+    "summary": "STF jurisprudence on party switching and democratic representation under electoral law.",
+    "principle": "Electoral system integrity.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Politics_of_Brazil"
+  }
+]

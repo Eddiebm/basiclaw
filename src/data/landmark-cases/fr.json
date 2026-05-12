@@ -1,0 +1,42 @@
+[
+  {
+    "id": "fr-conseil-const-1971-liberte",
+    "title": "Conseil constitutionnel Decision 71-44 DC (freedom of association)",
+    "year": 1971,
+    "summary": "Expanded substantive review of laws against rights referenced in the Constitution's preamble and 1789 Declaration.",
+    "principle": "Bloc de constitutionnalité and rights review.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Constitutional_Council_(France)"
+  },
+  {
+    "id": "fr-veil-abortion",
+    "title": "Loi Veil framework (constitutional politics context)",
+    "year": 1975,
+    "summary": "Landmark legislation balancing public health, conscience, and autonomy—often discussed alongside constitutional values.",
+    "principle": "Legislative balancing of rights in sensitive medical contexts.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Abortion_in_France"
+  },
+  {
+    "id": "fr-qpc",
+    "title": "Question prioritaire de constitutionnalité (2010 reforms)",
+    "year": 2010,
+    "summary": "Created a pathway for litigants to challenge statutes' conformity with protected rights during litigation.",
+    "principle": "Concrete rights review in ordinary courts.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Question_prioritaire_de_constitutionnalit%C3%A9"
+  },
+  {
+    "id": "fr-council-europe-hatvany",
+    "title": "Conseil d'État landmark admin law (illustrative)",
+    "year": 1950,
+    "summary": "French administrative courts developed legality review of executive acts separate from ordinary courts.",
+    "principle": "Rule of law in administrative action.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Conseil_d%27%C3%89tat_(France)"
+  },
+  {
+    "id": "fr-laicite-headscarf",
+    "title": "Laïcité and religious symbols in schools (jurisprudence bundle)",
+    "year": 2004,
+    "summary": "Legislation and Council guidance on religious symbols in public schools illustrate tensions between neutrality and conscience.",
+    "principle": "Secularism and religious freedom in public institutions.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/La%C3%AFcit%C3%A9"
+  }
+]

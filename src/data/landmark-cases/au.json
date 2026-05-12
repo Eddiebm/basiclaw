@@ -1,0 +1,50 @@
+[
+  {
+    "id": "au-mabo-v-queensland-no2",
+    "title": "Mabo v Queensland (No 2) (1992)",
+    "year": 1992,
+    "summary": "Recognised native title at common law, rejecting terra nullius as a blanket doctrine for Australia.",
+    "principle": "Indigenous land rights and recognition under Australian law.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Mabo_v_Queensland_(No_2)"
+  },
+  {
+    "id": "au-wik-peoples-v-queensland",
+    "title": "Wik Peoples v Queensland (1996)",
+    "year": 1996,
+    "summary": "Pastoral leases did not necessarily extinguish all native title interests—coexistence models matter.",
+    "principle": "Native title and pastoral lease coexistence.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Wik_Peoples_v_Queensland"
+  },
+  {
+    "id": "au-lange-v-abc",
+    "title": "Lange v Australian Broadcasting Corporation (1997)",
+    "year": 1997,
+    "summary": "Developed implied constitutional freedom of political communication.",
+    "principle": "Implied freedom of political communication.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Lange_v_Australian_Broadcasting_Corporation"
+  },
+  {
+    "id": "au-plaintiff-s157",
+    "title": "Plaintiff S157/2002 v Commonwealth (2003)",
+    "year": 2003,
+    "summary": "Constitutional limits on ouster clauses restricting judicial review of migration decisions.",
+    "principle": "Judicial review and Chapter III courts.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Plaintiff_S157/2002_v_Commonwealth"
+  },
+  {
+    "id": "au-roach-v-electoral-commissioner",
+    "title": "Roach v Electoral Commissioner (2007)",
+    "year": 2007,
+    "summary": "Certain blanket disenfranchisement of prisoners was unconstitutional under the franchise implied in the Constitution.",
+    "principle": "Voting rights and proportionate disqualification.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Roach_v_Electoral_Commissioner"
+  },
+  {
+    "id": "au-actv-v-commonwealth",
+    "title": "Australian Capital Television v Commonwealth (1992)",
+    "year": 1992,
+    "summary": "Struck down a ban on political advertising on TV/radio as infringing implied freedom of political communication.",
+    "principle": "Implied freedom of political communication in elections.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Australian_Capital_Television_Pty_Ltd_v_Commonwealth"
+  }
+]

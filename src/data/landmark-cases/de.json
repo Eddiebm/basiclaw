@@ -1,0 +1,50 @@
+[
+  {
+    "id": "de-lueth",
+    "title": "Lüth decision (1958)",
+    "year": 1958,
+    "summary": "Federal Constitutional Court held basic rights have indirect third-party effect via civil law open norms.",
+    "principle": "Horizontal effect (mittelbare Drittwirkung) of basic rights.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/L%C3%BCth_decision"
+  },
+  {
+    "id": "de-mephisto",
+    "title": "Mephisto decision (1971)",
+    "year": 1971,
+    "summary": "Balanced artistic freedom against personality rights in publishing disputes.",
+    "principle": "Colliding basic rights and proportionality.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Mephisto_decision"
+  },
+  {
+    "id": "de-bverfg-lisbon",
+    "title": "Lisbon Treaty case (2009)",
+    "year": 2009,
+    "summary": "Bundestag must retain meaningful democratic control over EU integration steps.",
+    "principle": "Democracy and sovereignty in EU membership.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Lisbon_Treaty_judgment"
+  },
+  {
+    "id": "de-bverfg-npd-ban",
+    "title": "NPD ban proceedings (illustrative party democracy)",
+    "year": 2017,
+    "summary": "Illustrates militant democracy (streitbare Demokratie) limits on anti-constitutional parties.",
+    "principle": "Defensive democracy and party bans.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Militant_democracy"
+  },
+  {
+    "id": "de-data-retention",
+    "title": "Data retention decisions (telecommunications surveillance)",
+    "year": 2010,
+    "summary": "Repeated constitutional review struck or constrained blanket communications data retention laws.",
+    "principle": "Privacy of communications and proportionate surveillance.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Telecommunications_data_retention_in_Germany"
+  },
+  {
+    "id": "de-euro-bailout",
+    "title": "Euro rescue package cases",
+    "year": 2011,
+    "summary": "Bundestag budgetary autonomy limits on transfer union mechanisms under EU crisis responses.",
+    "principle": "Budgetary constitutional law and EU financial solidarity.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Eurozone_crisis"
+  }
+]

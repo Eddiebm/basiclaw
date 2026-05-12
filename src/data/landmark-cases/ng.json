@@ -1,0 +1,42 @@
+[
+  {
+    "id": "ng-lakanmi-california",
+    "title": "Lakanmi v Attorney-General (Western) (1971)",
+    "year": 1971,
+    "summary": "Early Nigerian case on military decrees and constitutional continuity—often cited in legal history teaching.",
+    "principle": "Constitutional order during military rule transitions.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Nigerian_constitutional_law"
+  },
+  {
+    "id": "ng-ag-abia-v-ag-federation",
+    "title": "AG Abia v AG Federation (Resource control litigation)",
+    "year": 2002,
+    "summary": "Supreme Court jurisprudence on federal resource allocation and derivation principles (ongoing constitutional debate).",
+    "principle": "Federalism and natural resource governance.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Politics_of_Nigeria"
+  },
+  {
+    "id": "ng-inakoju-v-adeleke",
+    "title": "Inakoju v Adeleke (2007)",
+    "year": 2007,
+    "summary": "Electoral and impeachment procedure disputes illustrating separation of powers in Nigerian democracy.",
+    "principle": "Legislative process and constitutional offices.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Nigerian_general_election,_2007"
+  },
+  {
+    "id": "ng-mojekwu-v-mojekwu",
+    "title": "Mojekwu v Mojekwu (1997)",
+    "year": 1997,
+    "summary": "Customary law inheritance practices assessed for consistency with constitutional non-discrimination values.",
+    "principle": "Customary law, gender equality, and fundamental rights.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Women%27s_rights_in_Nigeria"
+  },
+  {
+    "id": "ng-doherty-v-balewa",
+    "title": "Constitutional cases on electoral mandates (illustrative bundle)",
+    "year": 1962,
+    "summary": "Early republic-era election petitions show how courts police mandate disputes under the Constitution.",
+    "principle": "Electoral justice and judicial role in democracy.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Politics_of_Nigeria"
+  }
+]

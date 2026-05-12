@@ -2,6 +2,13 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import type { Country } from "@/data/types";
+import { embedQueryForRag } from "@/lib/query-embed";
+import {
+  getMeta,
+  loadSnippetEmbeddingsFile,
+  parseSnippetKey,
+  rankKeysByEmbedding,
+} from "@/lib/rag-embeddings";
 
 export interface ConstitutionSnippet {
   id: string;
@@ -86,7 +93,7 @@ export function rankSnippetsForMessage(
   return scored.slice(0, topK).map((x) => x.s);
 }
 
-/** Rank snippets for the constitution comparison tool (no full Country context). */
+/** Rank snippets for the constitution comparison tool (no full Country context). Keyword fallback. */
 export function rankSnippetsForTopicQuery(
   query: string,
   snippets: ConstitutionSnippet[],
@@ -110,6 +117,39 @@ export function rankSnippetsForTopicQuery(
   const picked = scored.filter((x) => x.score > 0).slice(0, topK);
   if (picked.length > 0) return picked.map((x) => x.s);
   return scored.slice(0, topK).map((x) => x.s);
+}
+
+/**
+ * Embedding retrieval over `src/data/constitution-snippets-embeddings.json` (precomputed).
+ * Falls back to `rankSnippetsForTopicQuery` when the embeddings file is missing or query embedding fails.
+ */
+export async function getRankedSnippetsByEmbedding(
+  query: string,
+  countryCode: string,
+  snippets: ConstitutionSnippet[],
+  k: number
+): Promise<ConstitutionSnippet[]> {
+  if (snippets.length === 0) return [];
+  const file = await loadSnippetEmbeddingsFile();
+  const meta = getMeta(file);
+  if (!file || !meta) {
+    return rankSnippetsForTopicQuery(query, snippets, k);
+  }
+  const qVec = await embedQueryForRag(query, meta);
+  if (!qVec) {
+    return rankSnippetsForTopicQuery(query, snippets, k);
+  }
+  const rankedKeys = rankKeysByEmbedding(qVec, file, countryCode, k);
+  const byId = new Map(snippets.map((s) => [s.id, s]));
+  const out: ConstitutionSnippet[] = [];
+  for (const { key } of rankedKeys) {
+    const id = parseSnippetKey(key, countryCode);
+    if (!id) continue;
+    const s = byId.get(id);
+    if (s) out.push(s);
+  }
+  if (out.length > 0) return out;
+  return rankSnippetsForTopicQuery(query, snippets, k);
 }
 
 export function formatSnippetsForPrompt(snippets: ConstitutionSnippet[]): string {

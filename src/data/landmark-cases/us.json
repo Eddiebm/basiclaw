@@ -1,0 +1,66 @@
+[
+  {
+    "id": "us-marbury-v-madison",
+    "title": "Marbury v. Madison (1803)",
+    "year": 1803,
+    "summary": "The Supreme Court articulated judicial review: courts may invalidate acts of Congress that conflict with the Constitution.",
+    "principle": "Judicial review of federal legislation.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Marbury_v._Madison"
+  },
+  {
+    "id": "us-brown-v-board",
+    "title": "Brown v. Board of Education (1954)",
+    "year": 1954,
+    "summary": "Held that state laws establishing separate public schools for Black and white students were unconstitutional.",
+    "principle": "Equal protection and desegregation in public education.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Brown_v._Board_of_Education"
+  },
+  {
+    "id": "us-miranda-v-arizona",
+    "title": "Miranda v. Arizona (1966)",
+    "year": 1966,
+    "summary": "Required police to inform suspects of rights to counsel and against self-incrimination before custodial interrogation.",
+    "principle": "Fifth and Sixth Amendment safeguards in custodial interrogation.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Miranda_v._Arizona"
+  },
+  {
+    "id": "us-nyt-v-sullivan",
+    "title": "New York Times Co. v. Sullivan (1964)",
+    "year": 1964,
+    "summary": "Constitutional limits on defamation suits by public officials; actual malice standard for speech about public figures.",
+    "principle": "First Amendment protection for criticism of public officials.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/New_York_Times_Co._v._Sullivan"
+  },
+  {
+    "id": "us-gideon-v-wainwright",
+    "title": "Gideon v. Wainwright (1963)",
+    "year": 1963,
+    "summary": "States must provide counsel to indigent defendants in felony cases under the Sixth Amendment.",
+    "principle": "Right to appointed counsel in serious criminal prosecutions.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Gideon_v._Wainwright"
+  },
+  {
+    "id": "us-united-states-v-nixon",
+    "title": "United States v. Nixon (1974)",
+    "year": 1974,
+    "summary": "Executive privilege could not shield tape recordings from a criminal subpoena in a prosecution context.",
+    "principle": "Limits on executive privilege and rule of law in investigations.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/United_States_v._Nixon"
+  },
+  {
+    "id": "us-obergefell-v-hodges",
+    "title": "Obergefell v. Hodges (2015)",
+    "year": 2015,
+    "summary": "Same-sex couples have a fundamental right to marry protected by the Due Process and Equal Protection Clauses.",
+    "principle": "Marriage equality under federal constitutional guarantees.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Obergefell_v._Hodges"
+  },
+  {
+    "id": "us-chevron-usa-v-nrdc",
+    "title": "Chevron U.S.A., Inc. v. NRDC (1984)",
+    "year": 1984,
+    "summary": "Framework for courts reviewing agency interpretations of ambiguous statutes—often taught in admin law.",
+    "principle": "Judicial deference to reasonable agency statutory interpretations (historical framework).",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Chevron_U.S.A.,_Inc._v._Natural_Resources_Defense_Council,_Inc."
+  }
+]

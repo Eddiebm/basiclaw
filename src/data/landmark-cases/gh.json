@@ -1,0 +1,42 @@
+[
+  {
+    "id": "gh-ex-parte-achimota",
+    "title": "Ex parte Achimota (public interest litigation context)",
+    "year": 2003,
+    "summary": "Illustrates Ghanaian Supreme Court supervision of public institutions and constitutional interpretation.",
+    "principle": "Judicial review in Ghana's 1992 constitutional order.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Supreme_Court_of_Ghana"
+  },
+  {
+    "id": "gh-tsatsu-tsikata-cases",
+    "title": "High-profile criminal procedure and fair trial jurisprudence",
+    "year": 2005,
+    "summary": "Series of decisions on fair trial rights, media, and executive power under the 1992 Constitution.",
+    "principle": "Fair trial and separation of powers.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Judicial_system_of_Ghana"
+  },
+  {
+    "id": "gh-new-patriotic-party-v-cec",
+    "title": "NPP v Electoral Commission (election petition patterns)",
+    "year": 2013,
+    "summary": "Ghana's Supreme Court frequently resolves presidential election petitions with detailed constitutional reasoning.",
+    "principle": "Electoral integrity and judicial finality.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/2012_Ghanaian_general_election"
+  },
+  {
+    "id": "gh-judicial-review-article-2",
+    "title": "Article 2 enforcement actions (illustrative)",
+    "year": 1996,
+    "summary": "Citizens may invoke Article 2 for interpretation and enforcement of the Constitution.",
+    "principle": "Direct constitutional enforcement.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Politics_of_Ghana"
+  },
+  {
+    "id": "gh-chief-justice-independence",
+    "title": "Judicial independence and disciplinary framework",
+    "year": 2015,
+    "summary": "Council processes and constitutional protections for an independent judiciary.",
+    "principle": "Institutional independence of the judiciary.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Judicial_system_of_Ghana"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "jp-hakata-station-food-poisoning",
+    "title": "State liability and rights (postwar development)",
+    "year": 1956,
+    "summary": "Early Supreme Court cases shaped tort liability of the state and individual remedies.",
+    "principle": "State responsibility and individual rights under the postwar Constitution.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Supreme_Court_of_Japan"
+  },
+  {
+    "id": "jp-sunakawa",
+    "title": "Sunakawa protest case (security treaty context)",
+    "year": 1959,
+    "summary": "Political question over US bases—courts sometimes defer on highly political security arrangements.",
+    "principle": "Political question doctrine and security policy.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Sunakawa_case"
+  },
+  {
+    "id": "jp-patriotic-forced-self-incrimination",
+    "title": "Self-incrimination and fair trial (Showa-era transitions)",
+    "year": 1983,
+    "summary": "Criminal procedure rights under Articles 31–38 interpreted with civil-law procedure traditions.",
+    "principle": "Fair criminal process.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Criminal_justice_system_of_Japan"
+  },
+  {
+    "id": "jp-gender-equality-employment",
+    "title": "Gender equality in employment (bundle)",
+    "year": 1997,
+    "summary": "Courts and legislation narrowed workplace discrimination under equality principles linked to the Constitution.",
+    "principle": "Workplace equality.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Gender_equality_in_Japan"
+  },
+  {
+    "id": "jp-religious-education",
+    "title": "Religion and public education disputes",
+    "year": 1976,
+    "summary": "Article 20 separation of religion and state applied to school ceremonies and public funding questions.",
+    "principle": "Religious neutrality in public schools.",
+    "sourceUrl": "https://en.wikipedia.org/wiki/Religion_in_Japan"
+  }
+]

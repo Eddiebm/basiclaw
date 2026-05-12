@@ -108,10 +108,11 @@ export default async function ComparePage({
     ],
   };
 
-  const panels = {
-    a: buildCompareSide(countryA, topic, snippetsA),
-    b: buildCompareSide(countryB, topic, snippetsB),
-  };
+  const [aPanel, bPanel] = await Promise.all([
+    buildCompareSide(countryA, topic, snippetsA),
+    buildCompareSide(countryB, topic, snippetsB),
+  ]);
+  const panels = { a: aPanel, b: bPanel };
 
   const narrativeFacts = buildCompareNarrativeFacts(countryA, countryB, topic, t(`topics.${topic}`));
 
