@@ -14,15 +14,18 @@
     "import:lawyers": "node scripts/import-lawyers/run-all.mjs"
   },
   "dependencies": {
+    "@ai-sdk/gateway": "^3.0.114",
     "@clerk/localizations": "^4.6.2",
     "@clerk/nextjs": "^7.3.3",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-toggle": "^1.1.0",
+    "@sentry/nextjs": "^10.53.1",
     "@stripe/stripe-js": "^9.4.0",
     "@upstash/redis": "^1.38.0",
     "@xenova/transformers": "^2.17.2",
+    "ai": "^6.0.180",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.15.0",

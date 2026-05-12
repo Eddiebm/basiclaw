@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 import type { Country } from "@/data/types";
 import { getCountry, getSources } from "@/lib/jurisdictions";
@@ -131,13 +132,76 @@ export async function POST(request: NextRequest) {
     }
 
     const country = getCountry((jurisdiction || "us").toLowerCase()) ?? getCountry("us")!;
-    const snippetEmbFile = await loadSnippetEmbeddingsFile();
-    const embMeta = getMeta(snippetEmbFile) ?? { dim: 384, model: "Xenova/all-MiniLM-L6-v2", provider: "xenova" as const };
-    const queryEmbedding = await embedQueryForRag(message, embMeta);
-    const { cache: cacheHit, related } = await findSimilarPublicAnswers(queryEmbedding, country.code.toLowerCase());
-    const relatedSavedAnswers = related.map((r) => ({ id: r.id, question: r.record.question, score: r.score }));
+    Sentry.setTag("route", "/api/chat");
+    Sentry.setTag("jurisdiction", country.code.toLowerCase());
+    if (locale) Sentry.setTag("locale", locale);
+    if (embedTenant?.id) Sentry.setTag("embedTenantId", embedTenant.id);
 
-    if (cacheHit) {
+    const embPhase = await Sentry.startSpan({ name: "chat.embedding_similarity", op: "search.embeddings" }, async () => {
+      const snippetEmbFile = await loadSnippetEmbeddingsFile();
+      const embMeta = getMeta(snippetEmbFile) ?? { dim: 384, model: "Xenova/all-MiniLM-L6-v2", provider: "xenova" as const };
+      const queryEmbedding = await embedQueryForRag(message, embMeta);
+      const found = await findSimilarPublicAnswers(queryEmbedding, country.code.toLowerCase());
+      const relatedSavedAnswers = found.related.map((r) => ({ id: r.id, question: r.record.question, score: r.score }));
+
+      if (found.cache) {
+        return { kind: "cache" as const, cacheHit: found.cache, relatedSavedAnswers };
+      }
+
+      const snippets = await loadSnippetsForCountry(country.code);
+      const cases = await loadLandmarkCasesForCountry(country.code);
+      const q = ragQueryText(message, country);
+      const [rankedSnippets, rankedCases] = await Promise.all([
+        getRankedSnippetsByEmbedding(q, country.code, snippets, SNIPPET_TOP_K),
+        getRankedLandmarkCasesByEmbedding(q, country.code, cases, CASE_TOP_K),
+      ]);
+      const ragBlock = [formatSnippetsForPrompt(rankedSnippets), formatLandmarkCasesForPrompt(rankedCases)].filter(Boolean).join("\n\n");
+      const jurisdictionInfo = buildSystemPrompt(country, ragBlock);
+      const citationsPayload: Array<{
+        id: string;
+        title: string;
+        source: string;
+        snippet: string;
+        url?: string;
+        kind: "snippet" | "case";
+      }> = [
+        ...rankedSnippets.map((s) => ({
+          id: `snippet:${s.id}`,
+          title: s.title,
+          source: "BasicLaw snippet",
+          snippet: s.excerpt.slice(0, 280),
+          kind: "snippet" as const,
+        })),
+        ...rankedCases.map((c) => ({
+          id: `case:${c.id}`,
+          title: c.title,
+          source: c.sourceUrl,
+          url: c.sourceUrl,
+          snippet: `${c.principle} — ${c.summary}`.slice(0, 320),
+          kind: "case" as const,
+        })),
+      ];
+      const appendix = buildReferenceAppendix(country);
+      let userContent = message;
+      if (isConstitutionRelatedQuestion(message)) {
+        userContent = `${constitutionContextBlock(country)}\n\n---\n\n**User question**\n${message}`;
+      }
+      const messages = [
+        { role: "system", content: `${jurisdictionInfo.prompt}\n\n${appendix}` },
+        { role: "user", content: userContent },
+      ];
+      return {
+        kind: "rag" as const,
+        relatedSavedAnswers,
+        jurisdictionInfo,
+        citationsPayload,
+        messages,
+      };
+    });
+
+    if (embPhase.kind === "cache") {
+      const cacheHit = embPhase.cacheHit;
+      const relatedSavedAnswers = embPhase.relatedSavedAnswers;
       const c = cacheHit.record;
       const citationsPayload = (c.citations ?? []).map((cite) => ({
         id: cite.id,
@@ -159,55 +223,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const snippets = await loadSnippetsForCountry(country.code);
-    const cases = await loadLandmarkCasesForCountry(country.code);
-    const q = ragQueryText(message, country);
-    const [rankedSnippets, rankedCases] = await Promise.all([
-      getRankedSnippetsByEmbedding(q, country.code, snippets, SNIPPET_TOP_K),
-      getRankedLandmarkCasesByEmbedding(q, country.code, cases, CASE_TOP_K),
-    ]);
-    const ragBlock = [formatSnippetsForPrompt(rankedSnippets), formatLandmarkCasesForPrompt(rankedCases)].filter(Boolean).join("\n\n");
-
-    const jurisdictionInfo = buildSystemPrompt(country, ragBlock);
-
-    const citationsPayload: Array<{
-      id: string;
-      title: string;
-      source: string;
-      snippet: string;
-      url?: string;
-      kind: "snippet" | "case";
-    }> = [
-      ...rankedSnippets.map((s) => ({
-        id: `snippet:${s.id}`,
-        title: s.title,
-        source: "BasicLaw snippet",
-        snippet: s.excerpt.slice(0, 280),
-        kind: "snippet" as const,
-      })),
-      ...rankedCases.map((c) => ({
-        id: `case:${c.id}`,
-        title: c.title,
-        source: c.sourceUrl,
-        url: c.sourceUrl,
-        snippet: `${c.principle} — ${c.summary}`.slice(0, 320),
-        kind: "case" as const,
-      })),
-    ];
-    const appendix = buildReferenceAppendix(country);
-
-    let userContent = message;
-    if (isConstitutionRelatedQuestion(message)) {
-      userContent = `${constitutionContextBlock(country)}\n\n---\n\n**User question**\n${message}`;
-    }
-
-    const messages = [
-      {
-        role: "system",
-        content: `${jurisdictionInfo.prompt}\n\n${appendix}`,
-      },
-      { role: "user", content: userContent },
-    ];
+    const { relatedSavedAnswers, jurisdictionInfo, citationsPayload, messages } = embPhase;
 
     const hasLlm =
       Boolean(process.env.AI_GATEWAY_API_KEY?.trim()) || Boolean(process.env.OPENROUTER_API_KEY?.trim());
@@ -252,24 +268,26 @@ export async function POST(request: NextRequest) {
 
     let assistantResponse: string;
     try {
-      const { text } = await generateChatCompletionText({
-        messages: messages as Array<{ role: "system" | "user" | "assistant"; content: string }>,
-        maxTokens: 1500,
-        temperature: 0.5,
-      });
+      const { text } = await Sentry.startSpan({ name: "chat.llm_completion", op: "ai.chat" }, () =>
+        generateChatCompletionText({
+          messages: messages as Array<{ role: "system" | "user" | "assistant"; content: string }>,
+          maxTokens: 1500,
+          temperature: 0.5,
+        })
+      );
       assistantResponse = text;
     } catch (e) {
-      console.error("Chat LLM error:", e);
+      Sentry.captureException(e);
       return NextResponse.json({ error: "Failed to get response from AI service" }, { status: 500 });
     }
 
-    await incrementUsage("chat", usageUserId, usageIpHash).catch(() => {
-      /* non-fatal */
-    });
-
-    let savedAnswerId: string | undefined;
-    let isPublicSaved = false;
-    if (userId) {
+    const persist = await Sentry.startSpan({ name: "chat.storage_persist", op: "db.write" }, async () => {
+      await incrementUsage("chat", usageUserId, usageIpHash).catch(() => {
+        /* non-fatal */
+      });
+      if (!userId) {
+        return { savedAnswerId: undefined as string | undefined, isPublicSaved: false };
+      }
       const citationsForSave: SavedCitation[] = citationsPayload.map((c) => ({
         id: c.id,
         title: c.title,
@@ -286,11 +304,13 @@ export async function POST(request: NextRequest) {
         citations: citationsForSave,
         userId,
       }).catch(() => null);
-      if (saved) {
-        savedAnswerId = saved.id;
-        isPublicSaved = saved.isPublic;
-      }
-    }
+      return {
+        savedAnswerId: saved?.id,
+        isPublicSaved: saved ? saved.isPublic : false,
+      };
+    });
+
+    const { savedAnswerId, isPublicSaved } = persist;
 
     return NextResponse.json({
       response: assistantResponse,
@@ -300,7 +320,7 @@ export async function POST(request: NextRequest) {
       isPublicSaved,
     });
   } catch (error) {
-    console.error("Chat API error:", error);
+    Sentry.captureException(error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

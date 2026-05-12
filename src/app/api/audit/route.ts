@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import * as Sentry from "@sentry/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 import { routing } from "@/i18n/routing";
 import { buildSharedAuditHref, createSharedAuditToken } from "@/lib/shared-audit-url";
@@ -63,9 +64,11 @@ async function extractFromForm(
     filename = file.name;
     if (file.type === "application/pdf") {
       const buffer = Buffer.from(await file.arrayBuffer());
-      const pdfParseModule = (await import("pdf-parse")) as unknown as { default?: (b: Buffer) => Promise<{ text: string }> } & ((b: Buffer) => Promise<{ text: string }>);
-      const pdfParse = pdfParseModule.default ?? pdfParseModule;
-      const result = await pdfParse(buffer);
+      const result = await Sentry.startSpan({ name: "audit.pdf_parse", op: "file.parse" }, async () => {
+        const pdfParseModule = (await import("pdf-parse")) as unknown as { default?: (b: Buffer) => Promise<{ text: string }> } & ((b: Buffer) => Promise<{ text: string }>);
+        const pdfParse = pdfParseModule.default ?? pdfParseModule;
+        return pdfParse(buffer);
+      });
       extracted = result.text;
     } else {
       extracted = await file.text();
@@ -115,6 +118,11 @@ export async function POST(request: NextRequest) {
     }
     const embedTenant = embedRes.tenant;
 
+    Sentry.setTag("route", "/api/audit");
+    Sentry.setTag("jurisdiction", extracted.jurisdiction);
+    if (locale) Sentry.setTag("locale", locale);
+    if (embedTenant?.id) Sentry.setTag("embedTenantId", embedTenant.id);
+
     const userId = await getCurrentUserId();
     const ipHash = hashIpForUsage(clientIp(request));
     const billingPlan = await getUserPlanForUserId(userId);
@@ -143,13 +151,17 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const outcome = await runAuditPipeline({
-      text: extracted.text,
-      jurisdiction: extracted.jurisdiction,
-      documentType: extracted.documentType,
-      auditType: extracted.auditType,
-      source: "web",
-    });
+    const outcome = await Sentry.startSpan(
+      { name: "audit.pipeline", op: "ai.audit", attributes: { audit_type: extracted.auditType } },
+      () =>
+        runAuditPipeline({
+          text: extracted.text,
+          jurisdiction: extracted.jurisdiction,
+          documentType: extracted.documentType,
+          auditType: extracted.auditType,
+          source: "web",
+        })
+    );
 
     if (!outcome.ok) {
       return NextResponse.json(
@@ -164,36 +176,38 @@ export async function POST(request: NextRequest) {
     const safeLocale = (routing.locales as readonly string[]).includes(rawLoc) ? rawLoc : "en";
 
     let shareHref: string | undefined;
-    if (userId) {
-      const title =
-        report.documentType?.trim() ||
-        extracted.documentType?.trim() ||
-        `${report.auditType} audit`;
-      await saveAuditForUser({
-        id: auditId,
-        userId,
-        auditType: report.auditType,
-        jurisdiction: report.jurisdictionCode,
-        title,
-        report,
-        updatedAt: new Date().toISOString(),
-      });
-      shareHref = buildSharedAuditHref(safeLocale, createSharedAuditToken(userId, auditId));
-    }
+    await Sentry.startSpan({ name: "audit.storage_persist", op: "db.write" }, async () => {
+      if (userId) {
+        const title =
+          report.documentType?.trim() ||
+          extracted.documentType?.trim() ||
+          `${report.auditType} audit`;
+        await saveAuditForUser({
+          id: auditId,
+          userId,
+          auditType: report.auditType,
+          jurisdiction: report.jurisdictionCode,
+          title,
+          report,
+          updatedAt: new Date().toISOString(),
+        });
+        shareHref = buildSharedAuditHref(safeLocale, createSharedAuditToken(userId, auditId));
+      }
 
-    await incrementUsage("audit", usageUserId, usageIpHash).catch(() => {
-      /* non-fatal */
-    });
-    if (extracted.auditType === "demand_letter") {
-      await incrementUsage("demand_letter", usageUserId, usageIpHash).catch(() => {
+      await incrementUsage("audit", usageUserId, usageIpHash).catch(() => {
         /* non-fatal */
       });
-    }
+      if (extracted.auditType === "demand_letter") {
+        await incrementUsage("demand_letter", usageUserId, usageIpHash).catch(() => {
+          /* non-fatal */
+        });
+      }
+    });
 
     return NextResponse.json(shareHref ? { report, shareHref } : { report });
   } catch (error) {
+    Sentry.captureException(error);
     const message = error instanceof Error ? error.message : "Unknown error";
-    console.error("[audit] error", message);
     return NextResponse.json({ error: "audit_failed", message }, { status: 400 });
   }
 }

@@ -1,4 +1,5 @@
 import { clerkClient } from "@clerk/nextjs/server";
+import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { mapStripePriceIdToPlan } from "@/lib/stripe-plan";
@@ -34,7 +35,7 @@ async function setClerkPlan(userId: string | undefined | null, plan: "free" | "p
       publicMetadata: { plan },
     });
   } catch (e) {
-    console.error("[stripe.webhook] clerk update failed", userId, e);
+    Sentry.captureException(e);
   }
 }
 
@@ -57,61 +58,71 @@ export async function POST(request: Request) {
     event = stripe.webhooks.constructEvent(rawBody, signature, secret);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown verification error";
+    Sentry.captureException(error);
     return NextResponse.json({ error: "invalid_signature", message }, { status: 400 });
   }
 
-  switch (event.type) {
-    case "checkout.session.completed": {
-      const session = event.data.object as Stripe.Checkout.Session;
-      logEvent(event);
-      if (session.mode !== "subscription") break;
-      const userId = session.client_reference_id || (session.metadata?.clerkUserId as string | undefined);
-      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 10 });
-      const priceId = lineItems.data[0]?.price?.id ?? null;
-      const plan = mapStripePriceIdToPlan(priceId);
-      if (plan !== "free") {
-        await setClerkPlan(userId, plan);
-      }
-      break;
-    }
-    case "customer.subscription.created":
-    case "customer.subscription.updated":
-    case "customer.subscription.paused":
-    case "customer.subscription.resumed": {
-      const sub = event.data.object as Stripe.Subscription;
-      logEvent(event);
-      const userId = sub.metadata?.clerkUserId as string | undefined;
-      if (!userId) break;
-      if (sub.status === "past_due") {
-        await setClerkPlan(userId, "free");
-        break;
-      }
-      if (sub.status === "canceled" || sub.status === "unpaid" || sub.status === "incomplete_expired") {
-        await setClerkPlan(userId, "free");
-        break;
-      }
-      if (sub.status === "active" || sub.status === "trialing") {
-        const priceId = sub.items.data[0]?.price?.id;
-        const plan = mapStripePriceIdToPlan(priceId);
-        if (plan !== "free") {
-          await setClerkPlan(userId, plan);
+  await Sentry.startSpan(
+    {
+      name: `stripe.webhook.${event.type}`,
+      op: "stripe.webhook",
+      attributes: { "stripe.event_id": event.id },
+    },
+    async () => {
+      switch (event.type) {
+        case "checkout.session.completed": {
+          const session = event.data.object as Stripe.Checkout.Session;
+          logEvent(event);
+          if (session.mode !== "subscription") break;
+          const userId = session.client_reference_id || (session.metadata?.clerkUserId as string | undefined);
+          const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 10 });
+          const priceId = lineItems.data[0]?.price?.id ?? null;
+          const plan = mapStripePriceIdToPlan(priceId);
+          if (plan !== "free") {
+            await setClerkPlan(userId, plan);
+          }
+          break;
         }
+        case "customer.subscription.created":
+        case "customer.subscription.updated":
+        case "customer.subscription.paused":
+        case "customer.subscription.resumed": {
+          const sub = event.data.object as Stripe.Subscription;
+          logEvent(event);
+          const userId = sub.metadata?.clerkUserId as string | undefined;
+          if (!userId) break;
+          if (sub.status === "past_due") {
+            await setClerkPlan(userId, "free");
+            break;
+          }
+          if (sub.status === "canceled" || sub.status === "unpaid" || sub.status === "incomplete_expired") {
+            await setClerkPlan(userId, "free");
+            break;
+          }
+          if (sub.status === "active" || sub.status === "trialing") {
+            const priceId = sub.items.data[0]?.price?.id;
+            const plan = mapStripePriceIdToPlan(priceId);
+            if (plan !== "free") {
+              await setClerkPlan(userId, plan);
+            }
+          }
+          break;
+        }
+        case "customer.subscription.deleted": {
+          const sub = event.data.object as Stripe.Subscription;
+          logEvent(event);
+          const userId = sub.metadata?.clerkUserId as string | undefined;
+          await setClerkPlan(userId, "free");
+          break;
+        }
+        case "invoice.payment_failed":
+          logEvent(event);
+          break;
+        default:
+          logEvent(event);
       }
-      break;
     }
-    case "customer.subscription.deleted": {
-      const sub = event.data.object as Stripe.Subscription;
-      logEvent(event);
-      const userId = sub.metadata?.clerkUserId as string | undefined;
-      await setClerkPlan(userId, "free");
-      break;
-    }
-    case "invoice.payment_failed":
-      logEvent(event);
-      break;
-    default:
-      logEvent(event);
-  }
+  );
 
   return NextResponse.json({ received: true });
 }

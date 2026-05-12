@@ -54,6 +54,10 @@ npm run dev
 | Newsletter | `UNSUBSCRIBE_SECRET` | Recommended | Signs `/api/unsubscribe` tokens. |
 | Sharing | `SHARED_AUDIT_SECRET` | Recommended | HMAC for dashboard “open shared audit” links. |
 | Build | `BUILD_LLM_KEY` | Optional | US state card copy generation. |
+| Observability | `NEXT_PUBLIC_SENTRY_DSN` | Optional | Sentry browser + server fallback; when unset, SDK initialisation is skipped. |
+| Observability | `SENTRY_DSN` | Optional | Separate server/edge DSN if you do not want to reuse the public DSN. |
+| Observability | `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` | For CI/source maps | Build-time upload to Sentry; omit locally if you do not upload maps. |
+| Internal | `LAUNCH_KEY` | **Required in production** for `/launch?key=` and `/[locale]/internal/health?key=` | Same gate as the launch playbook. |
 
 See `.env.example` for copy-paste stubs.
 

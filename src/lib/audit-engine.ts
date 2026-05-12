@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { getCountry } from "@/lib/jurisdictions";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
 import type {
@@ -12,6 +13,7 @@ import type {
   RiskGrade,
   TermsStructuredFindings,
 } from "@/lib/audit-types";
+import { generateChatCompletionText } from "@/lib/llm-chat-completion";
 
 export const MAX_TEXT_CHARS = 60_000;
 export const MIN_TEXT_CHARS = 200;
@@ -361,13 +363,14 @@ export async function runAuditPipeline(options: RunAuditOptions): Promise<AuditO
   const jurisdictionName = country.name;
   const legalSystem = LEGAL_SYSTEM_LABELS[country.legalSystem];
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
-  if (!apiKey) {
+  const hasLlm =
+    Boolean(process.env.AI_GATEWAY_API_KEY?.trim()) || Boolean(process.env.OPENROUTER_API_KEY?.trim());
+  if (!hasLlm) {
     return {
       ok: false,
       status: 503,
       error: "ai_not_configured",
-      message: "OPENROUTER_API_KEY is not set on the server. The audit cannot run.",
+      message: "No AI is configured on the server (set AI_GATEWAY_API_KEY or OPENROUTER_API_KEY). The audit cannot run.",
     };
   }
 
@@ -379,44 +382,34 @@ export async function runAuditPipeline(options: RunAuditOptions): Promise<AuditO
     auditType: options.auditType,
   });
 
-  const titleSuffix = options.source ? ` - ${options.source}` : "";
-  const completion = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": siteUrl(),
-      "X-Title": `BasicLaw - Audit${titleSuffix}`,
-    },
-    body: JSON.stringify({
-      model: process.env.OPENROUTER_AUDIT_MODEL || process.env.OPENROUTER_MODEL || "openai/gpt-oss-20b:free",
-      messages: [
-        { role: "system", content: "You output strictly valid JSON. No prose. No markdown." },
-        { role: "user", content: prompt },
-      ],
-      temperature: 0.2,
-      max_tokens:
-        options.auditType === "general"
-          ? 1400
-          : options.auditType === "demand_letter"
-            ? 2800
-            : 2000,
-    }),
-  });
+  const maxTokens =
+    options.auditType === "general" ? 1400 : options.auditType === "demand_letter" ? 2800 : 2000;
+  const auditModel = process.env.OPENROUTER_AUDIT_MODEL || process.env.OPENROUTER_MODEL || "openai/gpt-oss-20b:free";
 
-  if (!completion.ok) {
-    const errorBody = await completion.text();
-    console.error("[audit] OpenRouter error", completion.status, errorBody);
+  let content: string;
+  try {
+    const { text } = await Sentry.startSpan({ name: "audit.llm_completion", op: "ai.generate" }, () =>
+      generateChatCompletionText({
+        messages: [
+          { role: "system", content: "You output strictly valid JSON. No prose. No markdown." },
+          { role: "user", content: prompt },
+        ],
+        temperature: 0.2,
+        maxTokens,
+        model: auditModel,
+      })
+    );
+    content = text;
+  } catch (e) {
+    Sentry.captureException(e);
     return {
       ok: false,
       status: 502,
       error: "ai_error",
-      message: `Audit model returned ${completion.status}.`,
+      message: "Audit model request failed.",
     };
   }
 
-  const data = (await completion.json()) as { choices?: Array<{ message?: { content?: string } }> };
-  const content = data.choices?.[0]?.message?.content ?? "";
   if (!content) {
     return {
       ok: false,

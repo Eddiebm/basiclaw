@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import * as Sentry from "@sentry/nextjs";
 import { NextResponse } from "next/server";
 import {
   MIN_TEXT_CHARS,
@@ -167,6 +168,10 @@ export async function POST(request: Request) {
   const auditType = normaliseAuditType(payload.auditType);
   const jurisdiction = (payload.jurisdiction ?? "us").toLowerCase();
 
+  Sentry.setTag("route", "/api/audit/extension");
+  Sentry.setTag("jurisdiction", jurisdiction);
+  if (locale) Sentry.setTag("locale", locale);
+
   const userId = await getCurrentUserId();
   const ipHash = hashIpForUsage(ip);
   const plan = await getUserPlanForUserId(userId);
@@ -192,13 +197,17 @@ export async function POST(request: Request) {
     }
   }
 
-  const outcome = await runAuditPipeline({
-    text,
-    jurisdiction,
-    documentType: payload.documentType,
-    auditType,
-    source: "extension",
-  });
+  const outcome = await Sentry.startSpan(
+    { name: "audit.extension.llm_pipeline", op: "ai.audit", attributes: { audit_type: auditType } },
+    () =>
+      runAuditPipeline({
+        text,
+        jurisdiction,
+        documentType: payload.documentType,
+        auditType,
+        source: "extension",
+      })
+  );
 
   if (!outcome.ok) {
     return NextResponse.json(
@@ -208,30 +217,32 @@ export async function POST(request: Request) {
   }
 
   const report = outcome.report as AuditReport;
-  if (userId) {
-    const title =
-      report.documentType?.trim() ||
-      payload.documentType?.trim() ||
-      `${report.auditType} audit`;
-    await saveAuditForUser({
-      id: randomUUID(),
-      userId,
-      auditType: report.auditType,
-      jurisdiction: report.jurisdictionCode,
-      title,
-      report,
-      updatedAt: new Date().toISOString(),
-    });
-  }
+  await Sentry.startSpan({ name: "audit.extension.storage_persist", op: "db.write" }, async () => {
+    if (userId) {
+      const title =
+        report.documentType?.trim() ||
+        payload.documentType?.trim() ||
+        `${report.auditType} audit`;
+      await saveAuditForUser({
+        id: randomUUID(),
+        userId,
+        auditType: report.auditType,
+        jurisdiction: report.jurisdictionCode,
+        title,
+        report,
+        updatedAt: new Date().toISOString(),
+      });
+    }
 
-  await incrementUsage("audit", userId, ipHash).catch(() => {
-    /* non-fatal */
-  });
-  if (auditType === "demand_letter") {
-    await incrementUsage("demand_letter", userId, ipHash).catch(() => {
+    await incrementUsage("audit", userId, ipHash).catch(() => {
       /* non-fatal */
     });
-  }
+    if (auditType === "demand_letter") {
+      await incrementUsage("demand_letter", userId, ipHash).catch(() => {
+        /* non-fatal */
+      });
+    }
+  });
 
   return NextResponse.json({ report }, { headers });
 }
