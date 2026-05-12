@@ -13,8 +13,7 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "faqPage" });
   return {
     title: `${t("title")} | BasicLaw`,
-    description:
-      "Everything you might want to ask before trusting BasicLaw with a legal question — accuracy, sources, jurisdictions, pricing, and limits.",
+    description: t("metaDescription"),
     alternates: { canonical: `/${locale}/faq` },
   };
 }

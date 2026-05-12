@@ -291,12 +291,30 @@
     "browseTopics": "Browse all topics",
     "askThis": "Ask this",
     "items": {
-      "q1": { "category": "police", "text": "What should I do if police pull me over?" },
-      "q2": { "category": "housing", "text": "Can my landlord enter my apartment without notice?" },
-      "q3": { "category": "employment", "text": "Am I entitled to overtime pay?" },
-      "q4": { "category": "contracts", "text": "What happens if I sign a contract I don't understand?" },
-      "q5": { "category": "family", "text": "How do I get a copy of my birth certificate?" },
-      "q6": { "category": "consumer", "text": "Can I return a product if I changed my mind?" }
+      "q1": {
+        "category": "police",
+        "text": "What should I do if police pull me over?"
+      },
+      "q2": {
+        "category": "housing",
+        "text": "Can my landlord enter my apartment without notice?"
+      },
+      "q3": {
+        "category": "employment",
+        "text": "Am I entitled to overtime pay?"
+      },
+      "q4": {
+        "category": "contracts",
+        "text": "What happens if I sign a contract I don't understand?"
+      },
+      "q5": {
+        "category": "family",
+        "text": "How do I get a copy of my birth certificate?"
+      },
+      "q6": {
+        "category": "consumer",
+        "text": "Can I return a product if I changed my mind?"
+      }
     },
     "categories": {
       "police": "Police & stops",
@@ -613,7 +631,8 @@
   },
   "faqPage": {
     "title": "BasicLaw, in plain answers.",
-    "subtitle": "What we are, what we are not, and what to expect."
+    "subtitle": "What we are, what we are not, and what to expect.",
+    "metaDescription": "Everything you might want to ask before trusting BasicLaw with a legal question — accuracy, sources, jurisdictions, pricing, and limits."
   },
   "homeFaq": {
     "badge": "Frequently asked",

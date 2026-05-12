@@ -113,7 +113,8 @@
   },
   "faqPage": {
     "title": "BasicLaw, en réponses simples.",
-    "subtitle": "Ce que nous sommes — et ce que nous ne sommes pas."
+    "subtitle": "Ce que nous sommes — et ce que nous ne sommes pas.",
+    "metaDescription": "Tout ce que vous pourriez vouloir savoir avant de faire confiance à BasicLaw pour une question juridique : exactitude, sources, juridictions, tarifs et limites."
   },
   "constitutionBrowse": {
     "back": "Retour à BasicLaw",

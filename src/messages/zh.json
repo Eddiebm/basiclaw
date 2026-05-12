@@ -99,7 +99,8 @@
   },
   "faqPage": {
     "title": "BasicLaw，直白解答。",
-    "subtitle": "我们是什么，不是什么。"
+    "subtitle": "我们是什么，不是什么。",
+    "metaDescription": "在向 BasicLaw 咨询法律问题之前，你可能想了解的一切：准确性、来源、司法辖区、定价与限制。"
   },
   "constitutionBrowse": {
     "back": "返回 BasicLaw",

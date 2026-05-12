@@ -99,7 +99,8 @@
   },
   "faqPage": {
     "title": "BasicLaw بإجابات مباشرة.",
-    "subtitle": "ما نحن عليه وما لسنا."
+    "subtitle": "ما نحن عليه وما لسنا.",
+    "metaDescription": "كل ما قد ترغب في معرفته قبل الثقة بـ BasicLaw لسؤال قانوني: الدقة، المصادر، الولايات القضائية، التسعير والحدود."
   },
   "constitutionBrowse": {
     "back": "العودة إلى BasicLaw",

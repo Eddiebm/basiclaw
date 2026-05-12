@@ -55,9 +55,14 @@ export default async function LaunchPlaybookPage({
 }) {
   const [{ locale }, sp] = await Promise.all([params, searchParams ?? Promise.resolve({})]);
   void locale;
-  const need = process.env.LAUNCH_KEY;
+  const need = process.env.LAUNCH_KEY?.trim();
   const key = typeof sp === "object" && sp && "key" in sp ? String((sp as { key?: string }).key ?? "") : "";
-  if (need && key !== need) notFound();
+  const isProd = process.env.NODE_ENV === "production";
+  if (isProd) {
+    if (!need || key !== need) notFound();
+  } else if (need && key !== need) {
+    notFound();
+  }
 
   const docs = await readLaunchDocs();
 
