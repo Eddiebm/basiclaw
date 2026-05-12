@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ChevronDown, ChevronRight, Search } from "lucide-react";
 import type { CitizenQuestion } from "@/data/questions/types";
@@ -9,13 +10,17 @@ import { STRONG_COVERAGE_COUNTRIES } from "@/data/questions/country-coverage";
 import { QuestionCard } from "./QuestionCard";
 import { DOMAIN_LABEL, STAGE_LABEL } from "./labels";
 import { Button } from "@/components/ui/Button";
+import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
 
 interface QuestionsIndexClientProps {
   questions: CitizenQuestion[];
 }
 
 export function QuestionsIndexClient({ questions }: QuestionsIndexClientProps) {
+  const tVoice = useTranslations("voice");
+  const tComposer = useTranslations("chatComposer");
   const [query, setQuery] = useState("");
+  const [voiceError, setVoiceError] = useState<string | null>(null);
   const [stageFilter, setStageFilter] = useState("");
   const [domainFilter, setDomainFilter] = useState("");
   const [riskFilter, setRiskFilter] = useState("");
@@ -120,15 +125,33 @@ export function QuestionsIndexClient({ questions }: QuestionsIndexClientProps) {
             ))}
           </select>
         </label>
-        <div className="relative sm:col-span-2 lg:col-span-4">
+        <div className="relative sm:col-span-2 lg:col-span-4 space-y-1">
+          {voiceError && (
+            <p className="text-xs text-amber-700 dark:text-amber-300 px-1" role="status">
+              {tComposer("voiceErrorBanner", { message: voiceError })}
+            </p>
+          )}
+          <div className="relative">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search questions…"
-            className="w-full rounded-lg border border-[var(--border)] bg-background py-2 pl-9 pr-3 text-sm"
+            placeholder={tVoice("questionsSearchPlaceholder")}
+            aria-label={tVoice("questionsSearchAria")}
+            className="w-full rounded-lg border border-[var(--border)] bg-background py-2 pl-9 pr-12 text-sm"
           />
+          <span className="absolute right-1 top-1/2 -translate-y-1/2">
+            <VoiceDictationButton
+              value={query}
+              onChange={setQuery}
+              mode="append"
+              surface="questions"
+              onErrorMessage={setVoiceError}
+              className="h-9 w-9"
+            />
+          </span>
+          </div>
         </div>
       </div>
 
