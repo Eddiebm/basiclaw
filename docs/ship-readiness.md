@@ -257,15 +257,15 @@
 
 ---
 
-## Commits (fill SHAs after push)
+## Commits (this audit)
 
 | Batch | Description | SHA |
 |-------|-------------|-----|
-| audit-report | This document (initial). | _TBD_ |
-| fixes-batch-1-public-routes | FAQ meta, extension CTAs + JSON-LD, `/launch` prod gate. | _TBD_ |
-| fixes-batch-2-functional-routes | Extension preview decorative control a11y. | _TBD_ |
-| fixes-batch-3-api-and-forms | Lawyer lead success analytics. | _TBD_ |
-| fixes-batch-4-a11y-and-i18n | PostHog `capture_pageview: false`; locale FAQ meta strings. | _TBD_ |
+| audit-report | This document (initial). | `3a987a4` |
+| fixes-batch-1-public-routes | FAQ localized meta; extension store anchor + JSON-LD + host-aware privacy; `/launch` prod gate; extension preview non-focusable; locale `faqPage.metaDescription` + chat empty-state strings. | `df74c6d` |
+| fixes-batch-2-functional-routes | Chat empty-state “Start a conversation” flow (parallel worker; includes `Suspense` around `useSearchParams`). | `98da5af` |
+| fixes-batch-3-api-and-forms | Lawyer partner form: `form_submit_success` on successful `/api/lawyer-leads`. | `91f087f` |
+| fixes-batch-4-a11y-and-i18n | PostHog: `capture_pageview: false` to prevent duplicate `$pageview` with `AnalyticsProvider`. | `a64b5ae` |
 
 ---
 
