@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import type { ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Navigation } from "@/components/sections/Navigation";
@@ -36,11 +37,13 @@ export async function AuditToolPageShell({
   namespace,
   auditType,
   advancedPaywall,
+  afterAuditSlot,
 }: {
   locale: string;
   namespace: AuditToolNamespace;
   auditType: Extract<AuditType, "lease" | "employment" | "terms" | "prenup" | "divorce">;
   advancedPaywall?: boolean;
+  afterAuditSlot?: ReactNode;
 }) {
   const t = await getTranslations({ locale, namespace });
   const faqItems = [
@@ -54,13 +57,13 @@ export async function AuditToolPageShell({
     <main className="min-h-screen">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navigation />
-      <section className="pt-28 pb-12">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] text-xs font-medium mb-4">
-            <Sparkles className="h-3.5 w-3.5" aria-hidden /> {t("badge")}
+      <section className="border-b border-[var(--border)]/60 pb-12 pt-24 sm:pt-28">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+          <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface-glass)] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)] backdrop-blur-sm">
+            <Sparkles className="h-3.5 w-3.5 text-[var(--primary)]" aria-hidden /> {t("badge")}
           </span>
-          <h1 className="text-4xl sm:text-5xl font-bold text-[var(--foreground)] leading-tight">{t("title")}</h1>
-          <p className="mt-4 text-lg text-[var(--muted-foreground)]">{t("subtitle")}</p>
+          <h1 className="font-editorial text-4xl leading-[1.08] text-[var(--foreground)] sm:text-5xl">{t("title")}</h1>
+          <p className="mt-5 text-lg leading-relaxed text-[var(--muted-foreground)]">{t("subtitle")}</p>
         </div>
       </section>
       <section className="pb-20">
@@ -75,6 +78,7 @@ export async function AuditToolPageShell({
             </div>
           )}
           <AuditClient presetAuditType={auditType} />
+          {afterAuditSlot}
           <div className="mt-10 grid sm:grid-cols-3 gap-3 text-center">
             <Step n={1} title={t("step1_title")} body={t("step1_body")} />
             <Step n={2} title={t("step2_title")} body={t("step2_body")} />

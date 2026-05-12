@@ -125,7 +125,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: country.popular ? 0.85 : 0.6,
   }));
 
-  const TOPIC_SLUGS = ["rights", "police-stop", "landlord"] as const;
+  const TOPIC_SLUGS = ["rights", "police-stop", "landlord", "employment"] as const;
   const topicPages: MetadataRoute.Sitemap = COUNTRIES.flatMap((country) =>
     TOPIC_SLUGS.map((slug) => ({
       url: `${SITE_URL}/${defaultLocale}/${country.code.toLowerCase()}/${slug}`,

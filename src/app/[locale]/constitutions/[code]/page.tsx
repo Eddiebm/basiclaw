@@ -20,6 +20,7 @@ import {
   ShieldAlert,
   Sparkles,
   BadgeCheck,
+  Briefcase,
 } from "lucide-react";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
@@ -134,6 +135,12 @@ export default async function ConstitutionDetailPage({
       icon: Home,
       title: t("topic_landlord_title"),
       blurb: t("topic_landlord_blurb"),
+    },
+    {
+      slug: "employment" as const,
+      icon: Briefcase,
+      title: t("topic_employment_title"),
+      blurb: t("topic_employment_blurb"),
     },
   ];
 
@@ -378,7 +385,7 @@ export default async function ConstitutionDetailPage({
                 {t("guidesHeading", { country: country.name })}
               </h2>
             </div>
-            <div className="grid sm:grid-cols-3 gap-3">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {TOPIC_PAGES.map(({ slug, icon: Icon, title, blurb }) => (
                 <Link
                   key={slug}

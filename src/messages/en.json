@@ -479,7 +479,10 @@
     "faq2_q": "Contractor vs employee agreements?",
     "faq2_a": "Paste whichever you have. Misclassification risk is legal, not just contractual — mention if you are unsure of status.",
     "faq3_q": "Can BasicLaw negotiate for me?",
-    "faq3_a": "No. We suggest pushback wording you can send yourself; we do not communicate with your employer."
+    "faq3_a": "No. We suggest pushback wording you can send yourself; we do not communicate with your employer.",
+    "countryEmploymentTitle": "See employment law in your country",
+    "countryEmploymentLead": "Open a country’s constitution hub, then jump to the employment guide for that jurisdiction.",
+    "countryEmploymentCta": "Browse countries"
   },
   "auditTermsPage": {
     "metaTitle": "Terms of service audit — BasicLaw",
@@ -724,6 +727,8 @@
     "topic_police_blurb": "What to say, what to show, what you must do (and what you don't)",
     "topic_landlord_title": "Tenant & landlord",
     "topic_landlord_blurb": "Deposit rules, evictions, repairs, and what your lease can't override",
+    "topic_employment_title": "Employment basics",
+    "topic_employment_blurb": "Hours, pay, dismissal, discrimination, leave, safety, and filing a labour complaint",
     "status_active": "Live with full assistant support",
     "status_preview": "Constitutional summary ready · assistant in preview",
     "status_planned": "Planned — join the waitlist",
@@ -788,21 +793,25 @@
     "sidebar_rights": "Your rights",
     "sidebar_police": "Police stops",
     "sidebar_landlord": "Tenant & landlord",
+    "sidebar_employment": "Employment",
     "backToConstitution": "Back to {country}'s constitution",
     "labels": {
       "rights": "Your rights",
       "police-stop": "Police stops",
-      "landlord": "Tenant & landlord"
+      "landlord": "Tenant & landlord",
+      "employment": "Employment"
     },
     "subtitles": {
       "rights": "Plain-language guide to your constitutional rights",
       "police-stop": "What to say, what to show, what you must do",
-      "landlord": "Deposits, evictions, repairs, and what your lease can't override"
+      "landlord": "Deposits, evictions, repairs, and what your lease can't override",
+      "employment": "Hours, pay, dismissal, discrimination, and how to complain"
     },
     "headings": {
       "rightsInCountry": "Your rights in {country}",
       "policeInCountry": "Police stops in {country}",
-      "landlordInCountry": "Tenant & landlord law in {country}"
+      "landlordInCountry": "Tenant & landlord law in {country}",
+      "employmentInCountry": "Employment law basics in {country}"
     },
     "sections": {
       "rights": {
@@ -830,6 +839,16 @@
         "eviction": "Eviction",
         "discrimination": "Discrimination and retaliation",
         "help": "When to get help"
+      },
+      "employment": {
+        "workingHours": "Working hours and rest",
+        "minimumWage": "Minimum wage and pay slips",
+        "termination": "Termination and notice",
+        "antiDiscrimination": "Anti-discrimination and harassment",
+        "parentalLeave": "Maternity, paternity, and carers' leave",
+        "healthSafety": "Health and safety at work",
+        "unions": "Unions and collective bargaining",
+        "fileComplaint": "How to file a labour complaint"
       }
     },
     "findLawyerCta": "Find a lawyer"

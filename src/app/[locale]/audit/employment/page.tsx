@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { EmploymentCountryGuideCta } from "@/components/audit/EmploymentCountryGuideCta";
 import { AuditToolPageShell } from "../AuditToolPageShell";
 import { buildOgImageUrl } from "@/lib/og-image-url";
 
@@ -27,5 +28,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 export default async function EmploymentAuditPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  return <AuditToolPageShell locale={locale} namespace="auditEmploymentPage" auditType="employment" />;
+  return (
+    <AuditToolPageShell
+      locale={locale}
+      namespace="auditEmploymentPage"
+      auditType="employment"
+      afterAuditSlot={<EmploymentCountryGuideCta locale={locale} />}
+    />
+  );
 }

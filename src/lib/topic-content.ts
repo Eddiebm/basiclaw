@@ -6,12 +6,14 @@ const TOPIC_TITLES: Record<TopicSlug, (country: Country) => string> = {
   rights: (c) => `Your Rights in ${c.name}`,
   "police-stop": (c) => `What to Do When Police Stop You in ${c.name}`,
   landlord: (c) => `Tenant Rights and Landlord Rules in ${c.name}`,
+  employment: (c) => `Employment Law Basics in ${c.name}`,
 };
 
 const TOPIC_PREFILLED: Record<TopicSlug, (country: Country) => string> = {
   rights: (c) => `Walk me through the most important constitutional rights I have in ${c.name} as an ordinary resident.`,
   "police-stop": (c) => `If a police officer stops me on the street in ${c.name}, what do I have to do, what can I refuse, and what should I document?`,
   landlord: (c) => `Explain the basic rules my landlord has to follow in ${c.name} \u2014 deposits, evictions, repairs, rent increases.`,
+  employment: (c) => `Summarise working time limits, minimum wage rules, dismissal protections, anti-discrimination duties, parental leave, health and safety, and how to file a labour complaint in ${c.name}.`,
 };
 
 function locale3(es: string, fr: string, pt: string): Record<string, string> {
@@ -338,6 +340,134 @@ export function getTopicContent(country: Country, topic: TopicSlug): TopicConten
           {
             q: `Can the landlord refuse to renew because they "want to sell"?`,
             a: `Some jurisdictions accept genuine sale or owner-occupation as a no-fault ground for ending a tenancy, with extra notice. Others require the landlord to actually sell or move in within a set window, and to pay compensation if they don't. Check the local statute carefully \u2014 this is a common cover for unlawful evictions.`,
+          },
+        ],
+        prefilledQuestion,
+      };
+    case "employment":
+      return {
+        slug: topic,
+        countryCode: country.code,
+        title,
+        titleByLocale: locale3(
+          "Derecho laboral básico en {country}",
+          "Droit du travail — bases en {country}",
+          "Direito do trabalho — noções em {country}"
+        ),
+        intro: `Employment rules sit at the intersection of ${country.name}'s constitution, labour codes, and often dozens of regulations from ministries of labour. ${principlesSentence(country)} This guide explains the usual building blocks so you know what to look up locally before you act.`,
+        sections: [
+          {
+            id: "workingHours",
+            heading: "Working hours and rest",
+            titleByLocale: locale3(
+              "Jornada de trabajo y descanso",
+              "Durée du travail et repos",
+              "Horário de trabalho e descanso"
+            ),
+            body: `Most systems cap daily and weekly hours, require paid rest breaks, and distinguish ordinary time from overtime (often paid at a higher rate or compensated with time off). Night work, weekend work, and on-call duties frequently have extra rules or require agreements with worker representatives.`,
+            bullets: [
+              "Maximum ordinary hours per week before overtime kicks in",
+              "Minimum daily rest between shifts",
+              "Rules for part-time vs full-time contracts",
+            ],
+          },
+          {
+            id: "minimumWage",
+            heading: "Minimum wage and pay slips",
+            titleByLocale: locale3(
+              "Salario mínimo y nóminas",
+              "Salaire minimum et fiches de paie",
+              "Salário mínimo e recibos de vencimento"
+            ),
+            body: `States set sectoral or national minimum wages, sometimes with lower trainee rates. Employers must issue payslips showing gross pay, deductions, and net pay. Unpaid wage claims are usually fast-tracked in labour inspectorates or small-claims labour courts.`,
+          },
+          {
+            id: "termination",
+            heading: "Termination and notice",
+            titleByLocale: locale3(
+              "Despido y preaviso",
+              "Licenciement et préavis",
+              "Despedimento e pré-aviso"
+            ),
+            body: `Dismissals are either "for cause" (misconduct, redundancy following consultation) or "without cause" with statutory notice and severance. Immediate dismissal without pay is rare and tightly policed. Check whether your contract is fixed-term or indefinite — the rules differ sharply.`,
+            bullets: [
+              "Minimum notice periods by seniority",
+              "Redundancy selection and consultation duties",
+              "Unfair dismissal remedies and time limits",
+            ],
+          },
+          {
+            id: "antiDiscrimination",
+            heading: "Anti-discrimination and harassment",
+            titleByLocale: locale3(
+              "Antidiscriminación y acoso",
+              "Anti-discrimination et harcèlement",
+              "Antidiscriminação e assédio"
+            ),
+            body: `Constitutions and equality statutes prohibit discrimination in hiring, pay, promotion, and dismissal on grounds such as race, sex, disability, age, religion, or union activity. Harassment policies, grievance channels, and whistle-blower protections are increasingly mandatory for larger employers.`,
+          },
+          {
+            id: "parentalLeave",
+            heading: "Maternity, paternity, and carers' leave",
+            titleByLocale: locale3(
+              "Permisos de maternidad, paternidad y cuidados",
+              "Congés maternité, paternité et aidants",
+              "Licenças de maternidade, paternidade e cuidados"
+            ),
+            body: `Paid or partially paid parental leave, job protection during pregnancy, and return-to-work rights are usually codified. Fathers' leave is expanding in many jurisdictions. Small employers may qualify for subsidies or social-security reimbursement when workers take protected leave.`,
+          },
+          {
+            id: "healthSafety",
+            heading: "Health and safety at work",
+            titleByLocale: locale3(
+              "Salud y seguridad en el trabajo",
+              "Santé et sécurité au travail",
+              "Saúde e segurança no trabalho"
+            ),
+            body: `Employers must risk-assess workplaces, provide training and protective equipment, and report serious injuries. Workers typically have the right to refuse dangerous tasks without retaliation. Labour inspectorates can issue stop-work orders or fines.`,
+          },
+          {
+            id: "unions",
+            heading: "Unions and collective bargaining",
+            titleByLocale: locale3(
+              "Sindicatos y negociación colectiva",
+              "Syndicats et négociation collective",
+              "Sindicatos e negociação colectiva"
+            ),
+            body: `Freedom of association may let workers form or join unions, strike under strict conditions, and bargain collectively. Recognition thresholds, check-off systems, and cooling-off periods vary. Even without a union, works councils may have information and consultation rights.`,
+          },
+          {
+            id: "fileComplaint",
+            heading: "How to file a labour complaint",
+            titleByLocale: locale3(
+              "Cómo presentar una reclamación laboral",
+              "Comment déposer une réclamation",
+              "Como apresentar uma reclamação laboral"
+            ),
+            body: `Start by gathering contracts, payslips, emails, and a chronology. Many countries offer free conciliation through a labour inspectorate before court. Strict limitation periods apply — missing a deadline can bar the claim entirely. A licensed employment lawyer in ${country.name} can advise on the fastest route.`,
+            bullets: [
+              "Identify the competent authority (inspectorate, arbitration, or court)",
+              "Use prescribed forms where they exist",
+              "Keep copies of everything you submit",
+            ],
+          },
+        ],
+        faqs: [
+          {
+            q: `Does my employment contract override the statute in ${country.name}?`,
+            a: `Statutory minimum rights usually cannot be contracted away. Clauses that try to waive mandatory protections are void. Better terms than the statute are generally fine.`,
+          },
+          {
+            q: `I am a gig worker or contractor — do these rules apply?`,
+            a: `Many jurisdictions now run "false self-employment" tests. If you are economically dependent on a single platform, courts may reclassify you as an employee with full protections. The tests differ — check recent case law.`,
+          },
+          {
+            q: `Can I be fired for joining a union?`,
+            a: `Dismissal for union membership or activity is unlawful in most democratic systems and attracts punitive damages. Document any threatening remarks and seek urgent legal help.`,
+          },
+          {
+            q: `What if my employer withholds wages?`,
+            a: `File a wage claim with the labour authority; many countries allow attachment of the employer's bank account. Continuing to work without pay is risky — get advice on whether you can lawfully suspend performance.`,
           },
         ],
         prefilledQuestion,

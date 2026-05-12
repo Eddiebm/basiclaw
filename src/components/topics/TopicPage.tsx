@@ -13,6 +13,7 @@ import {
   ShieldAlert,
   Sparkles,
   BadgeCheck,
+  Briefcase,
 } from "lucide-react";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
@@ -25,7 +26,7 @@ import type { Country } from "@/data/types";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { getLastVerified } from "@/lib/jurisdictions";
 
-export type TopicSlug = "rights" | "police-stop" | "landlord";
+export type TopicSlug = "rights" | "police-stop" | "landlord" | "employment";
 
 export interface TopicSection {
   /** Stable key for i18n section titles (`topicPage.sections.{topic}.{id}`) */
@@ -58,6 +59,7 @@ const TOPIC_ICON: Record<TopicSlug, React.ComponentType<{ className?: string; "a
   rights: Sparkles,
   "police-stop": ShieldAlert,
   landlord: Scale,
+  employment: Briefcase,
 };
 
 export function TopicPage({
@@ -87,7 +89,13 @@ export function TopicPage({
   const topicLabel = t(`labels.${topic}`);
   const topicSubtitle = t(`subtitles.${topic}`);
   const headingKey =
-    topic === "rights" ? "rightsInCountry" : topic === "police-stop" ? "policeInCountry" : "landlordInCountry";
+    topic === "rights"
+      ? "rightsInCountry"
+      : topic === "police-stop"
+        ? "policeInCountry"
+        : topic === "landlord"
+          ? "landlordInCountry"
+          : "employmentInCountry";
   const defaultHeading = t(`headings.${headingKey}`, { country: country.name });
   const pageHeading =
     content.titleByLocale?.[pageLocale]?.replaceAll("{country}", country.name) ?? defaultHeading;
@@ -313,6 +321,12 @@ export function TopicPage({
                   className="flex items-center justify-between text-sm hover:text-[var(--primary)]"
                 >
                   {t("sidebar_landlord")} <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                </Link>
+                <Link
+                  href={`/${country.code.toLowerCase()}/employment`}
+                  className="flex items-center justify-between text-sm hover:text-[var(--primary)]"
+                >
+                  {t("sidebar_employment")} <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                 </Link>
               </div>
             </div>
