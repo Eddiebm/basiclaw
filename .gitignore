@@ -14,6 +14,10 @@ pnpm-lock.yaml
 --store-dir/
 .vercel
 
+test-results/
+playwright-report/
+playwright/.cache/
+
 # Browser extension build artefacts (source lives in /extension and IS committed)
 extension/node_modules/
 extension/.wxt/

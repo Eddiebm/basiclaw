@@ -14,7 +14,8 @@
     "build:index": "node scripts/compute-legal-index.mjs",
     "import:lawyers": "node scripts/import-lawyers/run-all.mjs",
     "test:e2e": "playwright test",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:chromium": "playwright test --project=chromium"
   },
   "dependencies": {
     "@ai-sdk/gateway": "^3.0.114",

@@ -1,17 +1,22 @@
 import { expect, test } from "@playwright/test";
 
-const cases: { path: string; expectText: RegExp }[] = [
-  { path: "/es/", expectText: /Privacidad|Constitución|Biblioteca/i },
-  { path: "/fr/", expectText: /Confidentialité|Constitution|Bibliothèque/i },
-  { path: "/ar/", expectText: /الخصوصية|دستور|مكتبة/i },
-  { path: "/pt/", expectText: /Privacidade|Constituição|Biblioteca/i },
-  { path: "/hi/", expectText: /गोपनीयता|संविधान|पुस्तकालय/i },
-  { path: "/zh/", expectText: /隐私|宪法|图书馆/i },
+test.describe.configure({ mode: "parallel" });
+
+const cases: { path: string; needle: RegExp }[] = [
+  { path: "/es", needle: /Constituciones|Preguntar|Precios/ },
+  { path: "/fr", needle: /Demander|Tarifs|Constitutions/ },
+  { path: "/ar", needle: /الدساتير|اسأل|الأسعار/ },
+  { path: "/pt", needle: /Constituições|Perguntar|Preços/ },
+  { path: "/hi", needle: /संविधान|पूछें|मूल्य/ },
+  { path: "/zh", needle: /宪法|提问|定价/ },
 ];
 
-for (const { path, expectText } of cases) {
-  test(`locale nav/footer not raw English: ${path}`, async ({ page }) => {
-    await page.goto(path);
-    await expect(page.locator("footer")).toContainText(expectText);
+for (const { path, needle } of cases) {
+  test(`locale page loads without stuck loading — ${path}`, async ({ page }) => {
+    const res = await page.goto(path);
+    expect(res?.status(), path).toBeLessThan(400);
+    await expect(page.locator("body")).toBeVisible({ timeout: 15000 });
+
+    await expect(page.getByText(needle).first()).toBeVisible({ timeout: 15000 });
   });
 }

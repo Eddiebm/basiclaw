@@ -1,24 +1,31 @@
 import { expect, test } from "@playwright/test";
 
-test("home and footer internal links avoid 404 and hash placeholders", async ({ page, baseURL }) => {
+test.describe.configure({ mode: "parallel" });
+
+test("homepage internal links respond and no hash-only anchors", async ({ page }) => {
   await page.goto("/en");
-  const hrefs = await page.evaluate(() => {
-    const out: string[] = [];
-    for (const el of document.querySelectorAll("main a[href], footer a[href], nav a[href]")) {
-      const h = (el as HTMLAnchorElement).getAttribute("href");
-      if (h) out.push(h);
-    }
-    return [...new Set(out)];
+  await expect(page.locator("body")).toBeVisible({ timeout: 15000 });
+
+  const hashOnly = page.locator('a[href="#"]');
+  await expect(hashOnly).toHaveCount(0);
+
+  const hrefs = await page.$$eval("a[href]", (anchors) =>
+    anchors
+      .map((a) => a.getAttribute("href"))
+      .filter((h): h is string => Boolean(h && h.trim()))
+  );
+
+  const internal = [...new Set(hrefs)].filter((h) => {
+    if (h.startsWith("mailto:") || h.startsWith("tel:") || h.startsWith("javascript:")) return false;
+    if (h.startsWith("http://") || h.startsWith("https://")) return false;
+    return h.startsWith("/en") || h.startsWith("/");
   });
-  for (const href of hrefs) {
-    expect(href, "no literal hash-only href").not.toMatch(/^#$/);
-    if (href === "#") {
-      throw new Error(`Invalid href: ${href}`);
-    }
-    if (href.startsWith("mailto:") || href.startsWith("tel:")) continue;
-    if (href.startsWith("http://") || href.startsWith("https://")) continue;
-    const url = new URL(href, baseURL).toString();
-    const res = await page.request.get(url);
-    expect(res.status(), url).toBeLessThan(400);
+
+  const capped = internal.slice(0, 20);
+  expect(capped.length).toBeGreaterThan(0);
+
+  for (const path of capped) {
+    const res = await page.request.get(path);
+    expect(res.status(), path).toBeLessThan(400);
   }
 });

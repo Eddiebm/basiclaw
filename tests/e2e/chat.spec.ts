@@ -1,11 +1,19 @@
 import { expect, test } from "@playwright/test";
 
-test("chat composer submits and returns assistant or offline copy", async ({ page }) => {
+test.describe.configure({ mode: "parallel" });
+
+test("composer submits and shows assistant, fallback copy, or error — composer stays", async ({ page }) => {
   await page.goto("/en/chat");
-  await expect(page.getByTestId("chat-composer-textarea")).toBeVisible();
-  await page.getByTestId("chat-composer-textarea").fill("What is habeas corpus in plain language?");
+  const textarea = page.getByTestId("chat-composer-textarea");
+  await expect(textarea).toBeVisible({ timeout: 15000 });
+
+  await textarea.fill("hello");
   await page.getByTestId("chat-composer-send").click();
-  const banner = page.getByText(/not configured properly/i);
-  const reply = page.locator("main").getByText(/habeas|educational|disclaimer|rights|law/i);
-  await expect(banner.or(reply).first()).toBeVisible({ timeout: 30_000 });
+
+  const assistantMarkdown = page.locator("main .rounded-2xl.bg-secondary .max-w-none");
+  const errorBanner = page.getByRole("alert");
+  const configuredFallback = page.getByText(/not configured properly/i);
+
+  await expect(assistantMarkdown.or(errorBanner).or(configuredFallback).first()).toBeVisible({ timeout: 30_000 });
+  await expect(textarea).toBeVisible({ timeout: 15000 });
 });

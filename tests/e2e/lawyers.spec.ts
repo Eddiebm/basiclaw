@@ -1,7 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-test("lawyers directory renders", async ({ page }) => {
+test.describe.configure({ mode: "parallel" });
+
+test("lawyers directory or empty state", async ({ page }) => {
   await page.goto("/en/lawyers");
-  await expect(page.getByRole("main").or(page.locator("main"))).toBeVisible();
-  await expect(page.getByText(/lawyer|directory|partner|verified/i).first()).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 15000 });
+
+  const grid = page.locator("main ul.grid");
+  const empty = page.getByText(/No matching lawyers yet/i);
+  await expect(grid.or(empty).first()).toBeVisible({ timeout: 15000 });
 });

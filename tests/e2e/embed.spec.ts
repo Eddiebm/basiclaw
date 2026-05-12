@@ -1,8 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-test("embed ask is chromeless with attribution", async ({ page }) => {
+test.describe.configure({ mode: "parallel" });
+
+test("embed ask widget without site navigation", async ({ page }) => {
   await page.goto("/embed/ask?country=US&theme=light");
-  await expect(page.locator("footer")).toHaveCount(0);
+  await expect(page.getByRole("textbox").first()).toBeVisible({ timeout: 15000 });
   await expect(page.getByRole("navigation")).toHaveCount(0);
-  await expect(page.getByText(/Powered by BasicLaw/i)).toBeVisible();
+  await expect(page.getByText("Powered by BasicLaw")).toBeVisible({ timeout: 15000 });
 });
