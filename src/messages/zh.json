@@ -134,6 +134,8 @@
   "chatEmpty": {
     "title": "开始对话",
     "body": "提问权利概念或当地法律运作方式。",
+    "startCta": "开始对话",
+    "startCtaCountryHint": "将以 {country} 的法律回答。可在侧边栏更改国家。",
     "lawyerCta": "需要代理？找律师"
   },
   "topicPage": {

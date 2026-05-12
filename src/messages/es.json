@@ -153,6 +153,8 @@
   "chatEmpty": {
     "title": "Empieza una conversación",
     "body": "Pregunta por conceptos legales, tus derechos o cómo funciona la ley en tu jurisdicción.",
+    "startCta": "Empezar una conversación",
+    "startCtaCountryHint": "Responderemos para {country}. Puedes cambiar el país en la barra lateral.",
     "lawyerCta": "¿Necesitas representación? Buscar abogado"
   },
   "chat": {

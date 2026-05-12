@@ -149,6 +149,8 @@
   "chatEmpty": {
     "title": "Comece uma conversa",
     "body": "Pergunte sobre conceitos jurídicos e direitos na sua jurisdição.",
+    "startCta": "Começar uma conversa",
+    "startCtaCountryHint": "Responderemos para {country}. Pode mudar o país na barra lateral.",
     "lawyerCta": "Precisa de representação? Encontrar advogado"
   },
   "chat": {

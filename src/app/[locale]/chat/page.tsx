@@ -42,7 +42,9 @@ export default function ChatPage() {
           </header>
 
           {/* Chat Area */}
-          <ChatInterface />
+          <Suspense fallback={<div className="flex-1" />}>
+            <ChatInterface />
+          </Suspense>
         </main>
       </div>
     </div>

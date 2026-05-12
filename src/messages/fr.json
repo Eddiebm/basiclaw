@@ -153,6 +153,8 @@
   "chatEmpty": {
     "title": "Démarrer une conversation",
     "body": "Posez des questions sur vos droits ou le fonctionnement du droit dans votre juridiction.",
+    "startCta": "Démarrer une conversation",
+    "startCtaCountryHint": "Réponses pour {country}. Vous pouvez changer de pays dans la barre latérale.",
     "lawyerCta": "Besoin de représentation ? Trouver un avocat"
   },
   "chat": {

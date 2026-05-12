@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect, type KeyboardEvent } from "react";
+import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, User, Bot, Copy, ExternalLink, Loader2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Send, User, Bot, Copy, ExternalLink, Loader2, MessageSquarePlus } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useAnnouncer } from "@/components/a11y/AnnouncerProvider";
 import { useChat } from "@/store/chat-context";
+import { getCountry } from "@/lib/jurisdictions";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
@@ -15,6 +17,18 @@ import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
 import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
 import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
 
+function resolveJurisdictionFromParams(
+  searchParams: { get: (key: string) => string | null },
+): string {
+  const raw = searchParams.get("jurisdiction") ?? searchParams.get("country") ?? "";
+  const candidate = raw.trim();
+  if (candidate) {
+    const found = getCountry(candidate);
+    if (found) return found.code.toLowerCase();
+  }
+  return "us";
+}
+
 export function ChatInterface() {
   const tc = useTranslations("chatEmpty");
   const tComposer = useTranslations("chatComposer");
@@ -22,8 +36,9 @@ export function ChatInterface() {
   const tCitations = useTranslations("chat.citations");
   const locale = useLocale();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const signInHref = `/sign-in?redirect_url=${encodeURIComponent(`/${locale}${pathname}`)}`;
-  const { currentSession, sendMessage, isTyping, error, errorUpgradePath, clearError } = useChat();
+  const { currentSession, sendMessage, createSession, isTyping, error, errorUpgradePath, clearError } = useChat();
   const announce = useAnnouncer();
   const [input, setInput] = useState("");
   const [voiceReplace, setVoiceReplace] = useState(false);
@@ -31,6 +46,7 @@ export function ChatInterface() {
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const lastSessionIdRef = useRef<string | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -39,6 +55,37 @@ export function ChatInterface() {
   useEffect(() => {
     scrollToBottom();
   }, [currentSession?.messages]);
+
+  useEffect(() => {
+    const nextId = currentSession?.id ?? null;
+    if (nextId && nextId !== lastSessionIdRef.current) {
+      lastSessionIdRef.current = nextId;
+      const node = textareaRef.current;
+      if (node) {
+        requestAnimationFrame(() => {
+          try {
+            node.focus({ preventScroll: true });
+          } catch {
+            node.focus();
+          }
+        });
+      }
+    }
+    if (!nextId) {
+      lastSessionIdRef.current = null;
+    }
+  }, [currentSession?.id]);
+
+  const handleStartConversation = useCallback(() => {
+    const jurisdiction = resolveJurisdictionFromParams(searchParams);
+    track("chat_session_started", {
+      jurisdiction,
+      source: "empty_state_cta",
+    });
+    createSession(jurisdiction);
+    const prefill = searchParams.get("prefill")?.trim();
+    if (prefill) setInput(prefill);
+  }, [createSession, searchParams]);
 
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
@@ -61,6 +108,8 @@ export function ChatInterface() {
   };
 
   if (!currentSession) {
+    const resolvedJurisdiction = resolveJurisdictionFromParams(searchParams);
+    const resolvedCountry = getCountry(resolvedJurisdiction);
     return (
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="text-center max-w-md">
@@ -73,6 +122,23 @@ export function ChatInterface() {
           </motion.div>
           <h2 className="text-2xl font-semibold mb-2">{tc("title")}</h2>
           <p className="text-muted-foreground mb-4">{tc("body")}</p>
+          <div className="flex flex-col items-center gap-3 mb-4">
+            <Button
+              type="button"
+              size="lg"
+              onClick={handleStartConversation}
+              className="gap-2"
+              data-testid="chat-start-conversation"
+            >
+              <MessageSquarePlus className="w-4 h-4" aria-hidden />
+              {tc("startCta")}
+            </Button>
+            {resolvedCountry ? (
+              <p className="text-xs text-muted-foreground">
+                {tc("startCtaCountryHint", { country: `${resolvedCountry.flag} ${resolvedCountry.name}` })}
+              </p>
+            ) : null}
+          </div>
           <LawyerCtaLink
             href="/find-a-lawyer"
             source="chat_empty_no_session"

@@ -10,6 +10,7 @@ export type AnalyticsEvent =
   | "constitution_viewed"
   | "country_selected"
   | "chat_message_sent"
+  | "chat_session_started"
   | "audit_started"
   | "audit_completed"
   | "audit_shared"
