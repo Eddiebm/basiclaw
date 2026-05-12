@@ -6,6 +6,14 @@ import { routing } from "./i18n/routing";
 
 const intlMiddleware = createIntlMiddleware(routing);
 
+function shouldLogEmbedPageView(pathname: string, method: string): boolean {
+  return method === "GET" && pathname.startsWith("/embed/") && !pathname.endsWith(".js");
+}
+
+function isEmbedBypassPath(pathname: string): boolean {
+  return pathname === "/embed" || pathname.startsWith("/embed/");
+}
+
 const isProtectedPage = createRouteMatcher([
   "/dashboard(.*)",
   "/account(.*)",
@@ -34,6 +42,19 @@ function verifyCronAuthorization(request: NextRequest): boolean {
 export default hasClerk
   ? clerkMiddleware(async (auth, request) => {
       const pathname = request.nextUrl.pathname;
+      if (isEmbedBypassPath(pathname)) {
+        if (shouldLogEmbedPageView(pathname, request.method)) {
+          const ref = request.headers.get("referer") ?? "";
+          console.log(
+            JSON.stringify({
+              type: "embed_page_request",
+              path: pathname,
+              referer: ref,
+            })
+          );
+        }
+        return NextResponse.next();
+      }
       if (pathname.startsWith("/api/")) {
         if (pathname.startsWith("/api/cron")) {
           if (!verifyCronAuthorization(request)) {
@@ -54,6 +75,19 @@ export default hasClerk
     })
   : async (request: NextRequest) => {
       const pathname = request.nextUrl.pathname;
+      if (isEmbedBypassPath(pathname)) {
+        if (shouldLogEmbedPageView(pathname, request.method)) {
+          const ref = request.headers.get("referer") ?? "";
+          console.log(
+            JSON.stringify({
+              type: "embed_page_request",
+              path: pathname,
+              referer: ref,
+            })
+          );
+        }
+        return NextResponse.next();
+      }
       if (pathname.startsWith("/api/cron")) {
         if (!verifyCronAuthorization(request)) {
           return NextResponse.json({ error: "unauthorized" }, { status: 401 });

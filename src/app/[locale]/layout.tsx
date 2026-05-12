@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { LocaleDirection } from "@/components/i18n/LocaleDirection";
 import { AnnouncerProvider } from "@/components/a11y/AnnouncerProvider";
+import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { isClerkEnabled } from "@/lib/auth-config";
 
 type Props = {
@@ -51,29 +52,31 @@ export default async function LocaleLayout({ children, params }: Props) {
     <>
       <LocaleDirection locale={locale} />
       <NextIntlClientProvider locale={locale} messages={messages}>
-        <AnnouncerProvider>
-        {!isClerkEnabled() && (
-          <div
-            role="status"
-            className="bg-amber-500/15 text-amber-950 dark:text-amber-100 text-center text-xs py-2 px-4 border-b border-amber-500/25"
-          >
-            {tAuth("notConfiguredBanner")}
-          </div>
-        )}
-        {isClerkEnabled() ? (
-          <ClerkProvider
-            publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}
-            localization={clerkLocalization(locale)}
-            signInUrl={`/${locale}/sign-in`}
-            signUpUrl={`/${locale}/sign-up`}
-            afterSignOutUrl={`/${locale}`}
-          >
-            {children}
-          </ClerkProvider>
-        ) : (
-          children
-        )}
-        </AnnouncerProvider>
+        <ThemeProvider defaultTheme="system" storageKey="basiclaw-ui-theme">
+          <AnnouncerProvider>
+            {!isClerkEnabled() && (
+              <div
+                role="status"
+                className="bg-amber-500/15 text-amber-950 dark:text-amber-100 text-center text-xs py-2 px-4 border-b border-amber-500/25"
+              >
+                {tAuth("notConfiguredBanner")}
+              </div>
+            )}
+            {isClerkEnabled() ? (
+              <ClerkProvider
+                publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+                localization={clerkLocalization(locale)}
+                signInUrl={`/${locale}/sign-in`}
+                signUpUrl={`/${locale}/sign-up`}
+                afterSignOutUrl={`/${locale}`}
+              >
+                {children}
+              </ClerkProvider>
+            ) : (
+              children
+            )}
+          </AnnouncerProvider>
+        </ThemeProvider>
       </NextIntlClientProvider>
     </>
   );

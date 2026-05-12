@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { Geist, Instrument_Serif } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { ChatProvider } from "@/store/chat-context";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 
@@ -117,9 +116,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body
         className={`${fontSans.variable} ${fontDisplay.variable} ${fontSans.className} antialiased min-h-screen bg-background text-foreground`}
       >
-        <ThemeProvider defaultTheme="system" storageKey="basiclaw-ui-theme">
-          <ChatProvider>{children}</ChatProvider>
-        </ThemeProvider>
+        <ChatProvider>{children}</ChatProvider>
         <Suspense fallback={null}>
           <AnalyticsProvider />
         </Suspense>
