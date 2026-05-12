@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "verify:chat": "node scripts/verify-chat-json.mjs",
-    "embed:snippets": "node scripts/embed-snippets.mjs"
+    "embed:snippets": "node scripts/embed-snippets.mjs",
+    "build:index": "node scripts/compute-legal-index.mjs"
   },
   "dependencies": {
     "@clerk/localizations": "^4.6.2",
@@ -43,6 +44,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "tsx": "^4.19.2"
   }
 }
