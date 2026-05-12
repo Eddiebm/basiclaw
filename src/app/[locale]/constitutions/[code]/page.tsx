@@ -179,7 +179,29 @@ export default async function ConstitutionDetailPage({
               </nav>
             </aside>
             <div className="min-w-0">
-        <div className="max-w-3xl">
+              <nav
+                aria-label={t("tocNav")}
+                className="lg:hidden -mx-1 mb-8 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]"
+              >
+                {(
+                  [
+                    ["#overview", t("tocOverview")],
+                    ["#summary", t("tocSummary")],
+                    ["#principles", t("tocPrinciples")],
+                    ["#guides", t("tocGuides")],
+                    ["#sources", t("tocSources")],
+                  ] as const
+                ).map(([href, label]) => (
+                  <a
+                    key={href}
+                    href={href}
+                    className="shrink-0 rounded-full border border-[var(--border)] bg-[var(--card)]/90 px-3 py-1.5 text-xs font-medium text-[var(--muted-foreground)] transition hover:border-[var(--primary)]/35 hover:text-[var(--foreground)]"
+                  >
+                    {label}
+                  </a>
+                ))}
+              </nav>
+        <div className="max-w-[min(42rem,100%)]">
           <Link
             href="/constitutions"
             className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] transition hover:text-[var(--foreground)] mb-8"
@@ -231,7 +253,7 @@ export default async function ConstitutionDetailPage({
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)] mb-4">
               {t("plainLanguage")}
             </h2>
-            <p className="text-lg leading-relaxed text-[var(--foreground)] sm:text-xl">
+            <p className="text-lg leading-[1.75] text-[var(--foreground)] sm:text-xl sm:leading-[1.72] text-pretty">
               {constitution.summary}
             </p>
             <ConstitutionPlainSummaryVoice summary={constitution.summary} jurisdictionCode={country.code} />

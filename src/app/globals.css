@@ -21,6 +21,9 @@
   --color-link: oklch(0.38 0.11 262);
   --color-ink-muted: oklch(0.42 0.04 260);
   --color-surface-glass: oklch(0.99 0.006 85 / 0.55);
+  /* Refined oxblood accent — headings, rules, editorial emphasis */
+  --color-oxblood: oklch(0.38 0.12 25);
+  --color-oxblood-foreground: oklch(0.99 0.01 85);
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
@@ -45,6 +48,8 @@
   --ring: var(--color-ring);
   --ink-muted: var(--color-ink-muted);
   --surface-glass: var(--color-surface-glass);
+  --oxblood: var(--color-oxblood);
+  --oxblood-foreground: var(--color-oxblood-foreground);
 }
 
 .dark {
@@ -67,6 +72,8 @@
   --color-link: oklch(0.72 0.12 250);
   --color-ink-muted: oklch(0.7 0.02 250);
   --color-surface-glass: oklch(0.18 0.03 260 / 0.55);
+  --color-oxblood: oklch(0.62 0.14 25);
+  --color-oxblood-foreground: oklch(0.12 0.03 260);
 
   /* Dark mode CSS variables */
   --background: var(--color-background);
@@ -87,6 +94,8 @@
   --ring: var(--color-ring);
   --ink-muted: var(--color-ink-muted);
   --surface-glass: var(--color-surface-glass);
+  --oxblood: var(--color-oxblood);
+  --oxblood-foreground: var(--color-oxblood-foreground);
 }
 
 @utility font-editorial {
@@ -97,6 +106,19 @@
   box-shadow:
     0 1px 0 oklch(0 0 0 / 0.04),
     0 12px 40px oklch(0.2 0.04 260 / 0.08);
+}
+
+@utility shadow-lift {
+  box-shadow:
+    0 0 0 1px oklch(0.2 0.04 260 / 0.06),
+    0 1px 2px oklch(0 0 0 / 0.04),
+    0 20px 50px oklch(0.2 0.04 260 / 0.1);
+}
+
+.dark .shadow-lift {
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 0.08),
+    0 16px 48px oklch(0 0 0 / 0.35);
 }
 
 .dark .shadow-paper {
