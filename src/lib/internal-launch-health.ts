@@ -1,146 +1,324 @@
-import fs from "node:fs/promises";
-import path from "node:path";
 import * as Sentry from "@sentry/nextjs";
+import { clerkClient } from "@clerk/nextjs/server";
 import { Resend } from "resend";
+import Stripe from "stripe";
 import { generateChatCompletionText } from "@/lib/llm-chat-completion";
-import { getRedis } from "@/lib/redis-client";
-import { getStripe } from "@/lib/stripe";
+import {
+  getActiveStorageDriver,
+  storageHealthRoundTrip,
+} from "@/lib/storage";
 
-export type HealthStatus = "green" | "yellow" | "red";
+const CHECK_TIMEOUT_MS = 5000;
 
-export type HealthCheckResult = {
+export type InternalHealthStatus = "ok" | "degraded" | "error" | "missing";
+
+export type InternalHealthRow = {
   id: string;
-  label: string;
-  status: HealthStatus;
-  latencyMs?: number;
-  detail?: string;
+  name: string;
+  status: InternalHealthStatus;
+  latencyMs: number | null;
+  lastError?: string;
+  /** Env vars to set when status is `missing` */
+  envHints?: string[];
+  /** e.g. active storage driver */
+  note?: string;
 };
 
-const HEALTH_TMP = path.join(process.cwd(), "tmp", ".internal-health-ping");
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error(`Timed out after ${ms}ms`)), ms);
+    promise.then(
+      (v) => {
+        clearTimeout(t);
+        resolve(v);
+      },
+      (e) => {
+        clearTimeout(t);
+        reject(e);
+      }
+    );
+  });
+}
 
-async function checkEmbedApi(baseUrl: string): Promise<HealthCheckResult> {
-  const id = "embed_api";
-  const label = "Embed API (/api/embed/health)";
+function row(r: Omit<InternalHealthRow, "latencyMs"> & { latencyMs?: number | null }): InternalHealthRow {
+  return { ...r, latencyMs: r.latencyMs ?? null };
+}
+
+async function embedHealth(baseUrl: string): Promise<InternalHealthRow> {
+  const id = "embed";
+  const name = "Embed health";
   const t0 = Date.now();
   try {
-    const res = await fetch(`${baseUrl.replace(/\/$/, "")}/api/embed/health`, { cache: "no-store" });
+    const { res, j } = await withTimeout(
+      (async () => {
+        const res = await fetch(`${baseUrl.replace(/\/$/, "")}/api/embed/health`, { cache: "no-store" });
+        const j = (await res.json()) as { ok?: boolean };
+        return { res, j };
+      })(),
+      CHECK_TIMEOUT_MS
+    );
     const latencyMs = Date.now() - t0;
-    if (!res.ok) return { id, label, status: "red", latencyMs, detail: `HTTP ${res.status}` };
-    const j = (await res.json()) as { ok?: boolean };
-    return j.ok ? { id, label, status: "green", latencyMs } : { id, label, status: "yellow", latencyMs, detail: "Unexpected body" };
-  } catch (e) {
-    return { id, label, status: "red", latencyMs: Date.now() - t0, detail: e instanceof Error ? e.message : "fetch failed" };
-  }
-}
-
-async function checkSentry(): Promise<HealthCheckResult> {
-  const id = "sentry";
-  const label = "Sentry (client capture)";
-  const t0 = Date.now();
-  const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN?.trim() || process.env.SENTRY_DSN?.trim();
-  if (!dsn) {
-    return { id, label, status: "yellow", detail: "NEXT_PUBLIC_SENTRY_DSN / SENTRY_DSN not set" };
-  }
-  try {
-    Sentry.captureMessage("basiclaw.internal_health_ping", { level: "info" });
-    return { id, label, status: "green", latencyMs: Date.now() - t0 };
-  } catch (e) {
-    return { id, label, status: "red", latencyMs: Date.now() - t0, detail: e instanceof Error ? e.message : "error" };
-  }
-}
-
-async function checkStorage(): Promise<HealthCheckResult> {
-  const id = "storage";
-  const label = "Storage (KV / file round-trip)";
-  const t0 = Date.now();
-  const token = `ping-${Date.now()}`;
-  try {
-    const redis = getRedis();
-    if (redis) {
-      const k = "internal:health:ping";
-      await redis.set(k, token, { ex: 120 });
-      const got = await redis.get<string>(k);
-      await redis.del(k);
-      if (got !== token) return { id, label, status: "red", latencyMs: Date.now() - t0, detail: "Redis read mismatch" };
-      return { id, label, status: "green", latencyMs: Date.now() - t0 };
+    if (!res.ok) {
+      return row({
+        id,
+        name,
+        status: "error",
+        latencyMs,
+        lastError: `HTTP ${res.status}`,
+      });
     }
-    await fs.mkdir(path.dirname(HEALTH_TMP), { recursive: true });
-    await fs.writeFile(HEALTH_TMP, token, "utf-8");
-    const read = await fs.readFile(HEALTH_TMP, "utf-8");
-    if (read !== token) return { id, label, status: "red", latencyMs: Date.now() - t0, detail: "File read mismatch" };
-    return { id, label, status: "green", latencyMs: Date.now() - t0, detail: "file backend (ephemeral on serverless)" };
-  } catch (e) {
-    return { id, label, status: "red", latencyMs: Date.now() - t0, detail: e instanceof Error ? e.message : "error" };
-  }
-}
-
-async function checkLlm(): Promise<HealthCheckResult> {
-  const id = "llm";
-  const label = "AI Gateway / OpenRouter";
-  const t0 = Date.now();
-  const hasKey =
-    Boolean(process.env.AI_GATEWAY_API_KEY?.trim()) || Boolean(process.env.OPENROUTER_API_KEY?.trim());
-  if (!hasKey) {
-    return { id, label, status: "yellow", detail: "No AI_GATEWAY_API_KEY or OPENROUTER_API_KEY" };
-  }
-  try {
-    await generateChatCompletionText({
-      messages: [
-        { role: "system", content: "Reply with exactly: OK" },
-        { role: "user", content: "Ping." },
-      ],
-      maxTokens: 8,
-      temperature: 0,
+    if (j.ok === true) return row({ id, name, status: "ok", latencyMs });
+    return row({
+      id,
+      name,
+      status: "degraded",
+      latencyMs,
+      lastError: "Expected JSON { ok: true }",
     });
-    return { id, label, status: "green", latencyMs: Date.now() - t0 };
   } catch (e) {
-    return { id, label, status: "red", latencyMs: Date.now() - t0, detail: e instanceof Error ? e.message : "LLM error" };
+    return row({
+      id,
+      name,
+      status: "error",
+      latencyMs: Date.now() - t0,
+      lastError: e instanceof Error ? e.message : "fetch failed",
+    });
   }
 }
 
-async function checkStripe(): Promise<HealthCheckResult> {
-  const id = "stripe";
-  const label = "Stripe API";
+async function sentryPing(): Promise<InternalHealthRow> {
+  const id = "sentry";
+  const name = "Sentry test event";
   const t0 = Date.now();
-  if (!process.env.STRIPE_SECRET_KEY?.trim()) {
-    return { id, label, status: "yellow", detail: "STRIPE_SECRET_KEY not set" };
+  if (!process.env.NEXT_PUBLIC_SENTRY_DSN?.trim()) {
+    return row({
+      id,
+      name,
+      status: "missing",
+      latencyMs: null,
+      envHints: ["NEXT_PUBLIC_SENTRY_DSN"],
+    });
   }
   try {
-    const stripe = getStripe();
-    await stripe.products.list({ limit: 1 });
-    return { id, label, status: "green", latencyMs: Date.now() - t0 };
+    await withTimeout(
+      (async () => {
+        Sentry.captureMessage("internal-health-ping", "info");
+        await Sentry.flush(2000);
+      })(),
+      CHECK_TIMEOUT_MS
+    );
+    return row({ id, name, status: "ok", latencyMs: Date.now() - t0 });
   } catch (e) {
-    return { id, label, status: "red", latencyMs: Date.now() - t0, detail: e instanceof Error ? e.message : "stripe error" };
+    return row({
+      id,
+      name,
+      status: "error",
+      latencyMs: Date.now() - t0,
+      lastError: e instanceof Error ? e.message : "Sentry error",
+    });
   }
 }
 
-async function checkResend(): Promise<HealthCheckResult> {
+async function storagePing(): Promise<InternalHealthRow> {
+  const id = "storage";
+  const name = "Storage round-trip";
+  const driver = getActiveStorageDriver();
+  const t0 = Date.now();
+  const key = `health:ping:${Date.now()}`;
+  try {
+    await withTimeout(storageHealthRoundTrip(key, "ok"), CHECK_TIMEOUT_MS);
+    return row({
+      id,
+      name,
+      status: "ok",
+      latencyMs: Date.now() - t0,
+      note: `driver: ${driver}`,
+    });
+  } catch (e) {
+    return row({
+      id,
+      name,
+      status: "error",
+      latencyMs: Date.now() - t0,
+      lastError: e instanceof Error ? e.message : "storage error",
+      note: `driver: ${driver}`,
+    });
+  }
+}
+
+async function llmPing(): Promise<InternalHealthRow> {
+  const id = "llm";
+  const name = "AI Gateway / OpenRouter";
+  const t0 = Date.now();
+  const hasGateway = Boolean(process.env.AI_GATEWAY_API_KEY?.trim());
+  const hasOr = Boolean(process.env.OPENROUTER_API_KEY?.trim());
+  if (!hasGateway && !hasOr) {
+    return row({
+      id,
+      name,
+      status: "missing",
+      latencyMs: null,
+      envHints: ["AI_GATEWAY_API_KEY", "OPENROUTER_API_KEY"],
+    });
+  }
+  try {
+    const { text } = await withTimeout(
+      generateChatCompletionText({
+        messages: [{ role: "user", content: "ok" }],
+        maxTokens: 1,
+        temperature: 0,
+      }),
+      CHECK_TIMEOUT_MS
+    );
+    const trimmed = text?.trim() ?? "";
+    if (!trimmed) {
+      return row({
+        id,
+        name,
+        status: "degraded",
+        latencyMs: Date.now() - t0,
+        lastError: "Empty completion text",
+      });
+    }
+    return row({ id, name, status: "ok", latencyMs: Date.now() - t0 });
+  } catch (e) {
+    return row({
+      id,
+      name,
+      status: "error",
+      latencyMs: Date.now() - t0,
+      lastError: e instanceof Error ? e.message : "LLM error",
+    });
+  }
+}
+
+async function stripePing(): Promise<InternalHealthRow> {
+  const id = "stripe";
+  const name = "Stripe";
+  const t0 = Date.now();
+  const secret = process.env.STRIPE_SECRET_KEY?.trim();
+  if (!secret) {
+    return row({
+      id,
+      name,
+      status: "missing",
+      latencyMs: null,
+      envHints: ["STRIPE_SECRET_KEY"],
+    });
+  }
+  try {
+    await withTimeout(
+      (async () => {
+        const stripe = new Stripe(secret, {
+          appInfo: {
+            name: "BasicLaw",
+            url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://basiclaw.vercel.app",
+          },
+        });
+        await stripe.products.list({ limit: 1 });
+      })(),
+      CHECK_TIMEOUT_MS
+    );
+    return row({ id, name, status: "ok", latencyMs: Date.now() - t0 });
+  } catch (e) {
+    return row({
+      id,
+      name,
+      status: "error",
+      latencyMs: Date.now() - t0,
+      lastError: e instanceof Error ? e.message : "Stripe error",
+    });
+  }
+}
+
+async function resendPing(): Promise<InternalHealthRow> {
   const id = "resend";
-  const label = "Resend API";
+  const name = "Resend";
   const t0 = Date.now();
   const key = process.env.RESEND_API_KEY?.trim();
   if (!key) {
-    return { id, label, status: "yellow", detail: "RESEND_API_KEY not set" };
+    return row({
+      id,
+      name,
+      status: "missing",
+      latencyMs: null,
+      envHints: ["RESEND_API_KEY"],
+    });
   }
   try {
     const resend = new Resend(key);
-    const { data, error } = await resend.domains.list();
-    if (error) return { id, label, status: "red", latencyMs: Date.now() - t0, detail: error.message };
-    if (!data) return { id, label, status: "yellow", latencyMs: Date.now() - t0, detail: "Empty domains response" };
-    return { id, label, status: "green", latencyMs: Date.now() - t0, detail: `${data.data?.length ?? 0} domain(s)` };
+    const { data, error } = await withTimeout(resend.domains.list(), CHECK_TIMEOUT_MS);
+    if (error) {
+      return row({
+        id,
+        name,
+        status: "error",
+        latencyMs: Date.now() - t0,
+        lastError: error.message,
+      });
+    }
+    if (!data) {
+      return row({
+        id,
+        name,
+        status: "degraded",
+        latencyMs: Date.now() - t0,
+        lastError: "Empty domains response",
+      });
+    }
+    return row({ id, name, status: "ok", latencyMs: Date.now() - t0 });
   } catch (e) {
-    return { id, label, status: "red", latencyMs: Date.now() - t0, detail: e instanceof Error ? e.message : "resend error" };
+    return row({
+      id,
+      name,
+      status: "error",
+      latencyMs: Date.now() - t0,
+      lastError: e instanceof Error ? e.message : "Resend error",
+    });
   }
 }
 
-export async function runInternalLaunchHealthChecks(baseUrl: string): Promise<HealthCheckResult[]> {
-  const embed = await checkEmbedApi(baseUrl);
-  const [sentry, storage, llm, stripe, resend] = await Promise.all([
-    checkSentry(),
-    checkStorage(),
-    checkLlm(),
-    checkStripe(),
-    checkResend(),
-  ]);
-  return [embed, sentry, storage, llm, stripe, resend];
+async function clerkPing(): Promise<InternalHealthRow> {
+  const id = "clerk";
+  const name = "Clerk";
+  const t0 = Date.now();
+  if (!process.env.CLERK_SECRET_KEY?.trim()) {
+    return row({
+      id,
+      name,
+      status: "missing",
+      latencyMs: null,
+      envHints: ["CLERK_SECRET_KEY"],
+    });
+  }
+  try {
+    await withTimeout(
+      (async () => {
+        const c = await clerkClient();
+        await c.users.getCount();
+      })(),
+      CHECK_TIMEOUT_MS
+    );
+    return row({ id, name, status: "ok", latencyMs: Date.now() - t0 });
+  } catch (e) {
+    return row({
+      id,
+      name,
+      status: "error",
+      latencyMs: Date.now() - t0,
+      lastError: e instanceof Error ? e.message : "Clerk error",
+    });
+  }
+}
+
+/** Sequential server-side checks for `/internal/health` (5s timeout each). */
+export async function runInternalLaunchHealthChecks(baseUrl: string): Promise<InternalHealthRow[]> {
+  const embed = await embedHealth(baseUrl);
+  const sentry = await sentryPing();
+  const storage = await storagePing();
+  const llm = await llmPing();
+  const stripe = await stripePing();
+  const resend = await resendPing();
+  const clerk = await clerkPing();
+  return [embed, sentry, storage, llm, stripe, resend, clerk];
 }

@@ -64,6 +64,8 @@ type FileStoreShape = {
   lawyerApplications: LawyerApplicationRecord[];
   /** Arbitrary string counters, e.g. `chatday:u:user:2026-01-15` */
   usage: Record<string, number>;
+  /** Ephemeral KV used only by `/internal/health` file-backend round-trip */
+  healthKvScratch?: Record<string, string>;
 };
 
 function utcDay(): string {
@@ -89,12 +91,17 @@ async function readFileStore(): Promise<FileStoreShape> {
   try {
     const raw = await fs.readFile(FILE_PATH, "utf-8");
     const parsed = JSON.parse(raw) as Partial<FileStoreShape>;
+    const healthKvScratch =
+      parsed.healthKvScratch && typeof parsed.healthKvScratch === "object" && !Array.isArray(parsed.healthKvScratch)
+        ? (parsed.healthKvScratch as Record<string, string>)
+        : undefined;
     return {
       chats: Array.isArray(parsed.chats) ? parsed.chats : [],
       audits: Array.isArray(parsed.audits) ? parsed.audits : [],
       subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : [],
       lawyerApplications: Array.isArray(parsed.lawyerApplications) ? parsed.lawyerApplications : [],
       usage: parsed.usage && typeof parsed.usage === "object" ? parsed.usage : {},
+      ...(healthKvScratch && Object.keys(healthKvScratch).length ? { healthKvScratch } : {}),
     };
   } catch {
     return { chats: [], audits: [], subscribers: [], lawyerApplications: [], usage: {} };
@@ -392,6 +399,42 @@ export async function listNewsletterSubscribers(): Promise<NewsletterSubscriber[
   }
   const store = await readFileStore();
   return store.subscribers;
+}
+
+export type ActiveStorageDriver = "upstash" | "file";
+
+export function getActiveStorageDriver(): ActiveStorageDriver {
+  return getRedis() ? "upstash" : "file";
+}
+
+/** Write, read, delete a short-lived key using the same backend as app persistence. */
+export async function storageHealthRoundTrip(key: string, value: string): Promise<void> {
+  const redis = getRedis();
+  if (redis) {
+    await redis.set(key, value, { ex: 120 });
+    const got = await redis.get<string>(key);
+    await redis.del(key);
+    if (got !== value) throw new Error("storage read-back mismatch");
+    return;
+  }
+  const store = await readFileStore();
+  const scratch = { ...(store.healthKvScratch ?? {}) };
+  scratch[key] = value;
+  await writeFileStore({ ...store, healthKvScratch: scratch });
+  const verify = await readFileStore();
+  if (verify.healthKvScratch?.[key] !== value) {
+    const rollback = { ...verify };
+    const r = { ...(rollback.healthKvScratch ?? {}) };
+    delete r[key];
+    rollback.healthKvScratch = Object.keys(r).length ? r : undefined;
+    await writeFileStore(rollback);
+    throw new Error("storage read-back mismatch");
+  }
+  const cleaned = { ...verify };
+  const next = { ...(cleaned.healthKvScratch ?? {}) };
+  delete next[key];
+  cleaned.healthKvScratch = Object.keys(next).length ? next : undefined;
+  await writeFileStore(cleaned);
 }
 
 /** User-requested aliases */
