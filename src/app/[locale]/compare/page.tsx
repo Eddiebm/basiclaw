@@ -6,9 +6,11 @@ import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { COUNTRIES } from "@/data/countries";
 import { getCountry } from "@/lib/jurisdictions";
-import { getComparePanel, isCompareTopic, type CompareTopic } from "@/lib/compare-highlights";
+import { buildCompareNarrativeFacts, buildCompareSide, isCompareTopic, type CompareTopic } from "@/lib/compare-highlights";
 import { CompareClient } from "@/components/compare/CompareClient";
 import { routing } from "@/i18n/routing";
+import { loadSnippetsForCountry } from "@/lib/constitution-snippets";
+import { buildOgImageUrl } from "@/lib/og-image-url";
 
 type CompareSearch = { a?: string; b?: string; topic?: string };
 
@@ -35,13 +37,31 @@ export async function generateMetadata({
   const ca = getCountry(a);
   const cb = getCountry(b);
   const t = await getTranslations({ locale, namespace: "comparePage" });
-  const title = ca && cb ? `${ca.name} vs ${cb.name} — ${t(`topics.${topic}`)}` : t("metaTitle");
-  const description = t("metaDescription");
+  const topicLabel = t(`topics.${topic}`);
+  const title = ca && cb ? `${ca.name} vs ${cb.name} — ${topicLabel}` : t("metaTitle");
+  const description =
+    ca && cb
+      ? t("metaDescriptionRich", {
+          a: ca.name,
+          b: cb.name,
+          topic: topicLabel,
+        })
+      : t("metaDescription");
+  const site = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
+  const og = buildOgImageUrl(site, {
+    kind: "compare",
+    title: title.slice(0, 80),
+    subtitle: topicLabel,
+    flagA: ca?.flag,
+    flagB: cb?.flag,
+    topic: topicLabel,
+  });
   return {
     title,
     description,
     alternates: { canonical: `/${locale}/compare?a=${ca?.code ?? "US"}&b=${cb?.code ?? "GH"}&topic=${topic}` },
-    openGraph: { title, description, url: `/${locale}/compare`, type: "website" },
+    openGraph: { title, description, url: `/${locale}/compare`, type: "website", images: [{ url: og, width: 1200, height: 630, alt: title }] },
+    twitter: { card: "summary_large_image", title, description, images: [og] },
   };
 }
 
@@ -59,6 +79,11 @@ export default async function ComparePage({
 
   const countryA = getCountry(a)!;
   const countryB = getCountry(b)!;
+
+  const [snippetsA, snippetsB] = await Promise.all([
+    loadSnippetsForCountry(countryA.code),
+    loadSnippetsForCountry(countryB.code),
+  ]);
 
   const t = await getTranslations({ locale, namespace: "comparePage" });
   const site = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
@@ -83,9 +108,20 @@ export default async function ComparePage({
     ],
   };
 
-  const panels = { a: getComparePanel(countryA, topic), b: getComparePanel(countryB, topic) };
+  const panels = {
+    a: buildCompareSide(countryA, topic, snippetsA),
+    b: buildCompareSide(countryB, topic, snippetsB),
+  };
 
-  const countrySummaries = COUNTRIES.map((c) => ({ code: c.code, name: c.name, flag: c.flag }));
+  const narrativeFacts = buildCompareNarrativeFacts(countryA, countryB, topic, t(`topics.${topic}`));
+
+  const countrySummaries = COUNTRIES.map((c) => ({
+    code: c.code,
+    name: c.name,
+    flag: c.flag,
+    region: c.region,
+    legalSystem: c.legalSystem,
+  }));
 
   return (
     <main className="min-h-screen">
@@ -112,6 +148,7 @@ export default async function ComparePage({
             initialTopic={topic}
             countries={countrySummaries}
             panels={panels}
+            narrativeFacts={narrativeFacts}
           />
         </div>
       </section>

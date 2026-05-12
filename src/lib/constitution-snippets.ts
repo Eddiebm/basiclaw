@@ -86,6 +86,32 @@ export function rankSnippetsForMessage(
   return scored.slice(0, topK).map((x) => x.s);
 }
 
+/** Rank snippets for the constitution comparison tool (no full Country context). */
+export function rankSnippetsForTopicQuery(
+  query: string,
+  snippets: ConstitutionSnippet[],
+  topK: number
+): ConstitutionSnippet[] {
+  if (snippets.length === 0) return [];
+  const msgTokens = tokenize(query);
+  const scored = snippets.map((s) => {
+    const st = snippetTokens(s);
+    let score = 0;
+    for (const t of msgTokens) {
+      if (st.has(t)) score += 2;
+    }
+    const excerptTokens = tokenize(s.excerpt);
+    for (const t of msgTokens) {
+      if (excerptTokens.has(t)) score += 1;
+    }
+    return { s, score };
+  });
+  scored.sort((a, b) => b.score - a.score);
+  const picked = scored.filter((x) => x.score > 0).slice(0, topK);
+  if (picked.length > 0) return picked.map((x) => x.s);
+  return scored.slice(0, topK).map((x) => x.s);
+}
+
 export function formatSnippetsForPrompt(snippets: ConstitutionSnippet[]): string {
   if (snippets.length === 0) return "";
   const lines = snippets.map((s) => {
