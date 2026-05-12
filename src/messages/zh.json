@@ -171,5 +171,12 @@
     "mostChosen": "最受欢迎",
     "subscribeTo": "订阅{tier}",
     "checkoutError": "无法开始结账。"
+  },
+  "voice": {
+    "listenToSummary": "Listen to summary",
+    "constitutionSummaryLead": "Plain-language summary."
+  },
+  "homeFaq": {
+    "items": {}
   }
 }

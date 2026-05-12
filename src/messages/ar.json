@@ -171,5 +171,12 @@
     "mostChosen": "الأكثر اختياراً",
     "subscribeTo": "اشترك في {tier}",
     "checkoutError": "تعذر بدء الدفع."
+  },
+  "voice": {
+    "listenToSummary": "Listen to summary",
+    "constitutionSummaryLead": "Plain-language summary."
+  },
+  "homeFaq": {
+    "items": {}
   }
 }

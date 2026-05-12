@@ -225,5 +225,12 @@
     "startingCheckout": "Iniciando pago…",
     "subscribeTo": "Suscribirse a {tier}",
     "checkoutError": "No pudimos iniciar el pago. Inténtalo de nuevo."
+  },
+  "voice": {
+    "listenToSummary": "Listen to summary",
+    "constitutionSummaryLead": "Plain-language summary."
+  },
+  "homeFaq": {
+    "items": {}
   }
 }

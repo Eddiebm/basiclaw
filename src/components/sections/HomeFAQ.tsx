@@ -6,7 +6,7 @@ import { ChevronDown, HelpCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { track } from "@/lib/analytics";
 
-const FAQ_KEYS = ["i1", "i2", "i3", "i4", "i5", "i6"] as const;
+const FAQ_KEYS = ["i1", "i2", "i3", "i4", "i5", "i6", "i7"] as const;
 
 export function HomeFAQ() {
   const t = useTranslations("homeFaq");
@@ -38,6 +38,7 @@ export function HomeFAQ() {
             return (
               <motion.div
                 key={item.key}
+                id={item.key === "i7" ? "voice-browser-faq" : undefined}
                 initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

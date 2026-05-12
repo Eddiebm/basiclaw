@@ -171,5 +171,12 @@
     "mostChosen": "Mais escolhido",
     "subscribeTo": "Assinar {tier}",
     "checkoutError": "Não foi possível iniciar o checkout."
+  },
+  "voice": {
+    "listenToSummary": "Listen to summary",
+    "constitutionSummaryLead": "Plain-language summary."
+  },
+  "homeFaq": {
+    "items": {}
   }
 }

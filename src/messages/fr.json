@@ -225,5 +225,12 @@
     "startingCheckout": "Paiement…",
     "subscribeTo": "S’abonner à {tier}",
     "checkoutError": "Impossible de démarrer le paiement."
+  },
+  "voice": {
+    "listenToSummary": "Listen to summary",
+    "constitutionSummaryLead": "Plain-language summary."
+  },
+  "homeFaq": {
+    "items": {}
   }
 }

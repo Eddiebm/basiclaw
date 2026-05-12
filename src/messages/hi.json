@@ -171,5 +171,12 @@
     "mostChosen": "सबसे चुना गया",
     "subscribeTo": "{tier} की सदस्यता लें",
     "checkoutError": "चेकआउट शुरू नहीं हो सका।"
+  },
+  "voice": {
+    "listenToSummary": "Listen to summary",
+    "constitutionSummaryLead": "Plain-language summary."
+  },
+  "homeFaq": {
+    "items": {}
   }
 }
