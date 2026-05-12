@@ -6,6 +6,7 @@ import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { DemandLetterGeneratorClient } from "./DemandLetterGeneratorClient";
+import { buildOgImageUrl } from "@/lib/og-image-url";
 
 function faqJsonLd(items: { question: string; answer: string }[]): Record<string, unknown> {
   return {
@@ -39,6 +40,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: "auditDemandLetterPage" });
   const title = t("metaTitle");
   const description = t("metaDescription");
+  const site = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
+  const og = buildOgImageUrl(site, { kind: "audit", title, subtitle: description });
   return {
     title,
     description,
@@ -48,7 +51,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description,
       url: `/${locale}/audit/demand-letter-generator`,
       type: "website",
+      images: [{ url: og, width: 1200, height: 630, alt: title }],
     },
+    twitter: { card: "summary_large_image", title, description, images: [og] },
   };
 }
 

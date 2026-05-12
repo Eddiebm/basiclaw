@@ -24,6 +24,14 @@
     "subtitle": "BasicLaw convierte la constitución y las leyes núcleo de cada país del mundo en respuestas claras para cualquiera. Sin suscripciones solo para conocer tus derechos.",
     "ctaAudit": "Auditar mi contrato gratis",
     "ctaAsk": "Hacer una pregunta",
+    "ctaQuestions": "Explorar preguntas ciudadanas",
+    "browseRich": "O <link>explora las {count} constituciones</link> — gratis para leer.",
+    "auditToolsLead": "Auditorías específicas:",
+    "auditToolsLease": "Arrendamiento",
+    "auditToolsEmployment": "Laboral",
+    "auditToolsTerms": "Términos",
+    "extensionLead": "O audita lo que ya estás leyendo:",
+    "extensionCta": "Añade la extensión de BasicLaw para el navegador",
     "browseLink": "explorar las {count} constituciones",
     "browseLead": "o",
     "tinyDisclaimer": "Gratis para leer. Solo educativo — no sustituye a un abogado colegiado.",
@@ -157,6 +165,9 @@
       "newChat": "Nuevo chat",
       "recentChats": "Chats recientes",
       "noChats": "Aún no hay conversaciones."
+    },
+    "citations": {
+      "sourcesLabel": "Fuentes"
     }
   },
   "topicPage": {
@@ -296,6 +307,11 @@
     "sourcesHeading": "Fuentes",
     "lastVerifiedLabel": "Última verificación {date}",
     "narrativeTitle": "Semejanzas y diferencias notables",
+    "similaritiesTitle": "Semejanzas",
+    "differencesTitle": "Diferencias",
+    "similaritiesFallback": "Ambos textos enmarcan a {a} y {b} en un lenguaje constitucional comparable — lea los extractos y principios clave para captar matices.",
+    "differencesFallback": "La mayoría de las diferencias aparecen en instituciones, remedios y cultura de citas — compare tarjeta por tarjeta arriba.",
+    "diffVerifiedDates": "Las fechas de verificación difieren: {aDate} para {a} frente a {bDate} para {b}.",
     "narrativeLegalSame": "Ambos países comparten en gran medida la misma tradición jurídica ({system}), por lo que tribunales y leyes suelen resultar familiares aunque el texto difiera.",
     "narrativeLegalDiff": "{a} se describe como sistema {sysA} y {b} como {sysB}: espere instituciones, remedios y citas distintos aunque el lenguaje de derechos parezca similar.",
     "narrativePrinciplesBoth": "En {topic}, ambas constituciones reflejan ideas parecidas en las listas de principios clave de BasicLaw (coincidencia por palabras clave).",

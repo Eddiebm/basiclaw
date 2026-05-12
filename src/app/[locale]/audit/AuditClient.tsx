@@ -82,6 +82,7 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
     setReport(null);
     track("audit_started", {
       auditType,
+      audit_type: auditType,
       jurisdiction,
       input_type: file ? "file" : "text",
       document_type: documentType || null,
@@ -119,6 +120,7 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
       if (json.report) {
         setReport(json.report);
         track("audit_completed", {
+          auditType: json.report.auditType,
           audit_type: json.report.auditType,
           jurisdiction: json.report.jurisdictionCode,
           document_type: json.report.documentType,
@@ -148,6 +150,7 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
           report={report}
           onShared={() =>
             track("audit_shared", {
+              auditType: report.auditType,
               audit_type: report.auditType,
               jurisdiction: report.jurisdictionCode,
               risk_grade: report.overallRiskGrade,
@@ -223,7 +226,7 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
         onDrop={onDrop}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
-        className={`flex flex-col items-center justify-center gap-3 rounded-[1.75rem] border-2 border-dashed p-10 text-center cursor-pointer transition ${
+        className={`flex flex-col items-center justify-center gap-3 rounded-[1.75rem] border border-dashed p-10 text-center cursor-pointer transition ${
           dragActive
             ? "border-[var(--primary)] bg-[var(--primary)]/8 shadow-[inset_0_0_0_1px_oklch(0.45_0.12_262/0.15)]"
             : "border-[var(--border)] bg-[var(--card)]/80 hover:border-[var(--primary)]/35"

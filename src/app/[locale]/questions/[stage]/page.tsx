@@ -9,6 +9,7 @@ import { getCitizenQuestionsByStage } from "@/data/questions/load-questions";
 import { STAGES, type Stage } from "@/data/questions/taxonomy";
 import { STAGE_LABEL } from "@/components/questions/labels";
 import { buildQuestionsFaqJsonLd } from "@/lib/questions-jsonld";
+import { buildOgImageUrl } from "@/lib/og-image-url";
 
 type Props = { params: Promise<{ locale: string; stage: string }> };
 
@@ -22,10 +23,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Questions" };
   }
   const label = STAGE_LABEL[stage] ?? stage;
+  const title = `${label} legal questions`;
+  const description = `Educational legal prompts for the ${label} life stage. Not legal advice.`;
+  const site = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
+  const og = buildOgImageUrl(site, {
+    kind: "questions",
+    title: label.slice(0, 80),
+    subtitle: "Citizen questions · BasicLaw",
+  });
   return {
-    title: `${label} legal questions`,
-    description: `Educational legal prompts for the ${label} life stage. Not legal advice.`,
+    title,
+    description,
     alternates: { canonical: `/${locale}/questions/${stage}` },
+    openGraph: {
+      title,
+      description,
+      url: `/${locale}/questions/${stage}`,
+      type: "website",
+      images: [{ url: og, width: 1200, height: 630, alt: title }],
+    },
+    twitter: { card: "summary_large_image", title, description, images: [og] },
   };
 }
 

@@ -5,16 +5,33 @@ import { QuestionsIndexClient } from "@/components/questions/QuestionsIndexClien
 import { QuestionsEducationalDisclaimer } from "@/components/questions/QuestionsEducationalDisclaimer";
 import { getAllCitizenQuestions } from "@/data/questions/load-questions";
 import { buildQuestionsFaqJsonLd, buildQuestionsItemListJsonLd } from "@/lib/questions-jsonld";
+import { buildOgImageUrl } from "@/lib/og-image-url";
 
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const title = "Citizen questions";
+  const description =
+    "Searchable library of plain-language legal prompts across life stages and domains. Educational only — not legal advice.";
+  const site = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
+  const og = buildOgImageUrl(site, {
+    kind: "questions",
+    title,
+    subtitle: "BasicLaw · life stages · educational only",
+  });
   return {
-    title: "Citizen questions",
-    description:
-      "Searchable library of plain-language legal prompts across life stages and domains. Educational only — not legal advice.",
+    title,
+    description,
     alternates: { canonical: `/${locale}/questions` },
+    openGraph: {
+      title,
+      description,
+      url: `/${locale}/questions`,
+      type: "website",
+      images: [{ url: og, width: 1200, height: 630, alt: title }],
+    },
+    twitter: { card: "summary_large_image", title, description, images: [og] },
   };
 }
 

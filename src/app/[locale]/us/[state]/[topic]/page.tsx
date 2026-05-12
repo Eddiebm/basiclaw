@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { UsStateTopicPage } from "@/components/topics/UsStateTopicPage";
 import { US_STATES, US_STATE_TOPIC_SLUGS, getUsStateBySlug, type UsStateTopicSlug } from "@/data/us-states";
 import { routing } from "@/i18n/routing";
 import { buildUsStateTopicContent } from "@/lib/us-state-topic-content";
 import { fetchBuildTimeStateTopicSummary } from "@/lib/us-state-llm-summary";
+import { buildOgImageUrl } from "@/lib/og-image-url";
 
 type RouteParams = { locale: string; state: string; topic: string };
 
@@ -33,6 +35,14 @@ export async function generateMetadata({ params }: { params: Promise<RouteParams
   const content = buildUsStateTopicContent(state, topicSlug);
   const title = `${content.title} | ${state.name}`;
   const description = content.intro.slice(0, 180);
+  const t = await getTranslations({ locale, namespace: "usStateTopicPage" });
+  const topicLabel = t(`labels.${topicSlug}`);
+  const site = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
+  const og = buildOgImageUrl(site, {
+    kind: "topic",
+    title: `🇺🇸 ${state.name}`.slice(0, 80),
+    subtitle: topicLabel,
+  });
   return {
     title,
     description,
@@ -42,7 +52,9 @@ export async function generateMetadata({ params }: { params: Promise<RouteParams
       description,
       url: `/${locale}/us/${state.slug}/${topicSlug}`,
       type: "article",
+      images: [{ url: og, width: 1200, height: 630, alt: title }],
     },
+    twitter: { card: "summary_large_image", title, description, images: [og] },
   };
 }
 

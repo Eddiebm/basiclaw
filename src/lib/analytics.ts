@@ -2,11 +2,10 @@
 
 import posthog from "posthog-js";
 
-export type VoiceAnalyticsSurface = "chat" | "audit" | "constitution" | "questions" | "topics";
+export type VoiceAnalyticsSurface = "chat" | "audit" | "constitution" | "questions" | "topics" | "compare";
 
 export type AnalyticsEvent =
   | "home_view"
-  | "hero_ask_prefill_submit"
   | "constitution_viewed"
   | "country_selected"
   | "chat_message_sent"

@@ -18,6 +18,7 @@ export function ChatInterface() {
   const tc = useTranslations("chatEmpty");
   const tComposer = useTranslations("chatComposer");
   const tVoice = useTranslations("voice");
+  const tCitations = useTranslations("chat.citations");
   const locale = useLocale();
   const pathname = usePathname();
   const signInHref = `/sign-in?redirect_url=${encodeURIComponent(`/${locale}${pathname}`)}`;
@@ -154,7 +155,7 @@ export function ChatInterface() {
 
                 {message.citations && message.citations.length > 0 && (
                   <div className="mt-3 pt-3 border-t border-border/50">
-                    <p className="text-xs font-medium mb-2 opacity-70">Sources:</p>
+                    <p className="text-xs font-medium mb-2 opacity-70">{tCitations("sourcesLabel")}</p>
                     {message.citations.map((cite) => (
                       <div key={cite.id} className="text-xs opacity-70">
                         {cite.title} - {cite.source}

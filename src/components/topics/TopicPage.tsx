@@ -31,6 +31,8 @@ export interface TopicSection {
   heading: string;
   body: string;
   bullets?: string[];
+  /** Optional per-locale heading overrides (e.g. es, fr, pt). Use `{country}` placeholder. */
+  titleByLocale?: Record<string, string>;
 }
 
 export interface TopicFAQ {
@@ -42,6 +44,8 @@ export interface TopicContent {
   slug: TopicSlug;
   countryCode: string;
   title: string;
+  /** Optional per-locale main heading overrides (es, fr, pt). Use `{country}` placeholder. */
+  titleByLocale?: Record<string, string>;
   intro: string;
   sections: TopicSection[];
   faqs: TopicFAQ[];
@@ -80,7 +84,9 @@ export function TopicPage({
   const topicSubtitle = t(`subtitles.${topic}`);
   const headingKey =
     topic === "rights" ? "rightsInCountry" : topic === "police-stop" ? "policeInCountry" : "landlordInCountry";
-  const pageHeading = t(`headings.${headingKey}`, { country: country.name });
+  const defaultHeading = t(`headings.${headingKey}`, { country: country.name });
+  const pageHeading =
+    content.titleByLocale?.[pageLocale]?.replaceAll("{country}", country.name) ?? defaultHeading;
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -189,7 +195,10 @@ export function TopicPage({
             <div className="space-y-8">
               {content.sections.map((section) => {
                 const sectionTitle =
-                  pageLocale !== "en" ? translate(`sections.${topic}.${section.id}`) : section.heading;
+                  pageLocale !== "en"
+                    ? section.titleByLocale?.[pageLocale]?.replaceAll("{country}", country.name) ??
+                      translate(`sections.${topic}.${section.id}`)
+                    : section.heading;
                 return (
                 <section key={section.id} className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
                   <h2 className="text-xl font-semibold text-[var(--foreground)] mb-3">{sectionTitle}</h2>

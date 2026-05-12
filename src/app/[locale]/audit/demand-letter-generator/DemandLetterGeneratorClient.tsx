@@ -71,6 +71,7 @@ export function DemandLetterGeneratorClient() {
     setReport(null);
     track("audit_started", {
       auditType: "demand_letter",
+      audit_type: "demand_letter",
       jurisdiction,
       input_type: "form",
       char_count: text.length,
@@ -106,6 +107,7 @@ export function DemandLetterGeneratorClient() {
       if (json.report) {
         setReport(json.report);
         track("audit_completed", {
+          auditType: json.report.auditType,
           audit_type: json.report.auditType,
           jurisdiction: json.report.jurisdictionCode,
           document_type: json.report.documentType,
@@ -135,6 +137,7 @@ export function DemandLetterGeneratorClient() {
           report={report}
           onShared={() =>
             track("audit_shared", {
+              auditType: report.auditType,
               audit_type: report.auditType,
               jurisdiction: report.jurisdictionCode,
               risk_grade: report.overallRiskGrade,

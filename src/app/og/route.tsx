@@ -4,10 +4,53 @@ export const runtime = "nodejs";
 
 const SIZE = { width: 1200, height: 630 };
 
+type OgKind = "default" | "constitution" | "audit" | "topic" | "compare" | "questions";
+
+function palette(kind: OgKind): { bg: string; accent: string } {
+  switch (kind) {
+    case "questions":
+      return {
+        bg: "linear-gradient(135deg, #0a0a0f 0%, #134e4a 42%, #0e7490 100%)",
+        accent: "rgba(34, 211, 238, 0.22)",
+      };
+    case "audit":
+      return {
+        bg: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #312e81 100%)",
+        accent: "rgba(196, 181, 253, 0.35)",
+      };
+    case "constitution":
+      return {
+        bg: "linear-gradient(135deg, #0c1222 0%, #134e4a 45%, #0f766e 100%)",
+        accent: "rgba(45, 212, 191, 0.25)",
+      };
+    case "topic":
+      return {
+        bg: "linear-gradient(135deg, #0a0a0f 0%, #422006 50%, #92400e 100%)",
+        accent: "rgba(251, 191, 36, 0.2)",
+      };
+    case "compare":
+      return {
+        bg: "linear-gradient(135deg, #0a0a0f 0%, #111827 40%, #3730a3 100%)",
+        accent: "rgba(129, 140, 248, 0.3)",
+      };
+    default:
+      return {
+        bg: "linear-gradient(135deg, #0a0a0f 0%, #111827 50%, #1e3a8a 100%)",
+        accent: "rgba(255,255,255,0.1)",
+      };
+  }
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const title = searchParams.get("title") ?? "Every country's constitution, in plain language.";
   const subtitle = searchParams.get("subtitle") ?? "BasicLaw · 195 jurisdictions · zero jargon";
+  const kind = (searchParams.get("kind") ?? "default") as OgKind;
+  const flagA = searchParams.get("flagA") ?? "";
+  const flagB = searchParams.get("flagB") ?? "";
+  const topic = searchParams.get("topic") ?? "";
+
+  const { bg, accent } = palette(kind);
 
   return new ImageResponse(
     (
@@ -18,44 +61,86 @@ export async function GET(request: Request) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          padding: "80px",
-          background:
-            "linear-gradient(135deg, #0a0a0f 0%, #111827 50%, #1e3a8a 100%)",
+          padding: "72px",
+          background: bg,
           color: "white",
           fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div
-            style={{
-              width: 56,
-              height: 56,
-              borderRadius: 16,
-              background: "rgba(255,255,255,0.1)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 32,
-            }}
-          >
-            ⚖️
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 16,
+                background: accent,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 32,
+              }}
+            >
+              ⚖️
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <div style={{ fontSize: 30, fontWeight: 700, letterSpacing: -0.5 }}>BasicLaw</div>
+              <div style={{ fontSize: 18, color: "rgba(255,255,255,0.65)", textTransform: "capitalize" }}>{kind}</div>
+            </div>
           </div>
-          <div style={{ fontSize: 32, fontWeight: 700, letterSpacing: -0.5 }}>BasicLaw</div>
+          {kind === "compare" && (flagA || flagB) ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div
+                style={{
+                  width: 88,
+                  height: 88,
+                  borderRadius: 20,
+                  background: "rgba(255,255,255,0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 52,
+                }}
+              >
+                {flagA || "🏳️"}
+              </div>
+              <div style={{ fontSize: 28, color: "rgba(255,255,255,0.55)", fontWeight: 700 }}>vs</div>
+              <div
+                style={{
+                  width: 88,
+                  height: 88,
+                  borderRadius: 20,
+                  background: "rgba(255,255,255,0.08)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 52,
+                }}
+              >
+                {flagB || "🏳️"}
+              </div>
+            </div>
+          ) : null}
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <div
             style={{
-              fontSize: 72,
+              fontSize: kind === "audit" ? 64 : 68,
               fontWeight: 800,
               lineHeight: 1.05,
               letterSpacing: -2,
-              maxWidth: "85%",
+              maxWidth: "92%",
             }}
           >
             {title}
           </div>
-          <div style={{ fontSize: 28, color: "rgba(255,255,255,0.75)" }}>{subtitle}</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ fontSize: 26, color: "rgba(255,255,255,0.78)" }}>{subtitle}</div>
+            {kind === "compare" && topic ? (
+              <div style={{ fontSize: 22, color: "rgba(255,255,255,0.6)" }}>Topic · {topic}</div>
+            ) : null}
+          </div>
         </div>
 
         <div
@@ -63,10 +148,10 @@ export async function GET(request: Request) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            fontSize: 22,
+            fontSize: 20,
             color: "rgba(255,255,255,0.65)",
             borderTop: "1px solid rgba(255,255,255,0.15)",
-            paddingTop: 24,
+            paddingTop: 22,
           }}
         >
           <span>basiclaw.app</span>

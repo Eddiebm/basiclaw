@@ -1,6 +1,7 @@
 import type { Country } from "@/data/types";
 import { getCountry } from "@/lib/jurisdictions";
 import { getTopicContent } from "@/lib/topic-content";
+import type { TopicSection } from "@/components/topics/TopicPage";
 import type { UsState, UsStateTopicSlug } from "@/data/us-states";
 
 export interface UsStateTopicSection {
@@ -9,6 +10,7 @@ export interface UsStateTopicSection {
   heading: string;
   body: string;
   bullets?: string[];
+  titleByLocale?: Record<string, string>;
 }
 
 export interface UsStateTopicFAQ {
@@ -20,6 +22,7 @@ export interface UsStateTopicContent {
   slug: UsStateTopicSlug;
   stateCode: string;
   title: string;
+  titleByLocale?: Record<string, string>;
   intro: string;
   sections: UsStateTopicSection[];
   faqs: UsStateTopicFAQ[];
@@ -33,6 +36,23 @@ function usCountry(): Country {
 function mergeStateNotes(intro: string, state: UsState): string {
   if (!state.notes) return intro;
   return `${intro}\n\n**How ${state.name} often differs:** ${state.notes}`;
+}
+
+function locale3(es: string, fr: string, pt: string): Record<string, string> {
+  return { es, fr, pt };
+}
+
+function mapSectionLocales(row: TopicSection): UsStateTopicSection {
+  if (!row.titleByLocale) return row;
+  return {
+    ...row,
+    titleByLocale: Object.fromEntries(
+      Object.entries(row.titleByLocale).map(([loc, val]) => [
+        loc,
+        String(val).replaceAll("{country}", "{state}"),
+      ])
+    ),
+  };
 }
 
 export function buildUsStateTopicContent(
@@ -54,6 +74,11 @@ export function buildUsStateTopicContent(
   const stateLayer: UsStateTopicSection = {
     id: "stateSnapshot",
     heading: `${state.name}-specific snapshot`,
+    titleByLocale: locale3(
+      "Panorama específico de {state}",
+      "Aperçu propre à {state}",
+      "Panorama específico de {state}"
+    ),
     body: stateCardBody,
     bullets: state.notes
       ? [
@@ -72,12 +97,22 @@ export function buildUsStateTopicContent(
       slug: "employment",
       stateCode: state.code,
       title: `Employment basics in ${state.name}`,
+      titleByLocale: locale3(
+        "Lo esencial del trabajo en {state}",
+        "Emploi dans {state} : l'essentiel",
+        "Trabalho em {state}: o essencial"
+      ),
       intro,
       sections: [
         stateLayer,
         {
           id: "employmentFederalState",
           heading: "Federal floor vs state overlays",
+          titleByLocale: locale3(
+            "Mínimo federal y capas estatales",
+            "Socle fédéral et règles locales",
+            "Chão federal e regras estaduais"
+          ),
           body: `National statutes like the Fair Labor Standards Act set a floor for minimum wage and overtime in many jobs, but ${state.name} may set higher minimums, meal/rest break rules, paid leave, or stricter classification tests for independent contractors.`,
           bullets: [
             "Check whether your role is exempt from overtime — titles alone do not decide exemption.",
@@ -88,11 +123,17 @@ export function buildUsStateTopicContent(
         {
           id: "employmentHandbooks",
           heading: "Handbooks, arbitration, and non-competes",
+          titleByLocale: locale3(
+            "Manuales, arbitraje y no competencia",
+            "Manuels, arbitrage et clauses de non-concurrence",
+            "Manuais, arbitragem e não-concorrência"
+          ),
           body: `Employee handbooks and offer letters often sneak in arbitration clauses, IP assignment, moonlighting limits, and restrictive covenants. Enforceability of non-competes in ${state.name} is fact- and statute-specific and changes with legislation and court decisions.`,
         },
         {
           id: "employmentIfWrong",
           heading: "If something goes wrong",
+          titleByLocale: locale3("Si algo sale mal", "Si quelque chose tourne mal", "Se algo correr mal"),
           body: `Document timelines, keep pay stubs and schedules, and identify the right agency: often a state labour commissioner or human-rights commission in parallel with federal EEOC pathways. Deadlines are short — licensed employment counsel in ${state.name} is the safest route for strategy.`,
         },
       ],
@@ -115,12 +156,20 @@ export function buildUsStateTopicContent(
   }
 
   const mergedIntro = mergeStateNotes(base.intro, state);
-  const sections = [stateLayer, ...base.sections.map((s) => ({ ...s }))];
+  const sections = [stateLayer, ...base.sections.map((s) => mapSectionLocales({ ...s }))];
 
   return {
     slug: topic,
     stateCode: state.code,
     title: base.title.replace("United States", state.name).replace("the United States", state.name),
+    titleByLocale: base.titleByLocale
+      ? Object.fromEntries(
+          Object.entries(base.titleByLocale).map(([loc, val]) => [
+            loc,
+            String(val).replaceAll("{country}", "{state}"),
+          ])
+        )
+      : undefined,
     intro: mergedIntro,
     sections,
     faqs: base.faqs.map((f) => ({

@@ -22,6 +22,7 @@ export function Footer() {
 
   const productLinks = [
     { name: tl("constitutions"), href: "/constitutions" },
+    { name: tl("compareConstitutions"), href: "/compare?a=US&b=GH&topic=rights" },
     { name: tl("usStates"), href: "/us/states" },
     { name: tl("audit"), href: "/audit" },
     { name: tl("auditLease"), href: "/audit/lease" },

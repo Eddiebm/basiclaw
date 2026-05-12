@@ -172,6 +172,11 @@
     "subscribeTo": "订阅{tier}",
     "checkoutError": "无法开始结账。"
   },
+  "chat": {
+    "citations": {
+      "sourcesLabel": "来源"
+    }
+  },
   "voice": {
     "listenToSummary": "Listen to summary",
     "constitutionSummaryLead": "Plain-language summary."

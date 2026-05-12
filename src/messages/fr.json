@@ -24,6 +24,14 @@
     "subtitle": "BasicLaw transforme la constitution et les lois essentielles de chaque pays en réponses claires pour tous — sans abonnement pour connaître vos droits.",
     "ctaAudit": "Auditer mon contrat gratuitement",
     "ctaAsk": "Poser une question",
+    "ctaQuestions": "Parcourir les questions citoyennes",
+    "browseRich": "Ou <link>parcourir les {count} constitutions</link> — gratuit à lire.",
+    "auditToolsLead": "Audits ciblés :",
+    "auditToolsLease": "Bail",
+    "auditToolsEmployment": "Travail",
+    "auditToolsTerms": "Conditions",
+    "extensionLead": "Ou auditez ce que vous lisez déjà :",
+    "extensionCta": "Ajouter l’extension navigateur BasicLaw",
     "browseLink": "parcourir les {count} constitutions",
     "browseLead": "ou",
     "tinyDisclaimer": "Gratuit à lire. Strictement éducatif — pas un substitut à un avocat.",
@@ -157,6 +165,9 @@
       "newChat": "Nouveau chat",
       "recentChats": "Chats récents",
       "noChats": "Pas encore de conversations."
+    },
+    "citations": {
+      "sourcesLabel": "Sources"
     }
   },
   "topicPage": {
@@ -296,6 +307,11 @@
     "sourcesHeading": "Sources",
     "lastVerifiedLabel": "Dernière vérification {date}",
     "narrativeTitle": "Similitudes et différences notables",
+    "similaritiesTitle": "Points communs",
+    "differencesTitle": "Écarts",
+    "similaritiesFallback": "Les deux textes encadrent {a} et {b} dans un langage constitutionnel comparable — lisez les extraits et principes clés pour les nuances.",
+    "differencesFallback": "Les différences apparaissent surtout dans les institutions, les recours et les habitudes de citation — comparez carte par carte ci-dessus.",
+    "diffVerifiedDates": "Les dates de vérification diffèrent : {aDate} pour {a} contre {bDate} pour {b}.",
     "narrativeLegalSame": "Les deux pays relèvent largement de la même tradition juridique ({system}), donc tribunaux et textes peuvent sembler familiers même si la formulation diffère.",
     "narrativeLegalDiff": "{a} est décrit comme un système {sysA} et {b} comme {sysB} — attendez-vous à des institutions, recours et habitudes de citation différents même si le langage des droits se ressemble.",
     "narrativePrinciplesBoth": "Sur {topic}, les deux constitutions font émerger des idées proches dans leurs listes de principes clés BasicLaw (correspondance par mots-clés).",

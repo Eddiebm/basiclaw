@@ -20,7 +20,6 @@ const LOCALIZED_STATIC = [
   "/learn",
   "/documents",
   "/us/states",
-  "/compare",
   "/extension",
 ] as const;
 
@@ -43,6 +42,54 @@ export default function sitemap(): MetadataRoute.Sitemap {
               : 0.6,
     }))
   );
+
+  const compareDefaultOnly: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/${defaultLocale}/compare`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.82,
+    },
+  ];
+
+  const appShellDefaultOnly: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/${defaultLocale}/sign-in`,
+      lastModified: now,
+      changeFrequency: "yearly" as const,
+      priority: 0.25,
+    },
+    {
+      url: `${SITE_URL}/${defaultLocale}/sign-up`,
+      lastModified: now,
+      changeFrequency: "yearly" as const,
+      priority: 0.25,
+    },
+    {
+      url: `${SITE_URL}/${defaultLocale}/dashboard`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.35,
+    },
+    {
+      url: `${SITE_URL}/${defaultLocale}/audit/prenup`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.72,
+    },
+    {
+      url: `${SITE_URL}/${defaultLocale}/audit/divorce`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.72,
+    },
+    {
+      url: `${SITE_URL}/${defaultLocale}/audit/demand-letter-generator`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.72,
+    },
+  ];
 
   const constitutionPages: MetadataRoute.Sitemap = COUNTRIES.map((country) => ({
     url: `${SITE_URL}/${defaultLocale}/constitutions/${country.code.toLowerCase()}`,
@@ -85,5 +132,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
-  return [...localizedPages, ...constitutionPages, ...topicPages, ...usStateTopicPages, ...questionLibraryPages];
+  return [...localizedPages, ...compareDefaultOnly, ...appShellDefaultOnly, ...constitutionPages, ...topicPages, ...usStateTopicPages, ...questionLibraryPages];
 }

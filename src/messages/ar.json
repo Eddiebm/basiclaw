@@ -172,6 +172,11 @@
     "subscribeTo": "اشترك في {tier}",
     "checkoutError": "تعذر بدء الدفع."
   },
+  "chat": {
+    "citations": {
+      "sourcesLabel": "المصادر"
+    }
+  },
   "voice": {
     "listenToSummary": "Listen to summary",
     "constitutionSummaryLead": "Plain-language summary."

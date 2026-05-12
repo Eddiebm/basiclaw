@@ -13,7 +13,8 @@
     "askNow": "Perguntar agora",
     "toggleMenu": "Menu",
     "toggleTheme": "Tema",
-    "findLawyer": "Encontrar advogado"
+    "findLawyer": "Encontrar advogado",
+    "learnCompareConstitutions": "Comparar dois países"
   },
   "hero": {
     "badge": "{count} constituições · linguagem simples",
@@ -22,6 +23,14 @@
     "subtitle": "BasicLaw transforma a constituição e leis centrais de cada país em respostas claras para qualquer pessoa.",
     "ctaAudit": "Auditar contrato grátis",
     "ctaAsk": "Fazer uma pergunta",
+    "ctaQuestions": "Explorar perguntas de cidadãos",
+    "browseRich": "Ou <link>veja todas as {count} constituições</link> — leitura gratuita.",
+    "auditToolsLead": "Auditorias específicas:",
+    "auditToolsLease": "Locação",
+    "auditToolsEmployment": "Trabalho",
+    "auditToolsTerms": "Termos",
+    "extensionLead": "Ou audite o que você já está lendo:",
+    "extensionCta": "Adicione a extensão BasicLaw no navegador",
     "browseLink": "ver todas as {count} constituições",
     "browseLead": "ou",
     "tinyDisclaimer": "Grátis para ler. Somente educativo.",
@@ -44,6 +53,7 @@
     },
     "links": {
       "constitutions": "Constituições",
+      "compareConstitutions": "Comparar constituições",
       "audit": "Auditar contrato",
       "ask": "Assistente",
       "documents": "Documentos",
@@ -108,7 +118,12 @@
     "subtitle": "Busque {count} jurisdições com filtros.",
     "statCountries": "Países",
     "statLive": "Ao vivo",
-    "statPreview": "Prévia"
+    "statPreview": "Prévia",
+    "compareBannerTitle": "Compare duas constituições lado a lado",
+    "compareBannerBody": "Escolha dois países e um tema — direitos, estrutura de governo, Judiciário, reforma, liberdade religiosa ou liberdade de expressão. Compartilhe a URL (somente educativo).",
+    "compareBannerCta": "Abrir comparador",
+    "aboutTitle": "Sobre esta biblioteca",
+    "aboutBody": "Os resumos constitucionais no BasicLaw são educativos. Quando possível, ligamos à fonte oficial e ao Comparative Constitutions Project para o texto em inglês. Confira sempre a versão oficial."
   },
   "lawyerPage": {
     "title": "Encontrar advogado",
@@ -136,6 +151,21 @@
     "body": "Pergunte sobre conceitos jurídicos e direitos na sua jurisdição.",
     "lawyerCta": "Precisa de representação? Encontrar advogado"
   },
+  "chat": {
+    "sidebar": {
+      "jurisdiction": "Jurisdição",
+      "optgroupPopular": "Mais visitados",
+      "optgroupAll": "Todos os {count} países",
+      "assistantWillAnswer": "O assistente responde para {country}.",
+      "readConstitution": "Ler a constituição",
+      "newChat": "Novo chat",
+      "recentChats": "Chats recentes",
+      "noChats": "Ainda não há conversas."
+    },
+    "citations": {
+      "sourcesLabel": "Fontes"
+    }
+  },
   "topicPage": {
     "headings": {
       "rightsInCountry": "Seus direitos em {country}",
@@ -152,6 +182,9 @@
   "constitutionDetail": {
     "guidesHeading": "Guias claros para {country}",
     "findLawyerCta": "Encontrar advogado em {country}",
+    "compareAsideTitle": "Comparar com outro país",
+    "compareAsideBody": "Abra a ferramenta lado a lado começando por {country}: escolha um segundo país e um tema.",
+    "compareAsideCta": "Abrir comparação",
     "sources": "Fontes",
     "plainLanguage": "Em linguagem simples",
     "keyPrinciples": "Princípios-chave",
@@ -172,11 +205,48 @@
     "subscribeTo": "Assinar {tier}",
     "checkoutError": "Não foi possível iniciar o checkout."
   },
-  "voice": {
-    "listenToSummary": "Listen to summary",
-    "constitutionSummaryLead": "Plain-language summary."
-  },
-  "homeFaq": {
-    "items": {}
+  "comparePage": {
+    "metaTitle": "Comparar constituições | BasicLaw",
+    "metaDescription": "Comparação educativa lado a lado entre dois países: direitos, estrutura de governo, Judiciário, processo de emenda, liberdade religiosa e liberdade de expressão.",
+    "metaDescriptionRich": "Compare {a} e {b} em {topic} — destaques constitucionais em linguagem simples no BasicLaw (somente educativo).",
+    "title": "Comparar constituições",
+    "subtitle": "Escolha dois países e um tema. Mostramos trechos claros do resumo BasicLaw e excertos selecionados quando existem — não substitui ler o texto oficial.",
+    "back": "Voltar à biblioteca",
+    "countryA": "País A",
+    "countryB": "País B",
+    "topic": "Tema",
+    "swap": "Trocar países",
+    "shareHint": "Copie a URL da barra de endereços para compartilhar esta comparação exata.",
+    "breadcrumbConstitutions": "Constituições",
+    "breadcrumbCompare": "Comparar",
+    "jsonLdName": "{a} x {b} — {topic}",
+    "jsonLdDescription": "Comparação educativa lado a lado de destaques constitucionais no BasicLaw.",
+    "keyPrinciplesHeading": "Princípios-chave para este tema",
+    "sourcesHeading": "Fontes",
+    "lastVerifiedLabel": "Última verificação em {date}",
+    "narrativeTitle": "Semelhanças e diferenças notáveis",
+    "similaritiesTitle": "Semelhanças",
+    "differencesTitle": "Diferenças",
+    "similaritiesFallback": "Ambos os textos enquadram {a} e {b} numa linguagem constitucional comparável — leia os excertos e princípios-chave para nuances.",
+    "differencesFallback": "A maioria das diferenças aparece em instituições, remédios e cultura de citação — compare cartão a cartão acima.",
+    "diffVerifiedDates": "As datas de verificação diferem: {aDate} para {a} versus {bDate} para {b}.",
+    "narrativeLegalSame": "Os dois países estão na mesma tradição jurídica em linhas gerais ({system}), então tribunais e leis costumam parecer familiares mesmo quando o texto difere.",
+    "narrativeLegalDiff": "{a} é descrito como sistema {sysA} e {b} como {sysB} — espere instituições, remédios e hábitos de citação diferentes mesmo quando a linguagem de direitos parece parecida.",
+    "narrativePrinciplesBoth": "Em {topic}, ambas as constituições trazem ideias alinhadas nas listas de princípios-chave do BasicLaw (correspondência por palavras-chave).",
+    "narrativePrinciplesGap": "Em {topic}, apenas um lado mostra correspondência forte nos princípios listados — trate como mapa, não como pontuação.",
+    "narrativeVerified": "Os resumos foram verificados por último em {aDate} para {a} e em {bDate} para {b}; confirme sempre nas fontes oficiais abaixo.",
+    "picker": {
+      "change": "Alterar",
+      "searchPlaceholder": "Buscar países…",
+      "closeOverlay": "Fechar"
+    },
+    "topics": {
+      "rights": "Direitos",
+      "government-structure": "Estrutura de governo",
+      "judiciary": "Judiciário",
+      "amendment-process": "Processo de emenda",
+      "religious-freedom": "Liberdade religiosa",
+      "free-expression": "Liberdade de expressão"
+    }
   }
 }
