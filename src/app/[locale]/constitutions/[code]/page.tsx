@@ -6,6 +6,7 @@ import {
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
+  ArrowRightLeft,
   BookText,
   CalendarClock,
   ExternalLink,
@@ -28,6 +29,8 @@ import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { COUNTRIES } from "@/data/countries";
 import { LEGAL_SYSTEM_DESCRIPTIONS, LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { getCountry, getLastVerified, getSources } from "@/lib/jurisdictions";
+import { buildOgImageUrl } from "@/lib/og-image-url";
+import { ConstitutionPlainSummaryVoice } from "@/components/voice/ConstitutionPlainSummaryVoice";
 
 type RouteParams = { locale: string; code: string };
 
@@ -45,6 +48,12 @@ export async function generateMetadata({
   const { locale, code } = await params;
   const country = getCountry(code);
   if (!country) return { title: "Not found \u2014 BasicLaw" };
+  const site = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
+  const og = buildOgImageUrl(site, {
+    kind: "constitution",
+    title: `${country.flag} ${country.name}`,
+    subtitle: country.constitution.title,
+  });
   const title = `${country.constitution.title} \u2014 ${country.name} | BasicLaw`;
   const description = country.constitution.summary;
   return {
@@ -58,11 +67,13 @@ export async function generateMetadata({
       description,
       url: `/${locale}/constitutions/${country.code.toLowerCase()}`,
       type: "article",
+      images: [{ url: og, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${country.flag} ${country.name} \u2014 Constitution overview`,
       description,
+      images: [og],
     },
   };
 }
@@ -140,23 +151,47 @@ export default async function ConstitutionDetailPage({
           legal_system: country.legalSystem,
         }}
       />
-      <article className="pt-28 pb-16">
+      <article className="pb-20 pt-24 sm:pt-28">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-12 lg:grid-cols-[11.5rem_minmax(0,1fr)] xl:grid-cols-[13rem_minmax(0,1fr)]">
+            <aside className="hidden lg:block">
+              <nav aria-label={t("tocNav")} className="sticky top-28 space-y-1 border-l border-[var(--border)] pl-4 text-sm">
+                <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)]">{t("tocNav")}</p>
+                <a href="#overview" className="block py-1 text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
+                  {t("tocOverview")}
+                </a>
+                <a href="#summary" className="block py-1 text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
+                  {t("tocSummary")}
+                </a>
+                <a href="#principles" className="block py-1 text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
+                  {t("tocPrinciples")}
+                </a>
+                <a href="#guides" className="block py-1 text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
+                  {t("tocGuides")}
+                </a>
+                <a href="#sources" className="block py-1 text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
+                  {t("tocSources")}
+                </a>
+              </nav>
+            </aside>
+            <div className="min-w-0">
+        <div className="max-w-3xl">
           <Link
             href="/constitutions"
-            className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors mb-6"
+            className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] transition hover:text-[var(--foreground)] mb-8"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
             {t("backAll")}
           </Link>
 
           <div
+            id="overview"
             role="note"
-            className="mb-8 flex items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-900 dark:text-amber-200"
+            className="mb-10 flex items-start gap-3 rounded-2xl border border-amber-500/25 bg-amber-500/[0.07] p-4 text-sm text-amber-950 dark:text-amber-100"
           >
             <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" aria-hidden />
             <p>
@@ -164,16 +199,16 @@ export default async function ConstitutionDetailPage({
             </p>
           </div>
 
-          <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-10">
+          <header className="mb-12 flex flex-col gap-8 border-b border-[var(--border)]/80 pb-12 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <span className="text-6xl sm:text-7xl block leading-none mb-4" aria-hidden>{country.flag}</span>
-              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted-foreground)] mb-2">
+              <p className="text-xs font-medium tracking-[0.18em] text-[var(--muted-foreground)] mb-2 [font-family:var(--font-sans),system-ui,sans-serif]">
                 {country.region} · {country.subregion}
               </p>
-              <h1 className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] leading-tight">
+              <h1 className="font-editorial text-4xl sm:text-5xl text-[var(--foreground)] leading-[1.08] tracking-tight">
                 {country.officialName ?? country.name}
               </h1>
-              <p className="mt-3 text-lg text-[var(--muted-foreground)]">
+              <p className="mt-4 text-xl leading-relaxed text-[var(--muted-foreground)]">
                 {constitution.title}
               </p>
             </div>
@@ -192,14 +227,19 @@ export default async function ConstitutionDetailPage({
             </div>
           </header>
 
-          <section className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 mb-8 shadow-sm">
-            <h2 className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] mb-3">{t("plainLanguage")}</h2>
-            <p className="text-lg text-[var(--foreground)] leading-relaxed">{constitution.summary}</p>
+          <section id="summary" className="scroll-mt-28 mb-14">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)] mb-4">
+              {t("plainLanguage")}
+            </h2>
+            <p className="text-lg leading-relaxed text-[var(--foreground)] sm:text-xl">
+              {constitution.summary}
+            </p>
+            <ConstitutionPlainSummaryVoice summary={constitution.summary} jurisdictionCode={country.code} />
           </section>
 
-          <div className="grid lg:grid-cols-[2fr_1fr] gap-6 mb-12">
-            <section className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
-              <h2 className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] mb-4 flex items-center gap-2">
+          <div id="principles" className="grid scroll-mt-28 lg:grid-cols-[2fr_1fr] gap-8 mb-14">
+            <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)]/90 p-6 sm:p-8 shadow-[0_1px_0_oklch(0_0_0/0.04)] backdrop-blur-sm">
+              <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)] mb-5 flex items-center gap-2">
                 <Sparkles className="h-4 w-4" aria-hidden />
                 {t("keyPrinciples")}
               </h2>
@@ -269,16 +309,32 @@ export default async function ConstitutionDetailPage({
                   {t("findLawyerCta", { country: country.name })}
                   <ArrowRight className="h-4 w-4" />
                 </LawyerCtaLink>
+                <div className="rounded-xl border border-[var(--primary)]/20 bg-[var(--primary)]/5 p-4">
+                  <p className="text-xs font-semibold text-[var(--foreground)] mb-1 flex items-center gap-2">
+                    <ArrowRightLeft className="h-3.5 w-3.5 text-[var(--primary)]" aria-hidden />
+                    {t("compareAsideTitle")}
+                  </p>
+                  <p className="text-xs text-[var(--muted-foreground)] leading-relaxed mb-3">{t("compareAsideBody", { country: country.name })}</p>
+                  <Button asChild variant="outline" size="sm" className="w-full justify-between">
+                    <Link
+                      href={`/compare?a=${country.code}&b=${country.code === "US" ? "GH" : "US"}&topic=rights`}
+                    >
+                      {t("compareAsideCta")}
+                      <ArrowRight className="h-4 w-4" aria-hidden />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </aside>
           </div>
 
           <section
+            id="guides"
             aria-labelledby="topics-heading"
-            className="mb-10 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8"
+            className="mb-12 scroll-mt-28 rounded-2xl border border-[var(--border)] bg-[var(--card)]/90 p-6 sm:p-8 backdrop-blur-sm"
           >
-            <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
-              <h2 id="topics-heading" className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-2">
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-5">
+              <h2 id="topics-heading" className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)] flex items-center gap-2">
                 <Library className="h-4 w-4" aria-hidden />
                 {t("guidesHeading", { country: country.name })}
               </h2>
@@ -323,11 +379,12 @@ export default async function ConstitutionDetailPage({
           )}
 
           <section
+            id="sources"
             aria-labelledby="sources-heading"
-            className="mb-10 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8"
+            className="mb-12 scroll-mt-28 rounded-2xl border border-[var(--border)] bg-[var(--card)]/90 p-6 sm:p-8 backdrop-blur-sm"
           >
-            <div className="flex items-center justify-between flex-wrap gap-2 mb-3">
-              <h2 id="sources-heading" className="text-sm uppercase tracking-wider text-[var(--muted-foreground)] flex items-center gap-2">
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+              <h2 id="sources-heading" className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)] flex items-center gap-2">
                 <FileText className="h-4 w-4" aria-hidden />
                 {t("sources")}
               </h2>
@@ -385,6 +442,9 @@ export default async function ConstitutionDetailPage({
             </Link>
           </nav>
         </div>
+            </div>
+          </div>
+        </div>
       </article>
       <Footer />
     </main>
@@ -398,7 +458,7 @@ function FactRow({ icon, label, value }: { icon: React.ReactNode; label: string;
         {icon}
       </span>
       <div className="text-sm">
-        <p className="text-[var(--muted-foreground)] text-xs uppercase tracking-wider">{label}</p>
+        <p className="text-[var(--muted-foreground)] text-xs font-medium tracking-wide">{label}</p>
         <p className="text-[var(--foreground)] font-medium">{value}</p>
       </div>
     </div>

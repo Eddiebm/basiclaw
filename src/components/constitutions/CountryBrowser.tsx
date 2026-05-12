@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Search, ChevronRight, Globe2, Scale } from "lucide-react";
+import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
 import type { Country, LegalSystem, Region } from "@/data/types";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { groupByRegion, REGIONS, LEGAL_SYSTEMS, searchCountries } from "@/lib/jurisdictions";
@@ -22,7 +23,9 @@ const STATUS_TONE: Record<Country["status"], string> = {
 
 export function CountryBrowser({ countries, popular }: Props) {
   const t = useTranslations("countryBrowser");
+  const tComposer = useTranslations("chatComposer");
   const [query, setQuery] = useState("");
+  const [voiceError, setVoiceError] = useState<string | null>(null);
   const deferredQuery = useDeferredValue(query);
   const [region, setRegion] = useState<Region | "All">("All");
   const [system, setSystem] = useState<LegalSystem | "All">("All");
@@ -44,7 +47,13 @@ export function CountryBrowser({ countries, popular }: Props) {
     <div className="space-y-12">
       <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 shadow-sm">
         <div className="grid gap-4 lg:grid-cols-[1fr_auto_auto] items-stretch">
-          <label className="relative block">
+          <div className="flex flex-col gap-2 min-w-0">
+            {voiceError && (
+              <p className="text-xs text-amber-700 dark:text-amber-300" role="status">
+                {tComposer("voiceErrorBanner", { message: voiceError })}
+              </p>
+            )}
+            <label className="relative block flex-1 min-h-14">
             <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--muted-foreground)]" aria-hidden />
             <input
               value={query}
@@ -52,9 +61,20 @@ export function CountryBrowser({ countries, popular }: Props) {
               type="search"
               placeholder={t("placeholder")}
               aria-label={t("searchAria")}
-              className="w-full h-14 pl-12 pr-4 rounded-2xl border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+              className="w-full h-14 pl-12 pr-14 rounded-2xl border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+              <VoiceDictationButton
+                value={query}
+                onChange={setQuery}
+                mode="append"
+                surface="constitution"
+                onErrorMessage={setVoiceError}
+                className="h-10 w-10"
+              />
+            </span>
           </label>
+          </div>
           <select
             value={region}
             onChange={(event) => setRegion(event.target.value as Region | "All")}
