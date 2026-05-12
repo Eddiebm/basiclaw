@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
   AlertTriangle,
@@ -13,6 +13,7 @@ import {
   Scale,
   ShieldAlert,
   Sparkles,
+  BadgeCheck,
 } from "lucide-react";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
@@ -39,18 +40,23 @@ export function UsStateTopicPage({
   topic,
   content,
   showPendingCta,
+  verifiedByLawyer,
 }: {
   state: UsState;
   topic: UsStateTopicSlug;
   content: UsStateTopicContent;
   showPendingCta: boolean;
+  verifiedByLawyer?: { name: string; jurisdiction: string };
 }) {
   const t = useTranslations("usStateTopicPage");
   const tVoice = useTranslations("voice");
+  const locale = useLocale();
   const Icon = TOPIC_ICON[topic];
   const topicLabel = t(`labels.${topic}`);
   const topicSubtitle = t(`subtitles.${topic}`, { state: state.name });
-  const pageHeading = t(`headings.${topic}`, { state: state.name });
+  const defaultHeading = t(`headings.${topic}`, { state: state.name });
+  const pageHeading =
+    content.titleByLocale?.[locale]?.replaceAll("{state}", state.name) ?? defaultHeading;
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -113,15 +119,21 @@ export function UsStateTopicPage({
                 {topicSubtitle}
               </span>
               <h1 className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] leading-tight">{pageHeading}</h1>
-              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <p className="text-lg text-[var(--muted-foreground)] flex-1">{content.intro}</p>
+              {verifiedByLawyer ? (
+                <p className="mt-3 text-sm text-[var(--muted-foreground)] flex items-center gap-2">
+                  <BadgeCheck className="h-4 w-4 text-[var(--primary)] shrink-0" aria-hidden />
+                  {t("verifiedByLawyer", verifiedByLawyer)}
+                </p>
+              ) : null}
+              <div className="mt-4 flex flex-wrap items-start gap-3">
+                <p className="text-lg text-[var(--muted-foreground)] flex-1 min-w-[min(100%,280px)]">{content.intro}</p>
                 <ReadAloudButton
                   text={content.intro}
                   surface="topics"
-                  dialectHints={["us", state.code.toLowerCase()]}
-                  size="sm"
+                  dialectHints={[state.code.toLowerCase(), "us"]}
                   label={tVoice("listenIntro")}
-                  className="h-8 shrink-0 px-2 text-xs"
+                  ariaLabel={tVoice("listenIntroAria")}
+                  className="gap-2"
                 />
               </div>
             </header>
@@ -153,12 +165,17 @@ export function UsStateTopicPage({
             </div>
 
             <div className="space-y-8">
-              {content.sections.map((section) => (
+              {content.sections.map((section) => {
+                const heading =
+                  locale !== "en" && section.titleByLocale?.[locale]
+                    ? section.titleByLocale[locale].replaceAll("{state}", state.name)
+                    : section.heading;
+                return (
                 <section
                   key={section.id ?? section.heading}
                   className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8"
                 >
-                  <h2 className="text-xl font-semibold text-[var(--foreground)] mb-3">{section.heading}</h2>
+                  <h2 className="text-xl font-semibold text-[var(--foreground)] mb-3">{heading}</h2>
                   <p className="text-[var(--muted-foreground)] leading-relaxed whitespace-pre-line">{section.body}</p>
                   {section.bullets && section.bullets.length > 0 && (
                     <ul className="mt-4 space-y-2">
@@ -171,7 +188,8 @@ export function UsStateTopicPage({
                     </ul>
                   )}
                 </section>
-              ))}
+              );
+              })}
             </div>
 
             <section className="mt-10 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">

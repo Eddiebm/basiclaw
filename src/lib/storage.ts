@@ -39,6 +39,18 @@ export interface NewsletterSubscriber {
   createdAt: string;
 }
 
+export interface LawyerApplicationRecord {
+  id: string;
+  name: string;
+  email: string;
+  barNumber?: string;
+  country: string;
+  practiceAreas: string[];
+  sampleStatement: string;
+  headshotUrl?: string;
+  receivedAt: string;
+}
+
 export interface UsageSnapshot {
   chatsToday: number;
   auditsThisMonth: number;
@@ -49,6 +61,7 @@ type FileStoreShape = {
   chats: StoredChat[];
   audits: StoredAudit[];
   subscribers: NewsletterSubscriber[];
+  lawyerApplications: LawyerApplicationRecord[];
   /** Arbitrary string counters, e.g. `chatday:u:user:2026-01-15` */
   usage: Record<string, number>;
 };
@@ -94,10 +107,11 @@ async function readFileStore(): Promise<FileStoreShape> {
       chats: Array.isArray(parsed.chats) ? parsed.chats : [],
       audits: Array.isArray(parsed.audits) ? parsed.audits : [],
       subscribers: Array.isArray(parsed.subscribers) ? parsed.subscribers : [],
+      lawyerApplications: Array.isArray(parsed.lawyerApplications) ? parsed.lawyerApplications : [],
       usage: parsed.usage && typeof parsed.usage === "object" ? parsed.usage : {},
     };
   } catch {
-    return { chats: [], audits: [], subscribers: [], usage: {} };
+    return { chats: [], audits: [], subscribers: [], lawyerApplications: [], usage: {} };
   }
 }
 
@@ -342,6 +356,19 @@ export async function addNewsletterSubscriber(row: NewsletterSubscriber): Promis
   };
   const others = store.subscribers.filter((s) => s.email !== email);
   store.subscribers = [next, ...others].slice(0, 50_000);
+  await writeFileStore(store);
+}
+
+export async function appendLawyerApplication(row: LawyerApplicationRecord): Promise<void> {
+  const redis = getRedis();
+  if (redis) {
+    await redis.set(`lawyer-application:${row.id}`, JSON.stringify(row), { ex: 60 * 60 * 24 * 365 * 2 });
+    await redis.sadd("lawyer-applications:index", row.id);
+    return;
+  }
+  const store = await readFileStore();
+  const prev = Array.isArray(store.lawyerApplications) ? store.lawyerApplications : [];
+  store.lawyerApplications = [row, ...prev].slice(0, 20_000);
   await writeFileStore(store);
 }
 

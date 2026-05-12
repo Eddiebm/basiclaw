@@ -21,6 +21,8 @@ export type AnalyticsEvent =
   | "us_state_topic_viewed"
   | "comparison_viewed"
   | "lawyer_cta_clicked"
+  | "lawyer_application_submitted"
+  | "verified_lawyer_clicked"
   | "question_viewed"
   | "question_to_chat"
   | "voice_listen_started"

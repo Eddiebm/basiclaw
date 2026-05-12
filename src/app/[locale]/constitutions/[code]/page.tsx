@@ -19,6 +19,7 @@ import {
   Scale,
   ShieldAlert,
   Sparkles,
+  BadgeCheck,
 } from "lucide-react";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
@@ -31,6 +32,7 @@ import { LEGAL_SYSTEM_DESCRIPTIONS, LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { getCountry, getLastVerified, getSources } from "@/lib/jurisdictions";
 import { buildOgImageUrl } from "@/lib/og-image-url";
 import { ConstitutionPlainSummaryVoice } from "@/components/voice/ConstitutionPlainSummaryVoice";
+import { findVerifierForConstitution } from "@/lib/verified-lawyers-ui";
 
 type RouteParams = { locale: string; code: string };
 
@@ -91,6 +93,7 @@ export default async function ConstitutionDetailPage({
   const { constitution } = country;
   const sources = getSources(country);
   const lastVerified = getLastVerified(country);
+  const constitutionVerifier = findVerifierForConstitution(country.code);
   const lastVerifiedDate = new Date(lastVerified);
   const formattedLastVerified = lastVerifiedDate.toLocaleDateString(locale, {
     year: "numeric",
@@ -179,7 +182,29 @@ export default async function ConstitutionDetailPage({
               </nav>
             </aside>
             <div className="min-w-0">
-        <div className="max-w-3xl">
+              <nav
+                aria-label={t("tocNav")}
+                className="lg:hidden -mx-1 mb-8 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]"
+              >
+                {(
+                  [
+                    ["#overview", t("tocOverview")],
+                    ["#summary", t("tocSummary")],
+                    ["#principles", t("tocPrinciples")],
+                    ["#guides", t("tocGuides")],
+                    ["#sources", t("tocSources")],
+                  ] as const
+                ).map(([href, label]) => (
+                  <a
+                    key={href}
+                    href={href}
+                    className="shrink-0 rounded-full border border-[var(--border)] bg-[var(--card)]/90 px-3 py-1.5 text-xs font-medium text-[var(--muted-foreground)] transition hover:border-[var(--primary)]/35 hover:text-[var(--foreground)]"
+                  >
+                    {label}
+                  </a>
+                ))}
+              </nav>
+        <div className="max-w-[min(42rem,100%)]">
           <Link
             href="/constitutions"
             className="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] transition hover:text-[var(--foreground)] mb-8"
@@ -198,6 +223,13 @@ export default async function ConstitutionDetailPage({
               <strong className="font-semibold">{t("eduSummaryLead")}</strong> {t("eduSummaryBody")}
             </p>
           </div>
+
+          {constitutionVerifier ? (
+            <p className="mb-10 flex items-start gap-2 text-sm text-[var(--muted-foreground)]">
+              <BadgeCheck className="h-4 w-4 mt-0.5 text-[var(--primary)] shrink-0" aria-hidden />
+              <span>{t("verifiedByLawyer", { name: constitutionVerifier.name, jurisdiction: constitutionVerifier.jurisdiction })}</span>
+            </p>
+          ) : null}
 
           <header className="mb-12 flex flex-col gap-8 border-b border-[var(--border)]/80 pb-12 sm:flex-row sm:items-start sm:justify-between">
             <div>
@@ -231,7 +263,7 @@ export default async function ConstitutionDetailPage({
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)] mb-4">
               {t("plainLanguage")}
             </h2>
-            <p className="text-lg leading-relaxed text-[var(--foreground)] sm:text-xl">
+            <p className="text-lg leading-[1.75] text-[var(--foreground)] sm:text-xl sm:leading-[1.72] text-pretty">
               {constitution.summary}
             </p>
             <ConstitutionPlainSummaryVoice summary={constitution.summary} jurisdictionCode={country.code} />

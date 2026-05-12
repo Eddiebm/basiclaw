@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { buildUsStateTopicContent } from "@/lib/us-state-topic-content";
 import { fetchBuildTimeStateTopicSummary } from "@/lib/us-state-llm-summary";
 import { buildOgImageUrl } from "@/lib/og-image-url";
+import { findVerifierForUsStateTopic } from "@/lib/verified-lawyers-ui";
 
 type RouteParams = { locale: string; state: string; topic: string };
 
@@ -67,6 +68,15 @@ export default async function UsStateTopicRoute({ params }: { params: Promise<Ro
 
   const content = buildUsStateTopicContent(state, topicSlug, { llmSummary });
   const showPendingCta = !llmSummary;
+  const v = findVerifierForUsStateTopic(state.code, topicSlug);
 
-  return <UsStateTopicPage state={state} topic={topicSlug} content={content} showPendingCta={showPendingCta} />;
+  return (
+    <UsStateTopicPage
+      state={state}
+      topic={topicSlug}
+      content={content}
+      showPendingCta={showPendingCta}
+      verifiedByLawyer={v ? { name: v.name, jurisdiction: v.jurisdiction } : undefined}
+    />
+  );
 }

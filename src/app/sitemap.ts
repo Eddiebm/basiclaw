@@ -16,6 +16,8 @@ const LOCALIZED_STATIC = [
   "/audit/terms",
   "/faq",
   "/find-a-lawyer",
+  "/lawyers",
+  "/lawyers/apply",
   "/chat",
   "/learn",
   "/documents",

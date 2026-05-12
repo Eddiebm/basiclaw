@@ -12,6 +12,7 @@ import {
   Scale,
   ShieldAlert,
   Sparkles,
+  BadgeCheck,
 } from "lucide-react";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
@@ -63,12 +64,14 @@ export function TopicPage({
   topic,
   content,
   pageLocale = "en",
+  verifiedByLawyer,
 }: {
   country: Country;
   topic: TopicSlug;
   content: TopicContent;
   /** BCP-47 locale from the route; non-English uses translated section headings where available. */
   pageLocale?: string;
+  verifiedByLawyer?: { name: string; jurisdiction: string };
 }) {
   const t = useTranslations("topicPage");
   const tVoice = useTranslations("voice");
@@ -159,6 +162,12 @@ export function TopicPage({
               <h1 className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] leading-tight">
                 {pageHeading}
               </h1>
+              {verifiedByLawyer ? (
+                <p className="mt-3 text-sm text-[var(--muted-foreground)] flex items-center gap-2">
+                  <BadgeCheck className="h-4 w-4 text-[var(--primary)] shrink-0" aria-hidden />
+                  {t("verifiedByLawyer", verifiedByLawyer)}
+                </p>
+              ) : null}
               <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <p className="text-lg text-[var(--muted-foreground)] flex-1">{content.intro}</p>
                 <ReadAloudButton

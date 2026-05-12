@@ -7,6 +7,7 @@ import { routing } from "@/i18n/routing";
 import { getCountry } from "@/lib/jurisdictions";
 import { getTopicContent } from "@/lib/topic-content";
 import { buildOgImageUrl } from "@/lib/og-image-url";
+import { findVerifierForCountryTopic } from "@/lib/verified-lawyers-ui";
 
 type RouteParams = { locale: string; country: string };
 
@@ -65,5 +66,14 @@ export default async function CountryPoliceStopPage({
   const country = getCountry(code);
   if (!country) notFound();
   const content = getTopicContent(country, "police-stop");
-  return <TopicPage country={country} topic="police-stop" content={content} pageLocale={locale} />;
+  const v = findVerifierForCountryTopic(country.code, "police-stop");
+  return (
+    <TopicPage
+      country={country}
+      topic="police-stop"
+      content={content}
+      pageLocale={locale}
+      verifiedByLawyer={v ? { name: v.name, jurisdiction: v.jurisdiction } : undefined}
+    />
+  );
 }
