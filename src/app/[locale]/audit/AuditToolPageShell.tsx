@@ -35,10 +35,12 @@ export async function AuditToolPageShell({
   locale,
   namespace,
   auditType,
+  advancedPaywall,
 }: {
   locale: string;
   namespace: AuditToolNamespace;
   auditType: Extract<AuditType, "lease" | "employment" | "terms" | "prenup" | "divorce">;
+  advancedPaywall?: boolean;
 }) {
   const t = await getTranslations({ locale, namespace });
   const faqItems = [
@@ -63,6 +65,15 @@ export async function AuditToolPageShell({
       </section>
       <section className="pb-20">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          {advancedPaywall && (
+            <div className="mb-6 rounded-2xl border border-amber-500/35 bg-amber-500/10 p-4 text-center text-sm text-amber-950 dark:text-amber-100 space-y-2">
+              <p className="font-medium">{t("paywallBanner")}</p>
+              <Link href="/pricing" className="inline-flex items-center gap-1 font-semibold text-[var(--primary)] hover:underline">
+                {t("paywallCta")}
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </div>
+          )}
           <AuditClient presetAuditType={auditType} />
           <div className="mt-10 grid sm:grid-cols-3 gap-3 text-center">
             <Step n={1} title={t("step1_title")} body={t("step1_body")} />

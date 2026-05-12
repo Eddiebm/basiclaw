@@ -44,7 +44,7 @@ const FREE_TIER: FreeTier = {
     "Plain-language summaries and key principles",
     "Ask the legal assistant (rate-limited)",
     "Country-by-country rights, police, and tenant guides",
-    "1 contract audit / month \u2014 plain-language risk report",
+    "3 contract audits / month \u2014 plain-language risk report",
     "1 demand-letter outline / day (structured generator)",
   ],
   highlight: false,

@@ -17,27 +17,12 @@
     "toggleTheme": "Toggle theme",
     "findLawyer": "Find a lawyer",
     "signIn": "Sign in",
-    "dashboard": "Dashboard",
     "usStates": "US States",
     "learnGroupMenu": "Learn",
     "learnLawSchool": "Law School",
     "learnDocuments": "Documents",
     "learnCompareConstitutions": "Compare two countries",
-    "learnQuestions": "Citizen questions",
     "learnMobileGroup": "Learn",
-    "library": "Library",
-    "libraryMenuAria": "Library navigation",
-    "libraryMegaEyebrow": "Explore",
-    "libraryConstitutions": "Constitutions",
-    "libraryConstitutionsDesc": "Every country, summarised in plain language.",
-    "libraryCompare": "Compare",
-    "libraryCompareDesc": "Place two systems side by side.",
-    "libraryQuestions": "Citizen questions",
-    "libraryQuestionsDesc": "Guided topics from real life.",
-    "libraryAudit": "Audit suite",
-    "libraryAuditDesc": "Leases, employment, terms, and more.",
-    "libraryPricing": "Pricing",
-    "libraryPricingDesc": "Free tier forever; Pro when you need depth.",
     "auditToolsMenu": "Audit tools",
     "auditGeneral": "General contract audit",
     "auditLease": "Lease audit",
@@ -94,21 +79,7 @@
     "cardLibrary_link": "Open library",
     "statsEducational": "Educational only",
     "statsJurisdictions": "{count} jurisdictions",
-    "statsPlainLanguage": "Plain language",
-    "trustStripCountries": "{count} countries",
-    "trustStripConstitutions": "{count} constitutions",
-    "trustStripQuestions": "Jurisdiction-aware Q&A",
-    "trustCard1Body": "Indexed for reading, search, and comparison.",
-    "trustCard2Body": "Summaries, key principles, and source links.",
-    "trustCard3Body": "Educational framing — not a law firm.",
-    "askPlaceholder": "What legal situation are you trying to understand?",
-    "askSubmit": "Ask BasicLaw",
-    "askHint": "Opens the assistant with your question prefilled.",
-    "atlasEyebrow": "Atlas",
-    "atlasTitle": "Pick a jurisdiction",
-    "atlasSearchPlaceholder": "Search countries…",
-    "browseConstitutionsLink": "Browse library",
-    "snapshotLabel": "Constitution snapshot"
+    "statsPlainLanguage": "Plain language"
   },
   "footer": {
     "tagline": "The plain-language constitution and rights library for {count} countries. Civic infrastructure for the digital age.",
@@ -119,7 +90,6 @@
       "legal": "Legal"
     },
     "links": {
-      "constitutions": "Constitutions",
       "compareConstitutions": "Compare constitutions",
       "usStates": "US States",
       "audit": "Audit a contract",
@@ -149,54 +119,7 @@
       "cookies": "Cookie Policy"
     },
     "copyright": "© {year} BasicLaw. Educational only — not a substitute for a licensed lawyer.",
-    "builtFor": "Built for everyone, everywhere.",
-    "closingLine": "Civic infrastructure for the digital age — clear law, no gatekeeping."
-  },
-  "whatIsBasicLaw": {
-    "eyebrow": "The idea",
-    "title": "What is BasicLaw?",
-    "lead": "A free legal literacy platform helping people understand their rights and navigate legal systems worldwide.",
-    "pullQuote": "Law belongs in plain sight — not behind paywalls, jargon, or intimidation.",
-    "prop1Title": "Not legal advice",
-    "prop1Body": "We help you understand concepts and context. For decisions that bind you, talk to a licensed lawyer.",
-    "prop2Title": "Jurisdiction-aware",
-    "prop2Body": "Systems differ by country and state. We frame answers where you actually live.",
-    "prop3Title": "Trust first",
-    "prop3Body": "No upsell theatre. If you need counsel, we say so plainly.",
-    "closing": "Like a public library for the statutes that shape your life."
-  },
-  "exampleQuestionsSection": {
-    "title": "Questions people actually ask",
-    "subtitle": "Tap a line to open the assistant with it prefilled — then tune jurisdiction inside chat.",
-    "searchPlaceholder": "Search topics (coming soon)",
-    "searchButton": "Search",
-    "browseTopics": "Browse all topics",
-    "askThis": "Ask this",
-    "categories": {
-      "police": "Police & stops",
-      "housing": "Housing",
-      "employment": "Employment",
-      "contracts": "Contracts",
-      "family": "Family records",
-      "consumer": "Consumer"
-    }
-  },
-  "lawSchoolSection": {
-    "eyebrow": "Law School",
-    "title": "Literacy, one chapter at a time",
-    "subtitle": "No prior knowledge required — start where you are.",
-    "featuredBadge": "Start here",
-    "featuredTitle": "Your legal rights",
-    "featuredBody": "The orientation course: what rights mean in daily life.",
-    "featuredMeta": "12 topics · ~2 hours · Beginner",
-    "featuredCta": "Begin",
-    "carouselHint": "Scroll for more courses",
-    "exploreAll": "Explore all courses",
-    "levels": {
-      "Beginner": "Beginner",
-      "Intermediate": "Intermediate",
-      "Advanced": "Advanced"
-    }
+    "builtFor": "Built for everyone, everywhere."
   },
   "trustDisclaimer": {
     "title": "Trust & Transparency",
@@ -206,10 +129,7 @@
     "whatWeDont_title": "What We Don't Do",
     "whatWeDont_items": "Provide legal advice|Represent you in court|Guarantee outcomes|Replace licensed attorneys",
     "important": "For serious legal matters, always consult with a licensed attorney in your jurisdiction. Legal issues can have significant consequences, and professional guidance is invaluable.",
-    "ctaFindLawyer": "Find a licensed lawyer",
-    "manifestoEyebrow": "Manifesto",
-    "manifestoColumn1": "We publish clarity where opacity used to win.",
-    "manifestoColumn2": "We bias toward primary sources and plain language — never toward fear."
+    "ctaFindLawyer": "Find a licensed lawyer"
   },
   "pricingPage": {
     "badge": "Built for everyday legal questions",
@@ -435,7 +355,6 @@
     "submitting": "Auditing…",
     "submit": "Run audit",
     "removeFile": "Remove file",
-    "quotaUpgradeCta": "View pricing and upgrade",
     "presetBanner": {
       "lease": "You are on the lease-focused audit — deposit, notice, and renewal fields are highlighted in the report.",
       "employment": "You are on the employment-focused audit — IP, non-compete, and at-will fields are highlighted.",
@@ -476,10 +395,6 @@
       "i6": {
         "q": "Can I use BasicLaw answers in court or in a filing?",
         "a": "No. BasicLaw answers are designed to help you understand legal concepts and frame the right questions to ask a lawyer. They should not be cited as legal authority or used as a substitute for legal representation."
-      },
-      "i7": {
-        "q": "How do voice (microphone) and read-aloud features handle my audio?",
-        "a": "Voice typing and “read aloud” use your browser’s Web Speech API. BasicLaw does not store microphone recordings on our servers for speech-to-text when you use that browser feature; processing may occur on-device or via your browser vendor’s speech service (for example Google in Chrome), per your browser’s policies. Read-aloud is generated locally by your browser or operating system — the audio is not uploaded to BasicLaw. You can review the short privacy section on our privacy page and adjust permissions in your browser settings."
       }
     }
   },
@@ -538,13 +453,7 @@
     "lastVerifiedIntro": "Last verified",
     "usStatesTitle": "State-by-state guides (US)",
     "usStatesBody": "Rights, police stops, landlord rules, and employment basics can change the moment you cross a state line. Jump into all 50 states + DC.",
-    "usStatesCta": "Open US state index",
-    "tocNav": "On this page",
-    "tocOverview": "Overview",
-    "tocSummary": "Plain-language summary",
-    "tocPrinciples": "Key principles & system",
-    "tocGuides": "Guides",
-    "tocSources": "Sources & verification"
+    "usStatesCta": "Open US state index"
   },
   "topicPage": {
     "localePartialBanner": "Full localised body text is coming soon — section headings are translated; the detailed guide below is still in English.",
@@ -635,51 +544,6 @@
     "lawyerCta": "Need representation? Find a lawyer",
     "signInToSaveLead": "Want your threads on every device?",
     "signInToSaveCta": "Sign in to save chats"
-  },
-  "chatComposer": {
-    "placeholder": "Ask a legal question…",
-    "sendHint": "Press Enter to send, Shift+Enter for new line",
-    "voiceReplaceLabel": "Replace input when dictating",
-    "voiceAutoSendLabel": "Auto-send after dictation",
-    "voiceErrorBanner": "Voice input: {message}"
-  },
-  "voice": {
-    "micStartAria": "Start voice input",
-    "micStopAria": "Stop voice input",
-    "micStartTitle": "Speak to type (browser speech recognition)",
-    "micStopTitle": "Stop listening",
-    "errorNotSupported": "Voice input is not supported in this browser.",
-    "errorNoPermission": "Microphone permission was denied. Check browser settings.",
-    "errorNetwork": "Speech recognition failed due to a network error.",
-    "errorNoSpeech": "No speech was detected. Try again.",
-    "errorAudioCapture": "No microphone was found or it could not be opened.",
-    "errorUnknown": "Speech recognition failed.",
-    "privacyHintLead": "Uses your browser. Read-aloud audio is not sent to BasicLaw servers; speech recognition may use your browser vendor’s cloud (for example Google in Chrome) —",
-    "privacyHintLink": "see privacy note",
-    "privacyHintTrail": ".",
-    "readAloudStartAria": "Read this message aloud",
-    "readAloudStopAria": "Stop read-aloud",
-    "readAloudStartTitle": "Read aloud",
-    "readAloudStopTitle": "Stop",
-    "readSummary": "Read summary",
-    "readSummaryAria": "Read audit summary aloud",
-    "stopSummary": "Stop reading",
-    "listenToSummary": "Listen to summary",
-    "constitutionSummaryLead": "Plain-language summary.",
-    "listenIntro": "Listen",
-    "listenIntroStop": "Stop",
-    "listenIntroAria": "Read the introduction aloud",
-    "copyMessageAria": "Copy message",
-    "questionsSearchPlaceholder": "Search questions…",
-    "questionsSearchAria": "Search citizen questions"
-  },
-  "privacyPage": {
-    "title": "Privacy",
-    "subtitle": "How BasicLaw handles data and browser features.",
-    "voiceTitle": "Voice features (speech recognition & read-aloud)",
-    "voiceBody": "When you use voice input with the Web Speech API, your microphone audio is processed by your browser and may be sent to your browser vendor’s speech services (for example Google in Chrome), not to BasicLaw’s servers for transcription. BasicLaw does not record microphone audio on its servers for that flow. Read-aloud uses your device or browser speech synthesis; the text you ask to hear is not sent to BasicLaw for audio generation. Check your browser and OS privacy settings if you need to limit cloud speech features.",
-    "generalTitle": "General",
-    "generalBody": "BasicLaw is an educational tool. Review each feature’s in-product notices for how prompts and documents are processed."
   },
   "chat": {
     "sidebar": {
@@ -839,12 +703,7 @@
     "openConstitution": "Open constitution",
     "live": "Live",
     "lookingFor": "Looking for something specific?",
-    "noMatches": "No matches — try another spelling.",
-    "regionsEyebrow": "Regions",
-    "featuredLabel": "Featured",
-    "atlasIntro": "Search the library, then open a constitution in one tap.",
-    "snapshotLabel": "Constitution snapshot",
-    "listAria": "Countries in selected region"
+    "noMatches": "No matches — try another spelling."
   },
   "usStatesIndex": {
     "backToUsConstitution": "Back to US constitution overview",
