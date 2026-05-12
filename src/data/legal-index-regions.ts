@@ -1,0 +1,102 @@
+/**
+ * Static membership lists for cross-jurisdiction heuristics in the Legal Literacy Index.
+ * EU: member states as of 2026 (UK excluded post-Brexit).
+ * Commonwealth: members of the Commonwealth of Nations that overlap our country dataset (ISO 3166-1 alpha-2).
+ * These are educational proxies only — not a legal classification of treaty obligations.
+ */
+
+/** EU member states (27), uppercase alpha-2 */
+export const EU_COUNTRY_CODES = [
+  "AT",
+  "BE",
+  "BG",
+  "HR",
+  "CY",
+  "CZ",
+  "DK",
+  "EE",
+  "FI",
+  "FR",
+  "DE",
+  "GR",
+  "HU",
+  "IE",
+  "IT",
+  "LV",
+  "LT",
+  "LU",
+  "MT",
+  "NL",
+  "PL",
+  "PT",
+  "RO",
+  "SK",
+  "SI",
+  "ES",
+  "SE",
+] as const;
+
+/**
+ * Commonwealth members present in BasicLaw's jurisdiction list (approximate set; updated for post-2021 expansions).
+ */
+export const COMMONWEALTH_COUNTRY_CODES = [
+  "AG",
+  "AU",
+  "BS",
+  "BD",
+  "BB",
+  "BZ",
+  "BW",
+  "BN",
+  "CM",
+  "CA",
+  "CY",
+  "DM",
+  "SZ",
+  "FJ",
+  "GM",
+  "GH",
+  "GD",
+  "GY",
+  "IN",
+  "JM",
+  "KE",
+  "KI",
+  "LS",
+  "MW",
+  "MY",
+  "MV",
+  "MT",
+  "MU",
+  "MZ",
+  "NA",
+  "NR",
+  "NZ",
+  "NG",
+  "PK",
+  "PG",
+  "RW",
+  "KN",
+  "LC",
+  "VC",
+  "WS",
+  "SC",
+  "SL",
+  "SG",
+  "SB",
+  "ZA",
+  "LK",
+  "TZ",
+  "TO",
+  "TT",
+  "TV",
+  "UG",
+  "GB",
+  "VU",
+  "ZM",
+  "GA",
+  "TG",
+] as const;
+
+export const EU_CODE_SET = new Set<string>(EU_COUNTRY_CODES);
+export const COMMONWEALTH_CODE_SET = new Set<string>(COMMONWEALTH_COUNTRY_CODES);
