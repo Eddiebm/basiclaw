@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
+import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { Button } from "@/components/ui/Button";
@@ -45,6 +46,7 @@ export function UsStateTopicPage({
   showPendingCta: boolean;
 }) {
   const t = useTranslations("usStateTopicPage");
+  const tVoice = useTranslations("voice");
   const Icon = TOPIC_ICON[topic];
   const topicLabel = t(`labels.${topic}`);
   const topicSubtitle = t(`subtitles.${topic}`, { state: state.name });
@@ -111,7 +113,17 @@ export function UsStateTopicPage({
                 {topicSubtitle}
               </span>
               <h1 className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] leading-tight">{pageHeading}</h1>
-              <p className="mt-4 text-lg text-[var(--muted-foreground)]">{content.intro}</p>
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <p className="text-lg text-[var(--muted-foreground)] flex-1">{content.intro}</p>
+                <ReadAloudButton
+                  text={content.intro}
+                  surface="topics"
+                  dialectHints={["us", state.code.toLowerCase()]}
+                  size="sm"
+                  label={tVoice("listenIntro")}
+                  className="h-8 shrink-0 px-2 text-xs"
+                />
+              </div>
             </header>
 
             {showPendingCta && (
