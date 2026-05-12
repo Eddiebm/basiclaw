@@ -16,9 +16,10 @@ test("paste-text audit returns report or inline error", async ({ page }) => {
 
   await page.getByRole("button", { name: /run audit/i }).click();
 
-  const riskPanel = page.locator(".border-double");
-  const softError = page.getByText(/Audit failed|Network error|Paste at least/i);
-  const quotaOrHint = page.getByText(/pricing|upgrade|limit/i);
+  const scope = page.locator("main");
+  const riskPanel = scope.locator(".border-double");
+  const softError = scope.getByText(/Audit failed|Network error|Paste at least/i);
+  const quotaBlock = scope.getByRole("link", { name: /View pricing and upgrade/i });
 
-  await expect(riskPanel.or(softError).or(quotaOrHint).first()).toBeVisible({ timeout: 90_000 });
+  await expect(riskPanel.or(softError).or(quotaBlock).first()).toBeVisible({ timeout: 90_000 });
 });
