@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { AlertTriangle, Loader2, Scale } from "lucide-react";
 import { COUNTRIES } from "@/data/countries";
 import { Button } from "@/components/ui/Button";
+import { track } from "@/lib/analytics";
 
 export function LawyerLeadForm({ prefCountry }: { prefCountry?: string }) {
   const t = useTranslations("lawyerPage");
@@ -38,6 +39,7 @@ export function LawyerLeadForm({ prefCountry }: { prefCountry?: string }) {
         setError(json.error ?? "Request failed");
         return;
       }
+      track("form_submit_success", { form: "lawyer_lead", country });
       setDone(true);
       setName("");
       setEmail("");
