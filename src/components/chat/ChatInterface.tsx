@@ -4,16 +4,25 @@ import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, User, Bot, Copy } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useChat } from "@/store/chat-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { track } from "@/lib/analytics";
+import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
+import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
+import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
 
 export function ChatInterface() {
   const tc = useTranslations("chatEmpty");
+  const tComposer = useTranslations("chatComposer");
+  const tVoice = useTranslations("voice");
   const { currentSession, sendMessage, isTyping } = useChat();
   const [input, setInput] = useState("");
+  const [voiceReplace, setVoiceReplace] = useState(false);
+  const [voiceAutoSend, setVoiceAutoSend] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -41,7 +50,7 @@ export function ChatInterface() {
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      void handleSend();
     }
   };
 
@@ -65,6 +74,12 @@ export function ChatInterface() {
           >
             {tc("lawyerCta")}
           </LawyerCtaLink>
+          <p className="mt-4 text-xs text-muted-foreground">
+            {tc("signInToSaveLead")}{" "}
+            <Link href="/sign-in" className="font-medium text-primary underline-offset-4 hover:underline">
+              {tc("signInToSaveCta")}
+            </Link>
+          </p>
         </div>
       </div>
     );
@@ -89,6 +104,12 @@ export function ChatInterface() {
               >
                 {tc("lawyerCta")}
               </LawyerCtaLink>
+              <p className="mt-4 text-xs text-muted-foreground">
+                {tc("signInToSaveLead")}{" "}
+                <Link href="/sign-in" className="font-medium text-primary underline-offset-4 hover:underline">
+                  {tc("signInToSaveCta")}
+                </Link>
+              </p>
             </motion.div>
           )}
 
@@ -147,9 +168,29 @@ export function ChatInterface() {
                     })}
                   </span>
                   {message.role === "assistant" && (
-                    <button className="opacity-50 hover:opacity-100 transition-opacity">
-                      <Copy className="w-3 h-3" />
-                    </button>
+                    <>
+                      <ReadAloudButton
+                        text={message.content}
+                        surface="chat"
+                        dialectHints={currentSession?.jurisdiction ? [currentSession.jurisdiction] : []}
+                        size="icon"
+                        className="h-7 w-7 opacity-70 hover:opacity-100"
+                      />
+                      <button
+                        type="button"
+                        className="opacity-50 hover:opacity-100 transition-opacity"
+                        aria-label={tVoice("copyMessageAria")}
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(message.content);
+                          } catch {
+                            /* ignore */
+                          }
+                        }}
+                      >
+                        <Copy className="w-3 h-3" aria-hidden />
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
@@ -181,6 +222,31 @@ export function ChatInterface() {
 
       {/* Input */}
       <div className="border-t p-4 bg-background/80 backdrop-blur">
+        {voiceError && (
+          <p className="text-xs text-center text-amber-700 dark:text-amber-300 mb-2" role="status">
+            {tComposer("voiceErrorBanner", { message: voiceError })}
+          </p>
+        )}
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mb-2 text-xs text-muted-foreground max-w-4xl mx-auto">
+          <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              className="rounded border-input"
+              checked={voiceReplace}
+              onChange={(e) => setVoiceReplace(e.target.checked)}
+            />
+            {tComposer("voiceReplaceLabel")}
+          </label>
+          <label className="inline-flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              className="rounded border-input"
+              checked={voiceAutoSend}
+              onChange={(e) => setVoiceAutoSend(e.target.checked)}
+            />
+            {tComposer("voiceAutoSendLabel")}
+          </label>
+        </div>
         <div className="flex gap-2 items-end max-w-4xl mx-auto">
           <div className="flex-1 relative">
             <textarea
@@ -188,24 +254,49 @@ export function ChatInterface() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask a legal question..."
-              className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 pr-12 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed min-h-[48px] max-h-[200px]"
+              placeholder={tComposer("placeholder")}
+              className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 pr-24 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed min-h-[48px] max-h-[200px]"
               rows={1}
               disabled={isTyping}
             />
+            <div className="absolute right-2 bottom-2 flex items-center gap-1">
+              <VoiceDictationButton
+                value={input}
+                onChange={setInput}
+                mode={voiceReplace ? "replace" : "append"}
+                surface="chat"
+                disabled={isTyping}
+                onErrorMessage={setVoiceError}
+                onDictationSessionEnd={(finalText) => {
+                  if (voiceAutoSend && finalText.trim() && !isTyping) {
+                    void (async () => {
+                      const msg = finalText.trim();
+                      track("chat_message_sent", {
+                        length: msg.length,
+                        jurisdiction: currentSession?.jurisdiction ?? null,
+                        session_id: currentSession?.id ?? null,
+                        voice_auto_send: true,
+                      });
+                      await sendMessage(msg);
+                      setInput("");
+                      textareaRef.current?.focus();
+                    })();
+                  }
+                }}
+              />
+            </div>
           </div>
           <Button
             size="icon"
-            onClick={handleSend}
+            onClick={() => void handleSend()}
             disabled={!input.trim() || isTyping}
             className="shrink-0 h-[48px] w-[48px]"
           >
             <Send className="w-4 h-4" />
           </Button>
         </div>
-        <p className="text-xs text-center text-muted-foreground mt-2">
-          Press Enter to send, Shift+Enter for new line
-        </p>
+        <VoicePrivacyHint className="text-xs text-center text-muted-foreground mt-2 max-w-2xl mx-auto leading-relaxed" />
+        <p className="text-xs text-center text-muted-foreground mt-1">{tComposer("sendHint")}</p>
       </div>
     </div>
   );

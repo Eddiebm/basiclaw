@@ -44,7 +44,7 @@ export function CompareClient({
 
   return (
     <div className="space-y-8">
-      <EventTracker event="compare_viewed" properties={{ a: initialA, b: initialB, topic: initialTopic }} />
+      <EventTracker event="comparison_viewed" properties={{ a: initialA, b: initialB, topic: initialTopic }} />
 
       <div className="grid lg:grid-cols-3 gap-4 items-end">
         <label className="block">
