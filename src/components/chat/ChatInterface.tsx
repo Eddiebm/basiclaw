@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, User, Bot, Copy } from "lucide-react";
+import { Send, User, Bot, Copy, ExternalLink } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { useChat } from "@/store/chat-context";
@@ -153,14 +153,37 @@ export function ChatInterface() {
               >
                 <p className="whitespace-pre-wrap">{message.content}</p>
 
-                {message.citations && message.citations.length > 0 && (
+                {message.role === "assistant" && message.citations && message.citations.length > 0 && (
                   <div className="mt-3 pt-3 border-t border-border/50">
-                    <p className="text-xs font-medium mb-2 opacity-70">{tCitations("sourcesLabel")}</p>
-                    {message.citations.map((cite) => (
-                      <div key={cite.id} className="text-xs opacity-70">
-                        {cite.title} - {cite.source}
-                      </div>
-                    ))}
+                    <p className="text-xs font-medium mb-2 opacity-70">{tCitations("sourcesAndCasesLabel")}</p>
+                    <ul className="space-y-2">
+                      {message.citations.map((cite) => (
+                        <li key={cite.id}>
+                          {cite.url ? (
+                            <a
+                              href={cite.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group flex gap-2 rounded-lg border border-border/60 bg-background/50 p-2 text-left text-xs hover:border-primary/40 hover:bg-background/80 transition-colors"
+                            >
+                              <ExternalLink className="h-3.5 w-3.5 shrink-0 mt-0.5 opacity-60 group-hover:opacity-100" aria-hidden />
+                              <span className="min-w-0">
+                                <span className="font-medium text-foreground block truncate">{cite.title}</span>
+                                <span className="text-muted-foreground line-clamp-2">{cite.snippet}</span>
+                              </span>
+                            </a>
+                          ) : (
+                            <div className="rounded-lg border border-border/60 bg-background/50 p-2 text-xs">
+                              <span className="font-medium text-foreground block">{cite.title}</span>
+                              <span className="text-muted-foreground text-[11px]">{tCitations("snippetRefLabel")}</span>
+                              {cite.snippet ? (
+                                <p className="text-muted-foreground mt-1 line-clamp-3">{cite.snippet}</p>
+                              ) : null}
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
 

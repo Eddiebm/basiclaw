@@ -174,7 +174,9 @@
   },
   "chat": {
     "citations": {
-      "sourcesLabel": "स्रोत"
+      "sourcesLabel": "स्रोत",
+      "sourcesAndCasesLabel": "स्रोत और मामले",
+      "snippetRefLabel": "BasicLaw शैक्षिक अंश (कोई विधि URL नहीं)"
     }
   },
   "voice": {

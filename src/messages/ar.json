@@ -174,7 +174,9 @@
   },
   "chat": {
     "citations": {
-      "sourcesLabel": "المصادر"
+      "sourcesLabel": "المصادر",
+      "sourcesAndCasesLabel": "المصادر والقضايا",
+      "snippetRefLabel": "مقتطف تعليمي من BasicLaw (بدون رابط لنص تشريعي)"
     }
   },
   "voice": {

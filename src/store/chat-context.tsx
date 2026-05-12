@@ -19,6 +19,7 @@ export interface Citation {
   source: string;
   url?: string;
   snippet: string;
+  kind?: "snippet" | "case";
 }
 
 export interface ChatSession {
@@ -202,12 +203,28 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
       const data = await response.json();
 
+      const rawCites = data.citations as unknown;
+      const citations: Citation[] | undefined = Array.isArray(rawCites)
+        ? rawCites.map((c: Record<string, unknown>) => {
+            const k = c.kind;
+            const kind: Citation["kind"] = k === "case" || k === "snippet" ? k : undefined;
+            return {
+              id: String(c.id ?? ""),
+              title: String(c.title ?? ""),
+              source: String(c.source ?? ""),
+              url: typeof c.url === "string" ? c.url : undefined,
+              snippet: typeof c.snippet === "string" ? c.snippet : "",
+              kind,
+            };
+          })
+        : undefined;
+
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
         content: data.response,
         timestamp: new Date(),
-        citations: data.citations,
+        citations,
       };
 
       dispatch({ type: "ADD_MESSAGE", payload: { sessionId: state.currentSessionId, message: assistantMessage } });

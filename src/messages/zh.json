@@ -174,7 +174,9 @@
   },
   "chat": {
     "citations": {
-      "sourcesLabel": "来源"
+      "sourcesLabel": "来源",
+      "sourcesAndCasesLabel": "来源与判例",
+      "snippetRefLabel": "BasicLaw 教学摘要（无法规原文链接）"
     }
   },
   "voice": {

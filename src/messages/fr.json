@@ -167,7 +167,9 @@
       "noChats": "Pas encore de conversations."
     },
     "citations": {
-      "sourcesLabel": "Sources"
+      "sourcesLabel": "Sources",
+      "sourcesAndCasesLabel": "Sources et arrêts",
+      "snippetRefLabel": "Extrait pédagogique BasicLaw (pas d’URL de texte officiel)"
     }
   },
   "topicPage": {

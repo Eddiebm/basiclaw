@@ -2,14 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import type { Country } from "@/data/types";
 import { getCountry, getSources } from "@/lib/jurisdictions";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
-import { formatSnippetsForPrompt, loadSnippetsForCountry, rankSnippetsForMessage } from "@/lib/constitution-snippets";
+import { formatSnippetsForPrompt, getRankedSnippetsByEmbedding, loadSnippetsForCountry } from "@/lib/constitution-snippets";
+import { formatLandmarkCasesForPrompt, getRankedLandmarkCasesByEmbedding, loadLandmarkCasesForCountry } from "@/lib/landmark-cases";
 import { getCurrentUserId } from "@/lib/auth-config";
 import { getUserPlanForUserId } from "@/lib/entitlements";
 import { quotaJsonBody, checkChatQuota } from "@/lib/quota-check";
 import { clientIp, hashIpForUsage } from "@/lib/request-ip";
 import { getUsage, incrementUsage } from "@/lib/storage";
 
-const SNIPPET_TOP_K = 5;
+const SNIPPET_TOP_K = 4;
+const CASE_TOP_K = 3;
+
+function ragQueryText(message: string, country: Country): string {
+  return [
+    message,
+    country.name,
+    country.constitution.title,
+    ...country.constitution.keyPrinciples,
+    country.constitution.summary.slice(0, 800),
+  ].join("\n");
+}
 
 function isConstitutionRelatedQuestion(text: string): boolean {
   const s = text.toLowerCase();
@@ -50,26 +62,27 @@ function constitutionContextBlock(country: Country): string {
   ].join("\n\n");
 }
 
-function buildSystemPrompt(country: Country, snippetBlock: string): { name: string; legalSystem: string; description: string; prompt: string } {
+function buildSystemPrompt(country: Country, ragBlock: string): { name: string; legalSystem: string; description: string; prompt: string } {
   const { constitution, languages, name, legalSystem } = country;
   const legalSystemLabel = LEGAL_SYSTEM_LABELS[legalSystem];
   const principles = constitution.keyPrinciples.join(", ");
 
-  const snippetSection = snippetBlock ? `\n\n${snippetBlock}` : "";
+  const ragSection = ragBlock ? `\n\n${ragBlock}` : "";
 
   return {
     name,
     legalSystem: legalSystemLabel,
     description: constitution.summary,
     prompt: `You are a legal information assistant specialising in ${name} (${legalSystemLabel}). The relevant constitutional framework is "${constitution.title}" (adopted ${constitution.yearAdopted}${constitution.yearLatestAmendment ? `, latest amendment ${constitution.yearLatestAmendment}` : ""}). Key constitutional principles you should be aware of: ${principles}. Official languages: ${languages.join(", ")}.
-${snippetSection}
+${ragSection}
 
 When answering:
 - Use plain language a non-lawyer can understand. Avoid Latin and untranslated jargon.
 - Be specific to ${name} where the question is jurisdiction-sensitive. If the question involves another jurisdiction, say so and answer for ${name} unless the user asks otherwise.
 - Where relevant, cite the article or section of the constitution or a named statute. Do not invent citations.
-- **Links:** Use markdown [label](URL) **only** for URLs that appear in the authorized source list in the BasicLaw reference section. Do not fabricate URLs.
-- **Snippets:** If you use an educational snippet, name its title and snippet id (no link). Never present snippet text as verbatim statute unless the snippet itself says it is quoted public-domain text.
+- **Links:** Use markdown [short label](URL) for (a) URLs in the authorized country source list in the BasicLaw reference section, and (b) **landmark case Source URLs** listed in the landmark cases section below. Do not fabricate any other URLs.
+- **Constitution snippets:** If you use an educational snippet, name its **title** and **snippet id** in prose (no URL). Never present snippet text as verbatim statute unless the snippet itself says it is quoted public-domain text.
+- **Landmark cases:** When helpful, name the case **title** and **case id** and include a markdown link using the exact Source URL provided for that case.
 - For any topic where rules vary by sub-region (state, province, region), say so and recommend checking local rules.
 - Always end with a brief disclaimer: this is educational legal information, not legal advice, and the reader should consult a licensed lawyer in ${name} for their specific situation.
 - Refuse to draft documents intended for filing in court or to represent the reader. You may explain what such documents typically contain.`,
@@ -103,10 +116,40 @@ export async function POST(request: NextRequest) {
 
     const country = getCountry((jurisdiction || "us").toLowerCase()) ?? getCountry("us")!;
     const snippets = await loadSnippetsForCountry(country.code);
-    const ranked = rankSnippetsForMessage(message, country, snippets, SNIPPET_TOP_K);
-    const snippetBlock = formatSnippetsForPrompt(ranked);
+    const cases = await loadLandmarkCasesForCountry(country.code);
+    const q = ragQueryText(message, country);
+    const [rankedSnippets, rankedCases] = await Promise.all([
+      getRankedSnippetsByEmbedding(q, country.code, snippets, SNIPPET_TOP_K),
+      getRankedLandmarkCasesByEmbedding(q, country.code, cases, CASE_TOP_K),
+    ]);
+    const ragBlock = [formatSnippetsForPrompt(rankedSnippets), formatLandmarkCasesForPrompt(rankedCases)].filter(Boolean).join("\n\n");
 
-    const jurisdictionInfo = buildSystemPrompt(country, snippetBlock);
+    const jurisdictionInfo = buildSystemPrompt(country, ragBlock);
+
+    const citationsPayload: Array<{
+      id: string;
+      title: string;
+      source: string;
+      snippet: string;
+      url?: string;
+      kind: "snippet" | "case";
+    }> = [
+      ...rankedSnippets.map((s) => ({
+        id: `snippet:${s.id}`,
+        title: s.title,
+        source: "BasicLaw snippet",
+        snippet: s.excerpt.slice(0, 280),
+        kind: "snippet" as const,
+      })),
+      ...rankedCases.map((c) => ({
+        id: `case:${c.id}`,
+        title: c.title,
+        source: c.sourceUrl,
+        url: c.sourceUrl,
+        snippet: `${c.principle} — ${c.summary}`.slice(0, 320),
+        kind: "case" as const,
+      })),
+    ];
     const appendix = buildReferenceAppendix(country);
 
     let userContent = message;
@@ -130,7 +173,7 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json({
         response: `I understand you're asking about ${jurisdictionInfo.name} law. However, the AI service is not configured properly. Please ensure the OPENROUTER_API_KEY environment variable is set.\n\nFor educational purposes regarding ${jurisdictionInfo.name} (${jurisdictionInfo.legalSystem}): ${jurisdictionInfo.description}`,
-        citations: [],
+        citations: citationsPayload,
       });
     }
 
@@ -168,7 +211,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       response: assistantResponse,
-      citations: [],
+      citations: citationsPayload,
     });
   } catch (error) {
     console.error("Chat API error:", error);

@@ -163,7 +163,9 @@
       "noChats": "Ainda não há conversas."
     },
     "citations": {
-      "sourcesLabel": "Fontes"
+      "sourcesLabel": "Fontes",
+      "sourcesAndCasesLabel": "Fontes e casos",
+      "snippetRefLabel": "Trecho educativo BasicLaw (sem URL de texto legal)"
     }
   },
   "topicPage": {

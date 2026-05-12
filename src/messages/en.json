@@ -584,6 +584,7 @@
     "status_preview": "Constitutional summary ready · assistant in preview",
     "status_planned": "Planned — join the waitlist",
     "lastVerifiedIntro": "Last verified",
+    "verifiedByLawyer": "Verified by {name}, {jurisdiction}",
     "usStatesTitle": "State-by-state guides (US)",
     "usStatesBody": "Rights, police stops, landlord rules, and employment basics can change the moment you cross a state line. Jump into all 50 states + DC.",
     "usStatesCta": "Open US state index",
@@ -604,6 +605,7 @@
     "askPrefill": "Ask a question about {country}",
     "readConstitution": "Read {country}'s constitution",
     "lastVerified": "Last verified {date}. Spotted something wrong? Email corrections@basiclaw.app.",
+    "verifiedByLawyer": "Verified by {name}, {jurisdiction}",
     "jurisdiction": "Jurisdiction",
     "constitutionOverview": "Constitution overview",
     "sidebar_rights": "Your rights",
@@ -741,7 +743,9 @@
       "noChats": "No conversations yet."
     },
     "citations": {
-      "sourcesLabel": "Sources"
+      "sourcesLabel": "Sources",
+      "sourcesAndCasesLabel": "Sources & cases",
+      "snippetRefLabel": "BasicLaw educational snippet (no external statute URL)"
     }
   },
   "auth": {
@@ -932,6 +936,7 @@
     "pendingTitle": "State-specific summary in progress",
     "pendingBody": "We have not yet published a build-time summary for {state}. Ask the assistant for a state-aware walkthrough, or check back after we run an editorial pass.",
     "pendingCta": "Open chat with US + state context",
+    "verifiedByLawyer": "Verified by {name}, {jurisdiction}",
     "labels": {
       "rights": "Your rights",
       "police-stop": "Police stops",
@@ -978,8 +983,8 @@
     "diffVerifiedDates": "Verification dates differ: {aDate} for {a} versus {bDate} for {b}.",
     "narrativeLegalSame": "Both countries sit in broadly the same legal tradition ({system}), so courts and statutes often \"feel\" familiar even when the text differs.",
     "narrativeLegalDiff": "{a} is described as a {sysA} system while {b} is {sysB} — expect different institutions, remedies, and citation habits even when rights language looks similar.",
-    "narrativePrinciplesBoth": "On {topic}, both constitutions surface matching ideas in their BasicLaw key-principles lists (keyword match).",
-    "narrativePrinciplesGap": "On {topic}, only one side shows a strong keyword match in its listed principles — treat this as a map, not a scorecard.",
+    "narrativePrinciplesBoth": "On {topic}, both constitutions surface matching ideas in their BasicLaw key-principles lists (embedding-assisted snippet pick where available).",
+    "narrativePrinciplesGap": "On {topic}, only one side shows a strong match in its listed principles or retrieved snippet — treat this as a map, not a scorecard.",
     "narrativeVerified": "Summaries were last verified on {aDate} for {a} and {bDate} for {b}; always confirm against the official sources below.",
     "picker": {
       "change": "Change",
@@ -994,5 +999,36 @@
       "religious-freedom": "Religious freedom",
       "free-expression": "Free expression"
     }
+  },
+  "lawyersPage": {
+    "metaTitle": "Verified lawyers — BasicLaw",
+    "metaDescription": "Counsel who have reviewed BasicLaw educational content for specific jurisdictions.",
+    "title": "Verified lawyers",
+    "subtitle": "Independent counsel who have reviewed selected BasicLaw pages. Listing is informational only — BasicLaw is not a law firm.",
+    "filterLabel": "Filter by jurisdiction or country",
+    "filterPlaceholder": "e.g. California, Ghana, UK…",
+    "empty": "No matching lawyers yet.",
+    "practiceAreas": "Practice areas",
+    "applyCta": "Apply to be listed",
+    "statement": "Statement"
+  },
+  "lawyersApplyPage": {
+    "metaTitle": "Apply — verified lawyer listing",
+    "metaDescription": "Request a BasicLaw educational review badge for your jurisdiction.",
+    "title": "Apply for a verified listing",
+    "subtitle": "Tell us about your bar admission and practice. We review applications manually; listing is not an endorsement of any law firm relationship with BasicLaw.",
+    "name": "Full name",
+    "email": "Email",
+    "barNumber": "Bar / roll number (optional)",
+    "country": "Primary country of admission",
+    "countryPlaceholder": "Select country",
+    "practiceAreas": "Practice areas",
+    "practiceAreasHint": "Comma-separated (e.g. housing, employment, immigration)",
+    "sampleStatement": "Sample public statement for your profile",
+    "headshotUrl": "Headshot image URL (optional)",
+    "submit": "Submit application",
+    "submitting": "Submitting…",
+    "success": "Thanks — we received your application and will reply by email when configured.",
+    "error": "Something went wrong. Please try again."
   }
 }
