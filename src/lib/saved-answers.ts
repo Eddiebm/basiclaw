@@ -34,6 +34,8 @@ export interface SavedAnswer {
   upvotes: number;
   downvotes: number;
   verifiedBy?: string;
+  /** Optional reviewer note stored when an admin verifies an answer */
+  verificationNote?: string;
 }
 
 export type SavedAnswerPublic = Omit<SavedAnswer, "userId">;
@@ -198,6 +200,61 @@ export async function listPublicAnswersResolved(opts: {
   }
 
   return list.slice(start, start + pageSize).map(toPublicAnswer);
+}
+
+export async function listPublicAnswersAdmin(opts: {
+  jurisdiction?: string;
+  verified?: "all" | "yes" | "no";
+  minNetVotes?: number;
+  page?: number;
+  pageSize?: number;
+  sort?: "recent" | "votes";
+}): Promise<SavedAnswer[]> {
+  const page = opts.page ?? 1;
+  const pageSize = opts.pageSize ?? 50;
+  const start = Math.max(0, (page - 1) * pageSize);
+  const redis = getRedis();
+
+  let candidates: SavedAnswer[] = [];
+  if (redis) {
+    let ids: string[] = [];
+    if (opts.jurisdiction) {
+      ids = await redis.smembers(kJurSet(opts.jurisdiction));
+    } else {
+      ids = (await redis.zrange(kPublicZ(), 0, MAX_LIST_SCAN, { rev: true })).map(String);
+    }
+    let n = 0;
+    for (const id of ids) {
+      if (n++ > MAX_LIST_SCAN) break;
+      const a = await getAnswer(String(id));
+      if (a?.isPublic) candidates.push(a);
+    }
+  } else {
+    const store = await readAnswersFile();
+    candidates = store.answers.filter((a) => a.isPublic);
+    if (opts.jurisdiction) {
+      const jur = opts.jurisdiction.toLowerCase();
+      candidates = candidates.filter((a) => a.jurisdiction === jur);
+    }
+  }
+
+  let list = candidates;
+  const v = opts.verified ?? "all";
+  if (v === "yes") list = list.filter((a) => Boolean(a.verifiedBy));
+  else if (v === "no") list = list.filter((a) => !a.verifiedBy);
+
+  const minNet = opts.minNetVotes ?? 0;
+  if (minNet > 0) {
+    list = list.filter((a) => a.upvotes - a.downvotes >= minNet);
+  }
+
+  if (opts.sort === "votes") {
+    list = [...list].sort((a, b) => scoreVotes(b) - scoreVotes(a));
+  } else {
+    list = [...list].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  }
+
+  return list.slice(start, start + pageSize);
 }
 
 async function getAllPublicEmbeddings(): Promise<Record<string, number[]>> {
@@ -476,11 +533,59 @@ export async function deleteAnswer(id: string, userId: string): Promise<boolean>
   return true;
 }
 
+export async function adminUnpublishAnswer(id: string): Promise<boolean> {
+  const a = await getAnswer(id);
+  if (!a || !a.isPublic) return false;
+  const now = new Date().toISOString();
+  const nextRow: SavedAnswer = { ...a, isPublic: false, updatedAt: now };
+  await removePublicEmbedding(id);
+  const redis = getRedis();
+  if (redis) {
+    await redis.set(kAnswer(id), JSON.stringify(nextRow));
+    await redis.zrem(kPublicZ(), id);
+    await redis.srem(kJurSet(a.jurisdiction), id);
+    return true;
+  }
+  const store = await readAnswersFile();
+  const idx = store.answers.findIndex((x) => x.id === id);
+  if (idx < 0) return false;
+  store.answers[idx] = nextRow;
+  delete store.embeddingsPublic[id];
+  await writeAnswersFile(store);
+  return true;
+}
+
+export async function adminDeleteAnswer(id: string): Promise<boolean> {
+  const a = await getAnswer(id);
+  if (!a) return false;
+  const redis = getRedis();
+  if (redis) {
+    await redis.del(kAnswer(id));
+    await redis.zrem(kPublicZ(), id);
+    await redis.srem(kJurSet(a.jurisdiction), id);
+    if (a.userId) await redis.zrem(kUserZ(a.userId), id);
+    await removePublicEmbedding(id);
+    await redis.del(kVoters(id));
+    return true;
+  }
+  const store = await readAnswersFile();
+  store.answers = store.answers.filter((x) => x.id !== id);
+  delete store.embeddingsPublic[id];
+  delete store.voteActors[id];
+  await writeAnswersFile(store);
+  return true;
+}
+
 export async function verifyAnswer(id: string, lawyerId: string, statement?: string): Promise<SavedAnswer | null> {
-  void statement;
   const a = await getAnswer(id);
   if (!a) return null;
-  const next: SavedAnswer = { ...a, verifiedBy: lawyerId, updatedAt: new Date().toISOString() };
+  const note = statement?.trim();
+  const next: SavedAnswer = {
+    ...a,
+    verifiedBy: lawyerId,
+    updatedAt: new Date().toISOString(),
+    ...(note ? { verificationNote: note } : {}),
+  };
   const redis = getRedis();
   if (redis) {
     await redis.set(kAnswer(id), JSON.stringify(next));
