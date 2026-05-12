@@ -5,6 +5,7 @@ import posthog from "posthog-js";
 export type VoiceAnalyticsSurface = "chat" | "audit" | "constitution" | "questions" | "topics" | "compare";
 
 export type AnalyticsEvent =
+  | "hero_ask_prefill_submit"
   | "home_view"
   | "constitution_viewed"
   | "country_selected"
@@ -29,7 +30,9 @@ export type AnalyticsEvent =
   | "voice_listen_stopped"
   | "tts_started"
   | "tts_stopped"
-  | "tts_error";
+  | "tts_error"
+  | "index_viewed"
+  | "index_filter_applied";
 
 let initialised = false;
 
