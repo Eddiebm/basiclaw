@@ -23,6 +23,12 @@ const LOCALIZED_STATIC = [
   "/documents",
   "/us/states",
   "/extension",
+  "/about",
+  "/blog",
+  "/privacy",
+  "/terms",
+  "/disclaimer",
+  "/cookies",
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

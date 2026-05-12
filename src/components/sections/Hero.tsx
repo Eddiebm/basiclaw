@@ -59,15 +59,20 @@ export function Hero() {
               <p className="text-lg sm:text-xl text-[var(--muted-foreground)] mb-8 max-w-xl mx-auto lg:mx-0">
                 {t("subtitle")}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 justify-center lg:justify-start">
                 <Button asChild size="lg" className="gap-2">
-                  <Link href="/audit">
-                    {t("ctaAudit")} <FileText className="h-4 w-4" />
+                  <Link href="/chat">
+                    {t("ctaAsk")} <MessageCircle className="h-4 w-4" />
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="gap-2">
-                  <Link href="/chat">
-                    {t("ctaAsk")} <MessageCircle className="h-4 w-4" />
+                  <Link href="/learn">
+                    {t("ctaLearn")} <BookOpen className="h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="gap-2">
+                  <Link href="/audit">
+                    {t("ctaAudit")} <FileText className="h-4 w-4" />
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="gap-2 border-dashed">
@@ -137,6 +142,12 @@ export function Hero() {
                   <span className="font-semibold text-[var(--foreground)]">{t("cardQA_title")}</span>
                 </div>
                 <p className="text-sm text-[var(--muted-foreground)]">{t("cardQA_body")}</p>
+                <Link
+                  href="/chat"
+                  className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-[var(--primary)] hover:underline"
+                >
+                  {t("ctaAsk")} <ArrowRight className="h-4 w-4" aria-hidden />
+                </Link>
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, y: 40 }}

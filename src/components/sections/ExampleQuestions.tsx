@@ -1,46 +1,103 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Search, ArrowRight } from "lucide-react";
+import { Link } from "@/i18n/navigation";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
+import { fadeUpContainer, fadeUpItem } from "@/lib/motion-variants";
 
-const exampleQuestions = [
-  { category: "Police Interaction", question: "What should I do if police pull me over?", icon: "👮" },
-  { category: "Housing", question: "Can my landlord enter my apartment without notice?", icon: "🏠" },
-  { category: "Employment", question: "Am I entitled to overtime pay?", icon: "💼" },
-  { category: "Contracts", question: "What happens if I sign a contract I don't understand?", icon: "📝" },
-  { category: "Family", question: "How do I get a copy of my birth certificate?", icon: "📋" },
-  { category: "Consumer Rights", question: "Can I return a product if I changed my mind?", icon: "🛒" },
-];
+const ITEM_KEYS = ["q1", "q2", "q3", "q4", "q5", "q6"] as const;
 
 export function ExampleQuestions() {
+  const t = useTranslations("exampleQuestionsSection");
+  const reduce = useReducedMotion();
+
   return (
-    <section className="py-20 bg-[var(--accent)]/30">
+    <section className="border-b border-[var(--border)]/60 bg-[var(--accent)]/20 py-24 sm:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] mb-4">Common Legal Questions</h2>
-            <p className="text-lg text-[var(--muted-foreground)] max-w-2xl mx-auto">Start with questions real people ask every day. We explain in plain language.</p>
-          </motion.div>
-        </div>
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }} className="max-w-2xl mx-auto mb-16">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--muted-foreground)]" />
-            <input type="text" placeholder="Search for any legal topic..." className="w-full h-14 pl-12 pr-4 rounded-xl border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]" />
-            <Button className="absolute right-2 top-1/2 -translate-y-1/2">Search</Button>
-          </div>
+        <motion.div
+          variants={fadeUpContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          className="mx-auto max-w-3xl text-center"
+        >
+          <motion.h2 variants={fadeUpItem} className="font-editorial text-4xl text-[var(--foreground)] sm:text-5xl">
+            {t("title")}
+          </motion.h2>
+          <motion.p variants={fadeUpItem} className="mt-4 text-lg leading-relaxed text-[var(--muted-foreground)]">
+            {t("subtitle")}
+          </motion.p>
         </motion.div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {exampleQuestions.map((item, index) => (
-            <motion.button key={item.question} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 + index * 0.05 }} className="group p-6 rounded-2xl bg-[var(--background)] border border-[var(--border)] text-left hover:border-[var(--primary)] transition-colors">
-              <div className="flex items-center gap-3 mb-4"><span className="text-2xl">{item.icon}</span><span className="text-sm font-medium text-[var(--primary)]">{item.category}</span></div>
-              <p className="text-[var(--foreground)] font-medium mb-4 group-hover:text-[var(--primary)] transition-colors">{item.question}</p>
-              <div className="flex items-center gap-2 text-sm text-[var(--muted-foreground)]"><span>Ask this question</span><ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" /></div>
-            </motion.button>
-          ))}
+
+        <motion.div
+          variants={fadeUpItem}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="mx-auto mt-12 max-w-2xl"
+        >
+          <Link
+            href="/questions"
+            className="group relative block rounded-2xl border border-[var(--border)] bg-[var(--card)]/80 p-1 shadow-paper backdrop-blur-sm transition hover:border-[var(--primary)]/35"
+          >
+            <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--muted-foreground)]" aria-hidden />
+            <div
+              role="presentation"
+              className="flex h-14 items-center rounded-[1.1rem] bg-transparent pl-12 pr-28 text-left text-[var(--muted-foreground)]"
+            >
+              <span className="text-sm">{t("searchPlaceholder")}</span>
+            </div>
+            <span className="pointer-events-none absolute right-2 top-1/2 inline-flex h-9 -translate-y-1/2 items-center rounded-md border border-[var(--border)] bg-[var(--secondary)] px-3 text-xs font-medium text-[var(--secondary-foreground)] shadow-sm">
+              {t("searchButton")}
+            </span>
+          </Link>
+        </motion.div>
+
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {ITEM_KEYS.map((key, index) => {
+            const category = t(`items.${key}.category` as "items.q1.category");
+            const text = t(`items.${key}.text` as "items.q1.text");
+            return (
+              <motion.div
+                key={key}
+                initial={reduce ? false : { opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: index * 0.05, type: "spring", stiffness: 120, damping: 18 }}
+              >
+                <Link
+                  href={`/chat?prefill=${encodeURIComponent(text)}&country=us`}
+                  className="group flex h-full flex-col rounded-2xl border border-[var(--border)] bg-[var(--card)]/90 p-6 shadow-[0_1px_0_oklch(0_0_0/0.04)] transition hover:-translate-y-1 hover:border-[var(--primary)]/35 hover:shadow-lift"
+                >
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--oxblood)]">
+                    {t(`categories.${category}` as "categories.police")}
+                  </p>
+                  <p className="mt-4 font-editorial text-xl leading-snug text-[var(--foreground)] group-hover:text-[var(--primary)]">
+                    {text}
+                  </p>
+                  <span className="mt-auto flex items-center gap-2 pt-6 text-sm text-[var(--muted-foreground)]">
+                    {t("askThis")}
+                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden />
+                  </span>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.4 }} className="mt-12 text-center">
-          <Button variant="outline" className="gap-2">Browse All Topics<ArrowRight className="h-4 w-4" /></Button>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="mt-14 flex justify-center"
+        >
+          <Button asChild variant="outline" className="rounded-full border-[var(--border)] bg-[var(--surface-glass)] px-6 backdrop-blur-sm">
+            <Link href="/questions" className="gap-2">
+              {t("browseTopics")} <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
         </motion.div>
       </div>
     </section>
