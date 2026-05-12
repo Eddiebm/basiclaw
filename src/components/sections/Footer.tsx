@@ -22,6 +22,7 @@ export function Footer() {
 
   const productLinks = [
     { name: tl("constitutions"), href: "/constitutions" },
+    { name: tl("compareConstitutions"), href: "/compare?a=US&b=GH&topic=rights" },
     { name: tl("usStates"), href: "/us/states" },
     { name: tl("audit"), href: "/audit" },
     { name: tl("auditLease"), href: "/audit/lease" },
@@ -33,6 +34,7 @@ export function Footer() {
     { name: tl("documents"), href: "/documents" },
     { name: tl("pricing"), href: "/pricing" },
     { name: tl("findLawyer"), href: "/find-a-lawyer" },
+    { name: tl("signIn"), href: "/sign-in" },
   ];
 
   const jurisdictionLinks = [
@@ -63,9 +65,9 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-12">
           <div className="col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4">
+            <Link href="/" className="mb-4 flex items-center gap-2">
               <Scale className="h-8 w-8 text-[var(--primary)]" />
-              <span className="text-xl font-bold text-[var(--foreground)]">{tNav("brand")}</span>
+              <span className="font-editorial text-xl tracking-tight text-[var(--foreground)] sm:text-2xl">{tNav("brand")}</span>
             </Link>
             <p className="text-sm text-[var(--muted-foreground)] mb-4 max-w-xs">{t("tagline", { count: stats.total })}</p>
             <div className="flex gap-3">
@@ -88,8 +90,11 @@ export function Footer() {
           <FooterColumnMixed title={tc("company")} links={companyLinks} />
           <FooterColumn title={tc("legal")} links={legalLinks} />
         </div>
-        <Separator className="mb-8" />
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[var(--muted-foreground)]">
+        <Separator className="mb-10 opacity-60" />
+        <div className="mb-10 text-center">
+          <p className="font-editorial text-2xl leading-snug text-[var(--foreground)] sm:text-3xl">{t("closingLine")}</p>
+        </div>
+        <div className="flex flex-col items-center justify-between gap-4 text-sm text-[var(--muted-foreground)] md:flex-row">
           <p>{t("copyright", { year: new Date().getFullYear() })}</p>
           <p>{t("builtFor")}</p>
         </div>
@@ -107,7 +112,7 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h3 className="font-semibold text-[var(--foreground)] mb-4 text-sm">{title}</h3>
+      <h3 className="mb-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)]">{title}</h3>
       <ul className="space-y-3">
         {links.map((link) => (
           <li key={link.name}>
@@ -133,7 +138,7 @@ function FooterColumnMixed({
 }) {
   return (
     <div>
-      <h3 className="font-semibold text-[var(--foreground)] mb-4 text-sm">{title}</h3>
+      <h3 className="mb-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)]">{title}</h3>
       <ul className="space-y-3">
         {links.map((link) => (
           <li key={link.name}>

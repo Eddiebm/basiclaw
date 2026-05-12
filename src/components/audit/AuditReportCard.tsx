@@ -83,7 +83,7 @@ export function AuditReportCard({ report, showShareButton = true, onShared }: Pr
         </div>
         <div className="flex shrink-0 flex-col items-stretch gap-3 sm:items-end">
           <div
-            className={`flex flex-col items-center justify-center rounded-2xl border px-6 py-5 text-center sm:min-w-[9.5rem] ${RISK_GRADE_COLOR[report.overallRiskGrade]}`}
+            className={`flex flex-col items-center justify-center rounded-2xl border-2 border-double px-6 py-5 text-center shadow-[inset_0_0_0_1px_oklch(0_0_0/0.06)] sm:min-w-[9.5rem] ${RISK_GRADE_COLOR[report.overallRiskGrade]}`}
           >
             <span className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-80">Grade</span>
             <span className="mt-1 flex items-center gap-2 font-editorial text-4xl sm:text-5xl">
