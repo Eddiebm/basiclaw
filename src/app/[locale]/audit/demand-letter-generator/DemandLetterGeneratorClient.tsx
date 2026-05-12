@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
@@ -18,6 +18,7 @@ const MIN_COMPILED_CHARS = 200;
 export function DemandLetterGeneratorClient() {
   const t = useTranslations("demandLetterGenerator");
   const tComposer = useTranslations("chatComposer");
+  const locale = useLocale();
   const popularCountries = useMemo(() => getPopularCountries(8), []);
   const [fromParty, setFromParty] = useState("");
   const [toParty, setToParty] = useState("");
@@ -77,7 +78,7 @@ export function DemandLetterGeneratorClient() {
     try {
       const res = await fetch("/api/audit", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: { "content-type": "application/json", "x-basiclaw-locale": locale },
         body: JSON.stringify({
           text,
           jurisdiction,
@@ -92,6 +93,11 @@ export function DemandLetterGeneratorClient() {
         upgradeUrl?: string;
       };
       if (res.status === 429) {
+        const upgrade = json.upgradeUrl?.trim();
+        if (typeof window !== "undefined" && upgrade?.startsWith("/")) {
+          window.location.assign(`${window.location.origin}${upgrade}`);
+          return;
+        }
         setPaywall(true);
         setError(json.message ?? t("paywallBody"));
         track("demand_letter_paywall", { jurisdiction, reason: json.error ?? "quota" });
@@ -245,23 +251,25 @@ export function DemandLetterGeneratorClient() {
           <label htmlFor="dl-facts" className="block text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-1">
             {t("factsLabel")}
           </label>
-          {voiceError && (
-            <p className="mb-2 text-xs text-amber-700 dark:text-amber-300" role="status">
-              {tComposer("voiceErrorBanner", { message: voiceError })}
-            </p>
-          )}
           <div className="relative">
-          <textarea
-            id="dl-facts"
-            rows={6}
-            value={facts}
-            onChange={(e) => setFacts(e.target.value)}
-            placeholder={t("factsPlaceholder")}
-            className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 pr-12 text-sm"
-          />
-          <div className="absolute right-2 top-2">
-            <VoiceDictationButton value={facts} onChange={setFacts} mode="append" surface="audit" disabled={submitting} onErrorMessage={setVoiceError} />
-          </div>
+            <textarea
+              id="dl-facts"
+              rows={6}
+              value={facts}
+              onChange={(e) => setFacts(e.target.value)}
+              placeholder={t("factsPlaceholder")}
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 pr-12 text-sm"
+            />
+            <div className="absolute right-2 top-2">
+              <VoiceDictationButton
+                value={facts}
+                onChange={setFacts}
+                mode="append"
+                surface="audit"
+                disabled={submitting}
+                onErrorMessage={setVoiceError}
+              />
+            </div>
           </div>
         </div>
         <div className="sm:col-span-2">
@@ -269,24 +277,36 @@ export function DemandLetterGeneratorClient() {
             {t("reliefLabel")}
           </label>
           <div className="relative">
-          <textarea
-            id="dl-relief"
-            rows={4}
-            value={relief}
-            onChange={(e) => setRelief(e.target.value)}
-            placeholder={t("reliefPlaceholder")}
-            className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 pr-12 text-sm"
-          />
-          <div className="absolute right-2 top-2">
-            <VoiceDictationButton value={relief} onChange={setRelief} mode="append" surface="audit" disabled={submitting} onErrorMessage={setVoiceError} />
-          </div>
+            <textarea
+              id="dl-relief"
+              rows={4}
+              value={relief}
+              onChange={(e) => setRelief(e.target.value)}
+              placeholder={t("reliefPlaceholder")}
+              className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 pr-12 text-sm"
+            />
+            <div className="absolute right-2 top-2">
+              <VoiceDictationButton
+                value={relief}
+                onChange={setRelief}
+                mode="append"
+                surface="audit"
+                disabled={submitting}
+                onErrorMessage={setVoiceError}
+              />
+            </div>
           </div>
         </div>
       </div>
 
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+      {voiceError && (
+        <p className="text-xs text-amber-700 dark:text-amber-300" role="status">
+          {tComposer("voiceErrorBanner", { message: voiceError })}
+        </p>
+      )}
 
-      <VoicePrivacyHint className="text-xs text-[var(--muted-foreground)] leading-relaxed" />
+      <VoicePrivacyHint className="text-xs text-[var(--muted-foreground)] max-w-2xl leading-relaxed mb-2" />
 
       <div className="flex flex-col sm:flex-row gap-3 items-center">
         <Button onClick={submit} disabled={submitting} className="gap-2">

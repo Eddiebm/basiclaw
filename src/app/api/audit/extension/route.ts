@@ -1,9 +1,22 @@
+import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import {
   MIN_TEXT_CHARS,
   normaliseAuditType,
   runAuditPipeline,
 } from "@/lib/audit-engine";
+import type { AuditReport } from "@/lib/audit-types";
+import { getCurrentUserId } from "@/lib/auth-config";
+import { getUserPlanForUserId } from "@/lib/entitlements";
+import {
+  checkAdvancedAuditPaywall,
+  checkAuditQuota,
+  checkDemandLetterQuota,
+  pricingPathForLocale,
+  quotaJsonBody,
+} from "@/lib/quota-check";
+import { clientIp, hashIpForUsage } from "@/lib/request-ip";
+import { getUsage, incrementUsage, saveAuditForUser } from "@/lib/storage";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -56,7 +69,7 @@ function corsHeaders(origin: string | null): Record<string, string> {
   return {
     "Access-Control-Allow-Origin": allowed,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Accept, x-basiclaw-extension",
+    "Access-Control-Allow-Headers": "Content-Type, Accept, x-basiclaw-extension, x-basiclaw-locale",
     "Access-Control-Max-Age": "86400",
     Vary: "Origin",
   };
@@ -66,14 +79,6 @@ function corsHeaders(origin: string | null): Record<string, string> {
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 10;
 const buckets = new Map<string, { count: number; resetAt: number }>();
-
-function clientIp(request: Request): string {
-  const fwd = request.headers.get("x-forwarded-for");
-  if (fwd) return fwd.split(",")[0]!.trim();
-  const real = request.headers.get("x-real-ip");
-  if (real) return real.trim();
-  return "unknown";
-}
 
 function rateLimit(ip: string): { allowed: boolean; remaining: number; resetAt: number } {
   const now = Date.now();
@@ -109,6 +114,7 @@ export async function OPTIONS(request: Request) {
 export async function POST(request: Request) {
   const origin = request.headers.get("origin");
   const headers = corsHeaders(origin);
+  const locale = request.headers.get("x-basiclaw-locale")?.trim() ?? null;
 
   if (!isAllowedOrigin(origin)) {
     return NextResponse.json(
@@ -161,6 +167,31 @@ export async function POST(request: Request) {
   const auditType = normaliseAuditType(payload.auditType);
   const jurisdiction = (payload.jurisdiction ?? "us").toLowerCase();
 
+  const userId = await getCurrentUserId();
+  const ipHash = hashIpForUsage(ip);
+  const plan = await getUserPlanForUserId(userId);
+  const usage = await getUsage(userId, ipHash);
+
+  const paywall = checkAdvancedAuditPaywall(plan, auditType);
+  if (!paywall.ok) {
+    return NextResponse.json(
+      { error: "paywall", message: paywall.message, upgradeUrl: pricingPathForLocale(locale) },
+      { status: 429, headers }
+    );
+  }
+
+  const aq = checkAuditQuota(plan, usage);
+  if (!aq.ok) {
+    return NextResponse.json(quotaJsonBody(aq.message, locale), { status: 429, headers });
+  }
+
+  if (auditType === "demand_letter") {
+    const dq = checkDemandLetterQuota(plan, usage);
+    if (!dq.ok) {
+      return NextResponse.json(quotaJsonBody(dq.message, locale), { status: 429, headers });
+    }
+  }
+
   const outcome = await runAuditPipeline({
     text,
     jurisdiction,
@@ -176,5 +207,31 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ report: outcome.report }, { headers });
+  const report = outcome.report as AuditReport;
+  if (userId) {
+    const title =
+      report.documentType?.trim() ||
+      payload.documentType?.trim() ||
+      `${report.auditType} audit`;
+    await saveAuditForUser({
+      id: randomUUID(),
+      userId,
+      auditType: report.auditType,
+      jurisdiction: report.jurisdictionCode,
+      title,
+      report,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+
+  await incrementUsage("audit", userId, ipHash).catch(() => {
+    /* non-fatal */
+  });
+  if (auditType === "demand_letter") {
+    await incrementUsage("demand_letter", userId, ipHash).catch(() => {
+      /* non-fatal */
+    });
+  }
+
+  return NextResponse.json({ report }, { headers });
 }

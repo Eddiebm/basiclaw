@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { SharedAuditClient } from "./SharedAuditClient";
@@ -19,9 +20,11 @@ export default function SharedAuditPage() {
             Someone shared this audit with you
           </h1>
           <p className="text-[var(--muted-foreground)] mb-8">
-            The audit is decoded entirely in your browser from the link \u2014 nothing is stored on our servers.
+            Opens a saved audit from a signed link, or decodes a legacy share from the URL fragment in your browser.
           </p>
-          <SharedAuditClient />
+          <Suspense fallback={null}>
+            <SharedAuditClient />
+          </Suspense>
         </div>
       </section>
       <Footer />

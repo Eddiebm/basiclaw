@@ -45,7 +45,8 @@ type ChatAction =
   | { type: "UPDATE_MESSAGE"; payload: { sessionId: string; messageId: string; content: string } }
   | { type: "SET_TYPING"; payload: boolean }
   | { type: "SET_ERROR"; payload: string | null }
-  | { type: "LOAD_SESSIONS"; payload: ChatSession[] };
+  | { type: "LOAD_SESSIONS"; payload: ChatSession[] }
+  | { type: "UPSERT_SESSION"; payload: ChatSession };
 
 const initialState: ChatState = {
   sessions: [],
@@ -95,6 +96,15 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       return { ...state, error: action.payload };
     case "LOAD_SESSIONS":
       return { ...state, sessions: action.payload };
+    case "UPSERT_SESSION": {
+      const s = action.payload;
+      const rest = state.sessions.filter((x) => x.id !== s.id);
+      return {
+        ...state,
+        sessions: [s, ...rest],
+        currentSessionId: s.id,
+      };
+    }
     default:
       return state;
   }
@@ -106,6 +116,7 @@ interface ChatContextValue extends ChatState {
   deleteSession: (sessionId: string) => void;
   sendMessage: (content: string) => Promise<void>;
   setCurrentSession: (sessionId: string | null) => void;
+  upsertSession: (session: ChatSession) => void;
   clearError: () => void;
 }
 
@@ -138,6 +149,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SET_CURRENT_SESSION", payload: sessionId });
   }, []);
 
+  const upsertSession = useCallback((session: ChatSession) => {
+    dispatch({ type: "UPSERT_SESSION", payload: session });
+  }, []);
+
   const sendMessage = useCallback(async (content: string) => {
     if (!state.currentSessionId) return;
 
@@ -152,16 +167,36 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SET_TYPING", payload: true });
     dispatch({ type: "SET_ERROR", payload: null });
 
+    const localeHeader =
+      typeof window !== "undefined"
+        ? (window.location.pathname.split("/").filter(Boolean)[0] ?? "en").toLowerCase()
+        : "en";
+
     try {
+      const active = state.sessions.find((s) => s.id === state.currentSessionId);
+      const jurisdiction = active?.jurisdiction || "us";
       const response = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-basiclaw-locale": localeHeader,
+        },
         body: JSON.stringify({
           sessionId: state.currentSessionId,
           message: content,
-          jurisdiction: state.sessions.find((s) => s.id === state.currentSessionId)?.jurisdiction || "us",
+          jurisdiction,
         }),
       });
+
+      if (response.status === 429) {
+        const j = (await response.json().catch(() => null)) as { message?: string; upgradeUrl?: string } | null;
+        dispatch({
+          type: "SET_ERROR",
+          payload: j?.message ?? "Usage limit reached. See pricing to upgrade.",
+        });
+        dispatch({ type: "SET_TYPING", payload: false });
+        return;
+      }
 
       if (!response.ok) throw new Error("Failed to send message");
 
@@ -176,6 +211,24 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       };
 
       dispatch({ type: "ADD_MESSAGE", payload: { sessionId: state.currentSessionId, message: assistantMessage } });
+
+      const afterAssistant = [...(active?.messages ?? []), userMessage, assistantMessage].map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+      void fetch(`/api/me/chats/${state.currentSessionId}`, {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+          "x-basiclaw-locale": localeHeader,
+        },
+        body: JSON.stringify({
+          jurisdiction,
+          messages: afterAssistant,
+        }),
+      }).catch(() => {
+        /* optional persistence when signed out or server 401 */
+      });
     } catch (error) {
       dispatch({ type: "SET_ERROR", payload: error instanceof Error ? error.message : "Failed to send message" });
     } finally {
@@ -196,6 +249,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         deleteSession,
         sendMessage,
         setCurrentSession,
+        upsertSession,
         clearError,
       }}
     >

@@ -3,6 +3,11 @@ import type { Country } from "@/data/types";
 import { getCountry, getSources } from "@/lib/jurisdictions";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { formatSnippetsForPrompt, loadSnippetsForCountry, rankSnippetsForMessage } from "@/lib/constitution-snippets";
+import { getCurrentUserId } from "@/lib/auth-config";
+import { getUserPlanForUserId } from "@/lib/entitlements";
+import { quotaJsonBody, checkChatQuota } from "@/lib/quota-check";
+import { clientIp, hashIpForUsage } from "@/lib/request-ip";
+import { getUsage, incrementUsage } from "@/lib/storage";
 
 const SNIPPET_TOP_K = 5;
 
@@ -73,6 +78,7 @@ When answering:
 
 export async function POST(request: NextRequest) {
   try {
+    const locale = request.headers.get("x-basiclaw-locale")?.trim() ?? null;
     const body = await request.json();
     const { message, jurisdiction = "us", sessionId } = body as {
       message: string;
@@ -84,6 +90,15 @@ export async function POST(request: NextRequest) {
 
     if (!message || typeof message !== "string") {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
+    }
+
+    const userId = await getCurrentUserId();
+    const ipHash = hashIpForUsage(clientIp(request));
+    const plan = await getUserPlanForUserId(userId);
+    const usage = await getUsage(userId, ipHash);
+    const cq = checkChatQuota(plan, usage);
+    if (!cq.ok) {
+      return NextResponse.json(quotaJsonBody(cq.message, locale), { status: 429 });
     }
 
     const country = getCountry((jurisdiction || "us").toLowerCase()) ?? getCountry("us")!;
@@ -110,6 +125,9 @@ export async function POST(request: NextRequest) {
     const apiKey = process.env.OPENROUTER_API_KEY;
 
     if (!apiKey) {
+      await incrementUsage("chat", userId, ipHash).catch(() => {
+        /* non-fatal */
+      });
       return NextResponse.json({
         response: `I understand you're asking about ${jurisdictionInfo.name} law. However, the AI service is not configured properly. Please ensure the OPENROUTER_API_KEY environment variable is set.\n\nFor educational purposes regarding ${jurisdictionInfo.name} (${jurisdictionInfo.legalSystem}): ${jurisdictionInfo.description}`,
         citations: [],
@@ -143,6 +161,10 @@ export async function POST(request: NextRequest) {
       data.choices?.[0]?.message?.content ||
       data.choices?.[0]?.text ||
       "I apologise, but I couldn't generate a response. Please try again.";
+
+    await incrementUsage("chat", userId, ipHash).catch(() => {
+      /* non-fatal */
+    });
 
     return NextResponse.json({
       response: assistantResponse,

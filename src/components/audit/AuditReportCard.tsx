@@ -55,8 +55,8 @@ export function AuditReportCard({ report, showShareButton = true, onShared }: Pr
   const shareUrl = useMemo(() => {
     if (typeof window === "undefined") return "";
     const encoded = encodeReport(report);
-    return `${window.location.origin}/audit/shared#${encoded}`;
-  }, [report]);
+    return `${window.location.origin}/${locale}/audit/shared#${encoded}`;
+  }, [report, locale]);
 
   async function copyShareLink() {
     if (!shareUrl) return;

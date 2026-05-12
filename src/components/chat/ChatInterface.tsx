@@ -3,8 +3,8 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, User, Bot, Copy } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { useTranslations, useLocale } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useChat } from "@/store/chat-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
@@ -18,6 +18,9 @@ export function ChatInterface() {
   const tc = useTranslations("chatEmpty");
   const tComposer = useTranslations("chatComposer");
   const tVoice = useTranslations("voice");
+  const locale = useLocale();
+  const pathname = usePathname();
+  const signInHref = `/sign-in?redirect_url=${encodeURIComponent(`/${locale}${pathname}`)}`;
   const { currentSession, sendMessage, isTyping } = useChat();
   const [input, setInput] = useState("");
   const [voiceReplace, setVoiceReplace] = useState(false);
@@ -76,7 +79,7 @@ export function ChatInterface() {
           </LawyerCtaLink>
           <p className="mt-4 text-xs text-muted-foreground">
             {tc("signInToSaveLead")}{" "}
-            <Link href="/sign-in" className="font-medium text-primary underline-offset-4 hover:underline">
+            <Link href={signInHref} className="font-medium text-primary underline-offset-4 hover:underline">
               {tc("signInToSaveCta")}
             </Link>
           </p>
@@ -106,7 +109,7 @@ export function ChatInterface() {
               </LawyerCtaLink>
               <p className="mt-4 text-xs text-muted-foreground">
                 {tc("signInToSaveLead")}{" "}
-                <Link href="/sign-in" className="font-medium text-primary underline-offset-4 hover:underline">
+                <Link href={signInHref} className="font-medium text-primary underline-offset-4 hover:underline">
                   {tc("signInToSaveCta")}
                 </Link>
               </p>

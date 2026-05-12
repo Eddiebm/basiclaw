@@ -1,11 +1,25 @@
 import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
+import { Geist, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/contexts/ThemeProvider";
 import { ChatProvider } from "@/store/chat-context";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
+
+const fontSans = Geist({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const fontDisplay = Instrument_Serif({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -100,7 +114,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{ __html: JSON.stringify(SITE_JSON_LD) }}
         />
       </head>
-      <body className="antialiased min-h-screen bg-background text-foreground">
+      <body
+        className={`${fontSans.variable} ${fontDisplay.variable} ${fontSans.className} antialiased min-h-screen bg-background text-foreground`}
+      >
         <ThemeProvider defaultTheme="system" storageKey="basiclaw-ui-theme">
           <ChatProvider>{children}</ChatProvider>
         </ThemeProvider>

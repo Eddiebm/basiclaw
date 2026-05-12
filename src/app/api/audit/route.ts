@@ -1,10 +1,22 @@
+import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import {
   MIN_TEXT_CHARS,
   normaliseAuditType,
   runAuditPipeline,
 } from "@/lib/audit-engine";
-import type { AuditType } from "@/lib/audit-types";
+import type { AuditReport, AuditType } from "@/lib/audit-types";
+import { getCurrentUserId } from "@/lib/auth-config";
+import { getUserPlanForUserId } from "@/lib/entitlements";
+import {
+  checkAdvancedAuditPaywall,
+  checkAuditQuota,
+  checkDemandLetterQuota,
+  pricingPathForLocale,
+  quotaJsonBody,
+} from "@/lib/quota-check";
+import { clientIp, hashIpForUsage } from "@/lib/request-ip";
+import { getUsage, incrementUsage, saveAuditForUser } from "@/lib/storage";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -71,6 +83,7 @@ async function extractFromJson(
 
 export async function POST(request: Request) {
   try {
+    const locale = request.headers.get("x-basiclaw-locale")?.trim() ?? null;
     const contentType = request.headers.get("content-type") ?? "";
     let extracted: { text: string; jurisdiction: string; documentType?: string; auditType: AuditType };
     if (contentType.includes("multipart/form-data")) {
@@ -88,6 +101,31 @@ export async function POST(request: Request) {
       );
     }
 
+    const userId = await getCurrentUserId();
+    const ipHash = hashIpForUsage(clientIp(request));
+    const plan = await getUserPlanForUserId(userId);
+    const usage = await getUsage(userId, ipHash);
+
+    const paywall = checkAdvancedAuditPaywall(plan, extracted.auditType);
+    if (!paywall.ok) {
+      return NextResponse.json(
+        { error: "paywall", message: paywall.message, upgradeUrl: pricingPathForLocale(locale) },
+        { status: 429 }
+      );
+    }
+
+    const aq = checkAuditQuota(plan, usage);
+    if (!aq.ok) {
+      return NextResponse.json(quotaJsonBody(aq.message, locale), { status: 429 });
+    }
+
+    if (extracted.auditType === "demand_letter") {
+      const dq = checkDemandLetterQuota(plan, usage);
+      if (!dq.ok) {
+        return NextResponse.json(quotaJsonBody(dq.message, locale), { status: 429 });
+      }
+    }
+
     const outcome = await runAuditPipeline({
       text: extracted.text,
       jurisdiction: extracted.jurisdiction,
@@ -102,7 +140,34 @@ export async function POST(request: Request) {
         { status: outcome.status }
       );
     }
-    return NextResponse.json({ report: outcome.report });
+
+    const report = outcome.report as AuditReport;
+    if (userId) {
+      const title =
+        report.documentType?.trim() ||
+        extracted.documentType?.trim() ||
+        `${report.auditType} audit`;
+      await saveAuditForUser({
+        id: randomUUID(),
+        userId,
+        auditType: report.auditType,
+        jurisdiction: report.jurisdictionCode,
+        title,
+        report,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    await incrementUsage("audit", userId, ipHash).catch(() => {
+      /* non-fatal */
+    });
+    if (extracted.auditType === "demand_letter") {
+      await incrementUsage("demand_letter", userId, ipHash).catch(() => {
+        /* non-fatal */
+      });
+    }
+
+    return NextResponse.json({ report });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
     console.error("[audit] error", message);

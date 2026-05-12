@@ -17,9 +17,9 @@ BasicLaw turns the constitution and core rights of **every country in the world*
 
 - **Framework:** Next.js 16 (App Router, Turbopack, Cache Components-ready)
 
-### Middleware note
+### Middleware / i18n
 
-BasicLaw uses `src/middleware.ts` with **next-intl** for locale detection and routing. If a future Next.js release deprecates `middleware` in favour of a `proxy` entry convention, migrating will depend on next-intl’s supported integration path — track [next-intl middleware docs](https://next-intl.dev/docs/routing/middleware) before renaming files. Until then, keep `middleware.ts` as-is.
+BasicLaw uses **next-intl** with `src/middleware.ts` composed with **Clerk** on protected pages and `/api/me/*`. `/api/cron/*` is gated by `CRON_SECRET` / `x-vercel-cron` (not Clerk). Next.js 16 may warn that `middleware` is deprecated in favour of `proxy` — migration can follow upstream guidance when stable.
 
 - **Styling:** Tailwind CSS v4, Radix UI, Framer Motion
 - **AI:** OpenRouter (model-agnostic) — set `OPENROUTER_API_KEY`
@@ -36,14 +36,21 @@ npm run dev
 
 ## Environment variables
 
-| Variable | Required | Purpose |
-|----------|----------|---------|
-| `OPENROUTER_API_KEY` | For live chat | Powers `/api/chat` via OpenRouter. Without it, the route returns a short constitutional fallback. |
-| `OPENROUTER_MODEL` | No | OpenRouter model id (default in code if unset). |
-| `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical base URL for SEO and OpenRouter `HTTP-Referer`. |
-| `RESEND_API_KEY` | No | If set with `LAWYER_LEADS_EMAIL` or `RESEND_FROM_EMAIL`, lawyer applications hit your inbox. |
-| `LAWYER_LEADS_EMAIL` | No | Recipient for `/api/lawyer-leads` emails; defaults to `RESEND_FROM_EMAIL`. |
-| `RESEND_FROM_EMAIL` | When emailing | Verified Resend sender (`Name <email@domain>`); also used as fallback recipient. |
+| Group | Variable | Required? | Purpose |
+|-------|----------|-----------|---------|
+| Core | `OPENROUTER_API_KEY` | For live chat | Powers `/api/chat`. |
+| Core | `OPENROUTER_MODEL` | No | Model id override. |
+| Core | `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical URL, OpenRouter referer, email links. |
+| Clerk | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` | Optional | Sign-in, `/dashboard`, `/api/me/*`. App shows a banner when missing. |
+| Storage | `KV_REST_API_URL` + `KV_REST_API_TOKEN` or `UPSTASH_REDIS_*` | Optional | Durable chats/audits/subscribers/usage. Falls back to `tmp/basiclaw-storage.json`. |
+| Stripe | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | For billing | Checkout + webhooks. |
+| Stripe | `STRIPE_PRICE_PRO_MONTHLY`, `STRIPE_PRICE_PRO_ANNUAL`, `STRIPE_PRICE_PLUS_MONTHLY`, `STRIPE_PRICE_PLUS_ANNUAL` | Recommended | Maps subscriptions → `publicMetadata.plan` via webhook. |
+| Email | `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | Optional | Lawyer leads + Right of the Day when configured. |
+| Cron | `CRON_SECRET` | Optional (prod manual) | Bearer gate for `/api/cron/*` outside Vercel cron. |
+| Cron | `RIGHT_OF_DAY_FROM_EMAIL` | When sending digest | Verified Resend sender for the newsletter cron. |
+| Newsletter | `UNSUBSCRIBE_SECRET` | Recommended | Signs `/api/unsubscribe` tokens. |
+| Sharing | `SHARED_AUDIT_SECRET` | Recommended | HMAC for dashboard “open shared audit” links. |
+| Build | `BUILD_LLM_KEY` | Optional | US state card copy generation. |
 
 See `.env.example` for copy-paste stubs.
 
@@ -61,7 +68,7 @@ src/
     api/chat/route.ts          # OpenRouter + constitution context
     api/lawyer-leads/route.ts  # lawyer marketplace submissions (+ optional Resend)
     sitemap.ts, robots.ts, og/ # SEO surfaces
-  i18n/                        # routing, messages merge, middleware plugin path
+  i18n/                        # routing, messages merge, proxy (Next 16) + middleware plugin path
   messages/                    # locale JSON overlays
   components/
     constitutions/CountryBrowser.tsx

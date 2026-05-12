@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { ChatInterface } from "@/components/chat/ChatInterface";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
 import { ChatPrefillListener } from "@/components/chat/ChatPrefillListener";
+import { ChatSessionHydrator } from "@/components/chat/ChatSessionHydrator";
 
 export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -17,6 +18,7 @@ export default function ChatPage() {
 
       <div className="flex-1 flex">
         <Suspense fallback={null}>
+          <ChatSessionHydrator />
           <ChatPrefillListener />
           <ChatSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         </Suspense>

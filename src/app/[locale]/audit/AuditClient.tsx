@@ -9,7 +9,7 @@ import {
   ShieldAlert,
   Upload,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
@@ -26,6 +26,7 @@ const ACCEPTED = ".pdf,.txt,.md";
 export function AuditClient({ presetAuditType = "general" }: { presetAuditType?: AuditType }) {
   const t = useTranslations("auditClient");
   const tComposer = useTranslations("chatComposer");
+  const locale = useLocale();
   const popularCountries = useMemo(() => getPopularCountries(8), []);
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -96,11 +97,11 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
         form.set("jurisdiction", jurisdiction);
         if (documentType) form.set("documentType", documentType);
         form.set("auditType", auditType);
-        res = await fetch("/api/audit", { method: "POST", body: form });
+        res = await fetch("/api/audit", { method: "POST", body: form, headers: { "x-basiclaw-locale": locale } });
       } else {
         res = await fetch("/api/audit", {
           method: "POST",
-          headers: { "content-type": "application/json" },
+          headers: { "content-type": "application/json", "x-basiclaw-locale": locale },
           body: JSON.stringify({
             text,
             jurisdiction,
@@ -222,10 +223,10 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
         onDrop={onDrop}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
-        className={`flex flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed p-8 text-center cursor-pointer transition-colors ${
+        className={`flex flex-col items-center justify-center gap-3 rounded-[1.75rem] border-2 border-dashed p-10 text-center cursor-pointer transition ${
           dragActive
-            ? "border-[var(--primary)] bg-[var(--primary)]/5"
-            : "border-[var(--border)] bg-[var(--card)] hover:border-[var(--primary)]/60"
+            ? "border-[var(--primary)] bg-[var(--primary)]/8 shadow-[inset_0_0_0_1px_oklch(0.45_0.12_262/0.15)]"
+            : "border-[var(--border)] bg-[var(--card)]/80 hover:border-[var(--primary)]/35"
         }`}
       >
         <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary)]/10 text-[var(--primary)]">

@@ -1,21 +1,34 @@
 import { NextResponse } from "next/server";
+import { getCurrentUserId } from "@/lib/auth-config";
+import { addNewsletterSubscriber } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
-export async function POST(req: Request) {
-  // TODO: replace with full Clerk/Upstash/Stripe implementation.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
+
+export async function POST(request: Request) {
+  let body: { email?: string; jurisdiction?: string; locale?: string };
   try {
-    const body = (await req.json()) as { email?: string; jurisdiction?: string; locale?: string };
-    if (!body.email?.trim()) {
-      return NextResponse.json({ error: "email_required" }, { status: 400 });
-    }
-    console.log("[api/subscribe] stub accept", {
-      email: body.email.trim(),
-      jurisdiction: body.jurisdiction ?? "us",
-      locale: body.locale ?? "en",
-    });
-    return NextResponse.json({ ok: true, stub: true });
+    body = (await request.json()) as typeof body;
   } catch {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
   }
+  const email = body.email?.trim().toLowerCase();
+  if (!email || !EMAIL_RE.test(email)) {
+    return NextResponse.json({ error: "invalid_email" }, { status: 400 });
+  }
+  const jurisdiction = (body.jurisdiction ?? "us").toLowerCase();
+  const locale = (body.locale ?? "en").toLowerCase();
+
+  const uid = await getCurrentUserId();
+
+  await addNewsletterSubscriber({
+    email,
+    jurisdiction,
+    locale,
+    userId: uid ?? undefined,
+    createdAt: new Date().toISOString(),
+  });
+
+  return NextResponse.json({ ok: true });
 }
