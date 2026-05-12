@@ -9,5 +9,7 @@ export async function register() {
   }
 }
 
-const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN?.trim() || process.env.SENTRY_DSN?.trim();
-export const onRequestError = dsn ? Sentry.captureRequestError : undefined;
+const sentryEnabled = Boolean(
+  process.env.NEXT_PUBLIC_SENTRY_DSN?.trim() || process.env.SENTRY_DSN?.trim()
+);
+export const onRequestError = sentryEnabled ? Sentry.captureRequestError : undefined;

@@ -68,9 +68,10 @@ npm run analyze
 | Newsletter | `UNSUBSCRIBE_SECRET` | Recommended | Signs `/api/unsubscribe` tokens. |
 | Sharing | `SHARED_AUDIT_SECRET` | Recommended | HMAC for dashboard “open shared audit” links. |
 | Build | `BUILD_LLM_KEY` | Optional | US state card copy generation. |
-| Observability | `NEXT_PUBLIC_SENTRY_DSN` | Optional | Sentry browser + server fallback; when unset, SDK initialisation is skipped. |
-| Observability | `SENTRY_DSN` | Optional | Separate server/edge DSN if you do not want to reuse the public DSN. |
-| Observability | `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` | For CI/source maps | Build-time upload to Sentry; omit locally if you do not upload maps. |
+| Observability | `NEXT_PUBLIC_SENTRY_DSN` | Optional | Sentry DSN for browser, Node, and Edge. When unset, the SDK does not initialise (no-op). |
+| Observability | `SENTRY_DSN` | Optional | Overrides the server/edge DSN only; if unset, `NEXT_PUBLIC_SENTRY_DSN` is used on the server. |
+| Observability | `SENTRY_AUTH_TOKEN` | Optional (build) | Auth token for uploading source maps during `next build`; without it, source map upload is skipped. Pair with `SENTRY_ORG` and `SENTRY_PROJECT` in CI for readable production stack traces. |
+| Observability | `SENTRY_ORG`, `SENTRY_PROJECT` | With `SENTRY_AUTH_TOKEN` | Organisation and project slugs for the Sentry build plugin (source maps). |
 | Internal | `LAUNCH_KEY` | **Required in production** for `/launch?key=` and `/[locale]/internal/health?key=` | Same gate as the launch playbook. |
 
 See `.env.example` for copy-paste stubs.

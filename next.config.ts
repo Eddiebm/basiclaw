@@ -40,10 +40,15 @@ const nextConfig: NextConfig = {
 
 const withIntl = withNextIntl(nextConfig);
 
+const sentryUploadEnabled = Boolean(process.env.SENTRY_AUTH_TOKEN?.trim());
+
 export default withSentryConfig(withBundleAnalyzer(withIntl), {
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: !process.env.CI,
   widenClientFileUpload: true,
+  sourcemaps: {
+    disable: !sentryUploadEnabled,
+  },
 });

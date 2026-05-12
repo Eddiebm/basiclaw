@@ -36,6 +36,17 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
+  Sentry.setTag("route", "/api/cron/right-of-the-day");
+  try {
+    const url = new URL(request.url);
+    const locale = url.searchParams.get("locale");
+    if (locale) Sentry.setTag("locale", locale);
+    const jurisdiction = url.searchParams.get("jurisdiction") ?? url.searchParams.get("country");
+    if (jurisdiction) Sentry.setTag("jurisdiction", jurisdiction);
+  } catch {
+    /* ignore malformed request URL */
+  }
+
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const from = process.env.RIGHT_OF_DAY_FROM_EMAIL?.trim();
   if (!apiKey || !from) {

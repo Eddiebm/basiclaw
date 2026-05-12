@@ -40,6 +40,8 @@ async function setClerkPlan(userId: string | undefined | null, plan: "free" | "p
 }
 
 export async function POST(request: Request) {
+  Sentry.setTag("route", "/api/webhooks/stripe");
+
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   const signature = request.headers.get("stripe-signature");
   const rawBody = await request.text();
