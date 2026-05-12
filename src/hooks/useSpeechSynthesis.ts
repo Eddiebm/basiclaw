@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { stripMarkdownForSpeech } from "@/lib/stripMarkdownForSpeech";
 
 export interface SpeakOptions {
   lang?: string;
@@ -62,12 +63,16 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions) {
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync Web Speech capability on mount; voices load async via voiceschanged
-    setIsSupported(true);
     const load = () => setVoices(window.speechSynthesis.getVoices());
-    load();
+    const raf = requestAnimationFrame(() => {
+      setIsSupported(true);
+      load();
+    });
     window.speechSynthesis.addEventListener("voiceschanged", load);
-    return () => window.speechSynthesis.removeEventListener("voiceschanged", load);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.speechSynthesis.removeEventListener("voiceschanged", load);
+    };
   }, []);
 
   const cancel = useCallback(() => {
@@ -84,7 +89,7 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions) {
         onSpeakError?.("Speech synthesis not supported.");
         return;
       }
-      const trimmed = text.trim();
+      const trimmed = stripMarkdownForSpeech(text).trim();
       if (!trimmed) return;
 
       window.speechSynthesis.cancel();

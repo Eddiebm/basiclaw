@@ -31,7 +31,7 @@ import { COUNTRIES } from "@/data/countries";
 import { LEGAL_SYSTEM_DESCRIPTIONS, LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { getCountry, getLastVerified, getSources } from "@/lib/jurisdictions";
 import { buildOgImageUrl } from "@/lib/og-image-url";
-import { ConstitutionPlainSummaryVoice } from "@/components/voice/ConstitutionPlainSummaryVoice";
+import { ConstitutionPlainSummaryBody } from "@/components/constitution/ConstitutionPlainSummaryBody";
 import { findVerifierForConstitution } from "@/lib/verified-lawyers-ui";
 
 type RouteParams = { locale: string; code: string };
@@ -263,10 +263,7 @@ export default async function ConstitutionDetailPage({
             <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)] mb-4">
               {t("plainLanguage")}
             </h2>
-            <p className="text-lg leading-[1.75] text-[var(--foreground)] sm:text-xl sm:leading-[1.72] text-pretty">
-              {constitution.summary}
-            </p>
-            <ConstitutionPlainSummaryVoice summary={constitution.summary} jurisdictionCode={country.code} />
+            <ConstitutionPlainSummaryBody summary={constitution.summary} jurisdictionCode={country.code} />
           </section>
 
           <div id="principles" className="grid scroll-mt-28 lg:grid-cols-[2fr_1fr] gap-8 mb-14">

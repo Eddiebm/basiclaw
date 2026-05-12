@@ -16,6 +16,7 @@ import { track } from "@/lib/analytics";
 import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
 import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
 import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
+import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 
 function resolveJurisdictionFromParams(searchParams: { get: (key: string) => string | null }): string {
   const raw = searchParams.get("jurisdiction") ?? searchParams.get("country") ?? "";
@@ -216,7 +217,11 @@ export function ChatInterface() {
                     message.role === "user" ? "bg-primary text-primary-foreground" : "bg-secondary"
                   )}
                 >
-                  <p className="whitespace-pre-wrap">{message.content}</p>
+                  {message.role === "user" ? (
+                    <p className="whitespace-pre-wrap">{message.content}</p>
+                  ) : (
+                    <MarkdownContent markdown={message.content} className="text-sm" />
+                  )}
 
                   {message.role === "assistant" && message.citations && message.citations.length > 0 && (
                     <div className="mt-3 pt-3 border-t border-border/50">

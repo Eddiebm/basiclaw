@@ -15,6 +15,7 @@ import { EventTracker } from "@/components/analytics/EventTracker";
 import { Button } from "@/components/ui/Button";
 import { ArrowRightLeft, ExternalLink } from "lucide-react";
 import { CompareCountryPicker } from "@/components/compare/CompareCountryPicker";
+import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 
 export function CompareClient({
   initialA,
@@ -201,7 +202,9 @@ export function CompareClient({
             </h3>
             <ul className="space-y-2 text-sm text-[var(--foreground)] leading-relaxed list-disc pl-5">
               {similaritiesItems.map((line) => (
-                <li key={line}>{line}</li>
+                <li key={line}>
+                  <MarkdownContent markdown={line} compact />
+                </li>
               ))}
             </ul>
           </div>
@@ -211,14 +214,16 @@ export function CompareClient({
             </h3>
             <ul className="space-y-2 text-sm text-[var(--foreground)] leading-relaxed list-disc pl-5">
               {differencesItems.map((line) => (
-                <li key={line}>{line}</li>
+                <li key={line}>
+                  <MarkdownContent markdown={line} compact />
+                </li>
               ))}
             </ul>
           </div>
         </div>
-        <p className="text-xs text-[var(--muted-foreground)] leading-relaxed border-t border-[var(--border)]/60 pt-4">
-          {verifiedLine}
-        </p>
+        <div className="text-xs text-[var(--muted-foreground)] leading-relaxed border-t border-[var(--border)]/60 pt-4">
+          <MarkdownContent markdown={verifiedLine} compact />
+        </div>
       </section>
 
       <p className="text-xs text-[var(--muted-foreground)]">{t("shareHint")}</p>
@@ -256,7 +261,9 @@ function CompareCard({
       <div className="p-6 sm:p-8 flex flex-col flex-1 gap-5">
         <section>
           <h3 className="text-sm font-semibold text-[var(--foreground)] mb-2">{panel.sectionHeading}</h3>
-          <p className="text-sm text-[var(--muted-foreground)] leading-relaxed whitespace-pre-wrap">{panel.sectionBody}</p>
+          <div className="text-sm text-[var(--muted-foreground)] leading-relaxed">
+            <MarkdownContent markdown={panel.sectionBody} />
+          </div>
         </section>
         <section>
           <h3 className="text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-2">{principlesHeading}</h3>

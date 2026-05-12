@@ -11,6 +11,7 @@ import { useAnnouncer } from "@/components/a11y/AnnouncerProvider";
 import { RISK_GRADE_COLOR, RISK_GRADE_LABEL, type AuditFocusSlot, type AuditReport } from "@/lib/audit-types";
 import { buildAuditReportSpeechText } from "@/lib/audit-report-speech";
 import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 import { track } from "@/lib/analytics";
 
 interface Props {
@@ -33,10 +34,14 @@ function FocusSlotCard({ label, slot, pushbackCaption }: { label: string; slot: 
   return (
     <li className="rounded-2xl border border-[var(--border)]/70 bg-[var(--muted)]/15 p-5">
       <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">{label}</p>
-      <p className="mt-2 text-sm leading-relaxed text-[var(--foreground)]">{slot.summary}</p>
+      <div className="mt-2 text-sm leading-relaxed text-[var(--foreground)]">
+        <MarkdownContent markdown={slot.summary} />
+      </div>
       <figure className="mt-5 border-l-2 border-[var(--primary)]/45 pl-4">
         <figcaption className="sr-only">{pushbackCaption}</figcaption>
-        <blockquote className="font-editorial text-base italic leading-relaxed text-[var(--foreground)]">{slot.pushback}</blockquote>
+        <div className="font-editorial text-base italic leading-relaxed text-[var(--foreground)]">
+          <MarkdownContent markdown={slot.pushback} />
+        </div>
       </figure>
     </li>
   );
@@ -105,7 +110,9 @@ export function AuditReportCard({ report, showShareButton = true, signedSharePat
       <div className="flex flex-col gap-6 border-b border-[var(--border)]/80 bg-[var(--muted)]/10 p-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8 sm:p-8">
         <div className="min-w-0 flex-1">
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)]">{metaLine}</p>
-          <h2 className="mt-3 font-editorial text-2xl leading-snug text-[var(--foreground)] sm:text-3xl">{report.oneLineSummary}</h2>
+          <div className="mt-3 font-editorial text-2xl leading-snug text-[var(--foreground)] sm:text-3xl">
+            <MarkdownContent markdown={report.oneLineSummary} compact className="font-editorial text-2xl sm:text-3xl [&_p]:m-0 [&_p]:font-[inherit] [&_p]:text-[inherit] [&_p]:leading-[inherit]" />
+          </div>
         </div>
         <div className="flex shrink-0 flex-col items-stretch gap-3 sm:items-end">
           <div
@@ -206,12 +213,18 @@ export function AuditReportCard({ report, showShareButton = true, signedSharePat
             <ul className="space-y-4">
               {report.redFlags.map((flag, idx) => (
                 <li key={`${flag.title}-${idx}`} className="rounded-2xl border border-[var(--border)]/60 p-4">
-                  <p className="font-semibold text-[var(--foreground)]">{flag.title}</p>
-                  <p className="mt-1 text-sm text-[var(--muted-foreground)]">{flag.why}</p>
+                  <div className="font-semibold text-[var(--foreground)] [&_p]:font-semibold">
+                    <MarkdownContent markdown={flag.title} compact />
+                  </div>
+                  <div className="mt-1 text-sm text-[var(--muted-foreground)]">
+                    <MarkdownContent markdown={flag.why} />
+                  </div>
                   {flag.pushback && (
                     <figure className="mt-4 border-l-2 border-[var(--primary)]/40 pl-4">
                       <figcaption className="sr-only">{suggested}</figcaption>
-                      <blockquote className="font-editorial text-sm italic leading-relaxed text-[var(--foreground)]">{flag.pushback}</blockquote>
+                      <div className="font-editorial text-sm italic leading-relaxed text-[var(--foreground)]">
+                        <MarkdownContent markdown={flag.pushback} />
+                      </div>
                     </figure>
                   )}
                 </li>
@@ -227,8 +240,7 @@ export function AuditReportCard({ report, showShareButton = true, signedSharePat
             <ul className="space-y-3">
               {report.positives.map((p, idx) => (
                 <li key={`${p.title}-${idx}`} className="text-sm">
-                  <span className="font-medium text-[var(--foreground)]">{p.title}.</span>{" "}
-                  <span className="text-[var(--muted-foreground)]">{p.why}</span>
+                  <MarkdownContent markdown={`${p.title}. ${p.why}`} />
                 </li>
               ))}
             </ul>
@@ -242,12 +254,17 @@ export function AuditReportCard({ report, showShareButton = true, signedSharePat
             <ul className="space-y-3">
               {report.keyClausesToPushBackOn.map((c, idx) => (
                 <li key={`${c.clause}-${idx}`} className="rounded-2xl border border-[var(--border)]/60 p-4">
-                  <p className="text-sm text-[var(--foreground)]">
-                    <strong className="font-semibold">{t("clauseLabel")}</strong> {c.clause}
-                  </p>
+                  <div className="flex flex-wrap items-baseline gap-x-1 gap-y-1 text-sm text-[var(--foreground)]">
+                    <strong className="font-semibold shrink-0">{t("clauseLabel")}</strong>
+                    <div className="min-w-0 flex-1 basis-[min(100%,12rem)]">
+                      <MarkdownContent markdown={c.clause} />
+                    </div>
+                  </div>
                   <figure className="mt-4 border-l-2 border-[var(--foreground)]/15 pl-4">
                     <figcaption className="sr-only">{pb}</figcaption>
-                    <blockquote className="font-editorial text-sm italic leading-relaxed text-[var(--foreground)]">{c.pushback}</blockquote>
+                    <div className="font-editorial text-sm italic leading-relaxed text-[var(--foreground)]">
+                      <MarkdownContent markdown={c.pushback} />
+                    </div>
                   </figure>
                 </li>
               ))}
@@ -262,8 +279,7 @@ export function AuditReportCard({ report, showShareButton = true, signedSharePat
             <ul className="space-y-2">
               {report.askLawyerIfTriggers.map((tr, idx) => (
                 <li key={`${tr.trigger}-${idx}`} className="text-sm">
-                  <span className="font-medium text-[var(--foreground)]">{tr.trigger}.</span>{" "}
-                  <span className="text-[var(--muted-foreground)]">{tr.why}</span>
+                  <MarkdownContent markdown={`${tr.trigger}. ${tr.why}`} />
                 </li>
               ))}
             </ul>

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
+import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
 import { Button } from "@/components/ui/Button";
@@ -169,7 +170,9 @@ export function TopicPage({
                 </p>
               ) : null}
               <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <p className="text-lg text-[var(--muted-foreground)] flex-1">{content.intro}</p>
+                <div className="text-lg text-[var(--muted-foreground)] flex-1 min-w-0">
+                  <MarkdownContent markdown={content.intro} />
+                </div>
                 <ReadAloudButton
                   text={content.intro}
                   surface="topics"
@@ -211,13 +214,17 @@ export function TopicPage({
                 return (
                 <section key={section.id} className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
                   <h2 className="text-xl font-semibold text-[var(--foreground)] mb-3">{sectionTitle}</h2>
-                  <p className="text-[var(--muted-foreground)] leading-relaxed">{section.body}</p>
+                  <div className="text-[var(--muted-foreground)] leading-relaxed">
+                    <MarkdownContent markdown={section.body} />
+                  </div>
                   {section.bullets && section.bullets.length > 0 && (
                     <ul className="mt-4 space-y-2">
                       {section.bullets.map((bullet) => (
                         <li key={bullet} className="flex items-start gap-2 text-sm text-[var(--foreground)]">
                           <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[var(--primary)] flex-shrink-0" aria-hidden />
-                          {bullet}
+                          <div className="min-w-0 flex-1">
+                            <MarkdownContent markdown={bullet} compact />
+                          </div>
                         </li>
                       ))}
                     </ul>
@@ -236,7 +243,9 @@ export function TopicPage({
                 {content.faqs.map((faq) => (
                   <div key={faq.q} className="py-4 first:pt-0 last:pb-0">
                     <dt className="font-medium text-[var(--foreground)]">{faq.q}</dt>
-                    <dd className="mt-1 text-sm text-[var(--muted-foreground)] leading-relaxed">{faq.a}</dd>
+                    <dd className="mt-1 text-sm text-[var(--muted-foreground)] leading-relaxed">
+                      <MarkdownContent markdown={faq.a} />
+                    </dd>
                   </div>
                 ))}
               </dl>
