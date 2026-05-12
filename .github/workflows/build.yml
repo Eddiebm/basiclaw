@@ -40,4 +40,4 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Next.js production build
-        run: rm -rf .next && npx next build --webpack
+        run: rm -rf .next 2>/dev/null; rm -rf .next 2>/dev/null; npx next build --webpack

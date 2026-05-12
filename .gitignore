@@ -8,6 +8,8 @@ dist/
 .env
 .env.local
 .env.production
+tmp/
+*.tsbuildinfo
 pnpm-lock.yaml
 --store-dir/
 .vercel
@@ -16,6 +18,7 @@ pnpm-lock.yaml
 extension/node_modules/
 extension/.wxt/
 extension/.output/
-*.tsbuildinfo
 
-.basiclaw-local-store/
+# Expo / React Native mobile workspace (committed source; deps local only)
+mobile/node_modules/
+mobile/.expo/
