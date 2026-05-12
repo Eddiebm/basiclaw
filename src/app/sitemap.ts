@@ -54,6 +54,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
+  const legalIndexLanding: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/${defaultLocale}/the-index`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.88,
+    },
+  ];
+
+  const legalIndexCountries: MetadataRoute.Sitemap = COUNTRIES.map((country) => ({
+    url: `${SITE_URL}/${defaultLocale}/the-index/${country.code.toLowerCase()}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: country.popular ? 0.78 : 0.55,
+  }));
+
   const appShellDefaultOnly: MetadataRoute.Sitemap = [
     {
       url: `${SITE_URL}/${defaultLocale}/sign-in`,
@@ -134,5 +150,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
-  return [...localizedPages, ...compareDefaultOnly, ...appShellDefaultOnly, ...constitutionPages, ...topicPages, ...usStateTopicPages, ...questionLibraryPages];
+  return [
+    ...localizedPages,
+    ...compareDefaultOnly,
+    ...legalIndexLanding,
+    ...legalIndexCountries,
+    ...appShellDefaultOnly,
+    ...constitutionPages,
+    ...topicPages,
+    ...usStateTopicPages,
+    ...questionLibraryPages,
+  ];
 }

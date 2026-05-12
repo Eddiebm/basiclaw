@@ -4,10 +4,15 @@ export const runtime = "nodejs";
 
 const SIZE = { width: 1200, height: 630 };
 
-type OgKind = "default" | "constitution" | "audit" | "topic" | "compare" | "questions";
+type OgKind = "default" | "constitution" | "audit" | "topic" | "compare" | "questions" | "index";
 
 function palette(kind: OgKind): { bg: string; accent: string } {
   switch (kind) {
+    case "index":
+      return {
+        bg: "linear-gradient(135deg, #0a0a0f 0%, #1e1b4b 48%, #4338ca 100%)",
+        accent: "rgba(165, 180, 252, 0.35)",
+      };
     case "questions":
       return {
         bg: "linear-gradient(135deg, #0a0a0f 0%, #134e4a 42%, #0e7490 100%)",
@@ -49,8 +54,108 @@ export async function GET(request: Request) {
   const flagA = searchParams.get("flagA") ?? "";
   const flagB = searchParams.get("flagB") ?? "";
   const topic = searchParams.get("topic") ?? "";
+  const flagSingle = searchParams.get("flag") ?? "";
+  const grade = searchParams.get("grade") ?? "";
+  const overall = searchParams.get("overall") ?? "";
 
   const { bg, accent } = palette(kind);
+
+  if (kind === "index") {
+    return new ImageResponse(
+      (
+        <div
+          style={{
+            height: "100%",
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            padding: "64px 72px",
+            background: bg,
+            color: "white",
+            fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 16,
+                  background: accent,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 32,
+                }}
+              >
+                ⚖️
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <div style={{ fontSize: 28, fontWeight: 700, letterSpacing: -0.5 }}>BasicLaw</div>
+                <div style={{ fontSize: 17, color: "rgba(255,255,255,0.7)" }}>Legal Literacy Index</div>
+              </div>
+            </div>
+            <div
+              style={{
+                minWidth: 120,
+                textAlign: "center",
+                borderRadius: 24,
+                padding: "16px 28px",
+                background: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.2)",
+              }}
+            >
+              <div style={{ fontSize: 56, fontWeight: 800, lineHeight: 1 }}>{grade || "—"}</div>
+              <div style={{ fontSize: 18, color: "rgba(255,255,255,0.75)", marginTop: 6 }}>Grade</div>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 36 }}>
+            <div
+              style={{
+                width: 140,
+                height: 140,
+                borderRadius: 32,
+                background: "rgba(255,255,255,0.1)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 88,
+              }}
+            >
+              {flagSingle || "🏳️"}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1 }}>
+              <div style={{ fontSize: 56, fontWeight: 800, lineHeight: 1.05, letterSpacing: -2 }}>{title}</div>
+              <div style={{ fontSize: 30, color: "rgba(255,255,255,0.82)" }}>
+                Overall {overall || subtitle}
+                <span style={{ fontSize: 22, color: "rgba(255,255,255,0.55)" }}> / 100</span>
+              </div>
+              <div style={{ fontSize: 20, color: "rgba(255,255,255,0.6)" }}>{subtitle}</div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              fontSize: 19,
+              color: "rgba(255,255,255,0.65)",
+              borderTop: "1px solid rgba(255,255,255,0.15)",
+              paddingTop: 20,
+            }}
+          >
+            <span>basiclaw.app</span>
+            <span>Educational index · not an authoritative ranking</span>
+          </div>
+        </div>
+      ),
+      { ...SIZE }
+    );
+  }
 
   return new ImageResponse(
     (

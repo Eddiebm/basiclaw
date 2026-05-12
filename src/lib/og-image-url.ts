@@ -1,5 +1,5 @@
 /** Visual variants for `/og` — must stay in sync with `src/app/og/route.tsx`. */
-export type OgImageKind = "default" | "constitution" | "audit" | "topic" | "compare" | "questions";
+export type OgImageKind = "default" | "constitution" | "audit" | "topic" | "compare" | "questions" | "index";
 
 export type BuildOgImageUrlOptions = {
   kind: OgImageKind | string;
@@ -11,6 +11,12 @@ export type BuildOgImageUrlOptions = {
   flagB?: string;
   /** Compare OG: topic line under subtitle */
   topic?: string;
+  /** Legal Literacy Index OG: flag emoji (single country) */
+  flag?: string;
+  /** Legal Literacy Index OG: letter grade */
+  grade?: string;
+  /** Legal Literacy Index OG: overall score label */
+  overall?: string;
 };
 
 /** Absolute URL for the dynamic `/og` Open Graph image route. */
@@ -24,5 +30,8 @@ export function buildOgImageUrl(site: string, opts: BuildOgImageUrlOptions): str
   if (opts.flagA) q.set("flagA", opts.flagA);
   if (opts.flagB) q.set("flagB", opts.flagB);
   if (opts.topic) q.set("topic", opts.topic);
+  if (opts.flag) q.set("flag", opts.flag);
+  if (opts.grade) q.set("grade", opts.grade);
+  if (opts.overall) q.set("overall", opts.overall);
   return `${base}/og?${q.toString()}`;
 }
