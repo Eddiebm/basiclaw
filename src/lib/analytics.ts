@@ -2,8 +2,11 @@
 
 import posthog from "posthog-js";
 
+export type VoiceAnalyticsSurface = "chat" | "audit" | "constitution" | "questions" | "topics";
+
 export type AnalyticsEvent =
   | "home_view"
+  | "hero_ask_prefill_submit"
   | "constitution_viewed"
   | "country_selected"
   | "chat_message_sent"
@@ -17,10 +20,15 @@ export type AnalyticsEvent =
   | "faq_expanded"
   | "topic_page_viewed"
   | "us_state_topic_viewed"
-  | "compare_viewed"
+  | "comparison_viewed"
   | "lawyer_cta_clicked"
   | "question_viewed"
-  | "question_to_chat";
+  | "question_to_chat"
+  | "voice_listen_started"
+  | "voice_listen_stopped"
+  | "tts_started"
+  | "tts_stopped"
+  | "tts_error";
 
 let initialised = false;
 
