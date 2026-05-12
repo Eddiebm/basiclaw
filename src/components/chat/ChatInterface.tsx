@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, User, Bot, Copy, ExternalLink } from "lucide-react";
+import { Send, User, Bot, Copy, ExternalLink, Loader2 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
+import { useAnnouncer } from "@/components/a11y/AnnouncerProvider";
 import { useChat } from "@/store/chat-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
@@ -22,7 +23,8 @@ export function ChatInterface() {
   const locale = useLocale();
   const pathname = usePathname();
   const signInHref = `/sign-in?redirect_url=${encodeURIComponent(`/${locale}${pathname}`)}`;
-  const { currentSession, sendMessage, isTyping } = useChat();
+  const { currentSession, sendMessage, isTyping, error, errorUpgradePath, clearError } = useChat();
+  const announce = useAnnouncer();
   const [input, setInput] = useState("");
   const [voiceReplace, setVoiceReplace] = useState(false);
   const [voiceAutoSend, setVoiceAutoSend] = useState(false);
@@ -210,8 +212,9 @@ export function ChatInterface() {
                         onClick={async () => {
                           try {
                             await navigator.clipboard.writeText(message.content);
+                            announce(tComposer("copyAnnouncementSuccess"));
                           } catch {
-                            /* ignore */
+                            announce(tComposer("copyAnnouncementFail"));
                           }
                         }}
                       >
@@ -249,6 +252,31 @@ export function ChatInterface() {
 
       {/* Input */}
       <div className="border-t p-4 bg-background/80 backdrop-blur">
+        {error && (
+          <div
+            role="alert"
+            className="mb-3 rounded-xl border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
+          >
+            <span>{error}</span>
+            <div className="flex items-center gap-2 shrink-0">
+              {errorUpgradePath ? (
+                <Link
+                  href={errorUpgradePath}
+                  className="font-medium underline underline-offset-4"
+                >
+                  {tComposer("quotaUpgradeCta")}
+                </Link>
+              ) : null}
+              <button
+                type="button"
+                className="text-xs font-medium opacity-80 hover:opacity-100"
+                onClick={() => clearError()}
+              >
+                {tComposer("dismissError")}
+              </button>
+            </div>
+          </div>
+        )}
         {voiceError && (
           <p className="text-xs text-center text-amber-700 dark:text-amber-300 mb-2" role="status">
             {tComposer("voiceErrorBanner", { message: voiceError })}
@@ -318,8 +346,9 @@ export function ChatInterface() {
             onClick={() => void handleSend()}
             disabled={!input.trim() || isTyping}
             className="shrink-0 h-[48px] w-[48px]"
+            aria-busy={isTyping}
           >
-            <Send className="w-4 h-4" />
+            {isTyping ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Send className="w-4 h-4" />}
           </Button>
         </div>
         <VoicePrivacyHint className="text-xs text-center text-muted-foreground mt-2 max-w-2xl mx-auto leading-relaxed" />

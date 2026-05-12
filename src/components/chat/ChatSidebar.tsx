@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,6 +21,7 @@ interface ChatSidebarProps {
 const SORTED = COUNTRIES.slice().sort((a, b) => a.name.localeCompare(b.name));
 
 export function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
+  const t = useTranslations("chat.sidebar");
   const { sessions, currentSessionId, createSession, deleteSession, setCurrentSession } = useChat();
   const searchParams = useSearchParams();
   const initialJurisdiction = (() => {
@@ -30,6 +32,12 @@ export function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
   const [selectedJurisdiction, setSelectedJurisdiction] = useState<Jurisdiction>(initialJurisdiction);
 
   const popular = useMemo(() => getPopularCountries(), []);
+
+  useEffect(() => {
+    if (!currentSessionId) return;
+    const active = sessions.find((s) => s.id === currentSessionId);
+    if (active) setSelectedJurisdiction(active.jurisdiction);
+  }, [currentSessionId, sessions]);
 
   const handleNewChat = () => {
     createSession(selectedJurisdiction);
@@ -69,20 +77,20 @@ export function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
 
         <div className="p-4 space-y-3">
           <label className="block">
-            <span className="block text-xs font-medium text-muted-foreground mb-1.5">Jurisdiction</span>
+            <span className="block text-xs font-medium text-muted-foreground mb-1.5">{t("jurisdiction")}</span>
             <select
               value={selectedJurisdiction}
               onChange={(event) => setSelectedJurisdiction(event.target.value)}
               className="w-full h-10 px-3 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             >
-              <optgroup label="Most-explored">
+              <optgroup label={t("optgroupPopular")}>
                 {popular.map((country) => (
                   <option key={`pop-${country.code}`} value={country.code.toLowerCase()}>
                     {country.flag} {country.name}
                   </option>
                 ))}
               </optgroup>
-              <optgroup label={`All ${SORTED.length} countries`}>
+              <optgroup label={t("optgroupAll", { count: SORTED.length })}>
                 {SORTED.map((country) => (
                   <option key={country.code} value={country.code.toLowerCase()}>
                     {country.flag} {country.name}
@@ -93,19 +101,19 @@ export function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
           </label>
           {selectedCountry && (
             <p className="text-xs text-muted-foreground">
-              The assistant will answer for {selectedCountry.name}.{" "}
+              {t("assistantWillAnswer", { country: selectedCountry.name })}{" "}
               <Link
                 href={`/constitutions/${selectedCountry.code.toLowerCase()}`}
                 className="underline underline-offset-2 hover:text-foreground"
               >
-                Read its constitution
+                {t("readConstitution")}
               </Link>
               .
             </p>
           )}
           <Button onClick={handleNewChat} className="w-full" size="sm">
             <Plus className="w-4 h-4 mr-1" />
-            New chat
+            {t("newChat")}
           </Button>
         </div>
 
@@ -113,9 +121,9 @@ export function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
 
         <div className="flex-1 overflow-y-auto">
           <div className="p-2">
-            <p className="text-xs font-medium text-muted-foreground px-2 mb-2">Recent chats</p>
+            <p className="text-xs font-medium text-muted-foreground px-2 mb-2">{t("recentChats")}</p>
             {sessions.length === 0 ? (
-              <p className="text-sm text-muted-foreground px-2 py-4 text-center">No conversations yet.</p>
+              <p className="text-sm text-muted-foreground px-2 py-4 text-center">{t("noChats")}</p>
             ) : (
               <div className="space-y-1">
                 {sessions.map((session) => {

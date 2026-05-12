@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useReducer, useCallback, type ReactNode } from "react";
+import { track } from "@/lib/analytics";
 
 export type Jurisdiction = string; // ISO alpha-2 code, lowercase
 export type MessageRole = "user" | "assistant" | "system";
@@ -36,6 +37,7 @@ interface ChatState {
   currentSessionId: string | null;
   isTyping: boolean;
   error: string | null;
+  errorUpgradePath: string | null;
 }
 
 type ChatAction =
@@ -45,7 +47,7 @@ type ChatAction =
   | { type: "ADD_MESSAGE"; payload: { sessionId: string; message: Message } }
   | { type: "UPDATE_MESSAGE"; payload: { sessionId: string; messageId: string; content: string } }
   | { type: "SET_TYPING"; payload: boolean }
-  | { type: "SET_ERROR"; payload: string | null }
+  | { type: "SET_ERROR"; payload: { message: string | null; upgradePath?: string | null } }
   | { type: "LOAD_SESSIONS"; payload: ChatSession[] }
   | { type: "UPSERT_SESSION"; payload: ChatSession };
 
@@ -54,6 +56,7 @@ const initialState: ChatState = {
   currentSessionId: null,
   isTyping: false,
   error: null,
+  errorUpgradePath: null,
 };
 
 function chatReducer(state: ChatState, action: ChatAction): ChatState {
@@ -94,7 +97,11 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
     case "SET_TYPING":
       return { ...state, isTyping: action.payload };
     case "SET_ERROR":
-      return { ...state, error: action.payload };
+      return {
+        ...state,
+        error: action.payload.message,
+        errorUpgradePath: action.payload.upgradePath ?? null,
+      };
     case "LOAD_SESSIONS":
       return { ...state, sessions: action.payload };
     case "UPSERT_SESSION": {
@@ -166,7 +173,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
     dispatch({ type: "ADD_MESSAGE", payload: { sessionId: state.currentSessionId, message: userMessage } });
     dispatch({ type: "SET_TYPING", payload: true });
-    dispatch({ type: "SET_ERROR", payload: null });
+    dispatch({ type: "SET_ERROR", payload: { message: null, upgradePath: null } });
 
     const localeHeader =
       typeof window !== "undefined"
@@ -191,15 +198,23 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
       if (response.status === 429) {
         const j = (await response.json().catch(() => null)) as { message?: string; upgradeUrl?: string } | null;
+        const upgradePath = j?.upgradeUrl?.trim().startsWith("/") ? j.upgradeUrl.trim() : null;
         dispatch({
           type: "SET_ERROR",
-          payload: j?.message ?? "Usage limit reached. See pricing to upgrade.",
+          payload: {
+            message: j?.message ?? "Usage limit reached. See pricing to upgrade.",
+            upgradePath,
+          },
         });
+        track("form_submit_error", { form: "chat_message", reason: "quota_429" });
         dispatch({ type: "SET_TYPING", payload: false });
         return;
       }
 
-      if (!response.ok) throw new Error("Failed to send message");
+      if (!response.ok) {
+        track("form_submit_error", { form: "chat_message", reason: `http_${response.status}` });
+        throw new Error("Failed to send message");
+      }
 
       const data = await response.json();
 
@@ -228,6 +243,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       };
 
       dispatch({ type: "ADD_MESSAGE", payload: { sessionId: state.currentSessionId, message: assistantMessage } });
+      track("form_submit_success", { form: "chat_message" });
 
       const afterAssistant = [...(active?.messages ?? []), userMessage, assistantMessage].map((m) => ({
         role: m.role,
@@ -247,14 +263,16 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         /* optional persistence when signed out or server 401 */
       });
     } catch (error) {
-      dispatch({ type: "SET_ERROR", payload: error instanceof Error ? error.message : "Failed to send message" });
+      const msg = error instanceof Error ? error.message : "Failed to send message";
+      dispatch({ type: "SET_ERROR", payload: { message: msg, upgradePath: null } });
+      track("form_submit_error", { form: "chat_message", reason: "exception" });
     } finally {
       dispatch({ type: "SET_TYPING", payload: false });
     }
   }, [state.currentSessionId, state.sessions]);
 
   const clearError = useCallback(() => {
-    dispatch({ type: "SET_ERROR", payload: null });
+    dispatch({ type: "SET_ERROR", payload: { message: null, upgradePath: null } });
   }, []);
 
   return (

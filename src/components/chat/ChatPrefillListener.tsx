@@ -13,8 +13,13 @@ export function ChatPrefillListener() {
   const sentRef = useRef(false);
 
   useEffect(() => {
-    const prefill = searchParams.get("prefill");
-    if (!prefill?.trim() || startedRef.current) return;
+    const prefill = searchParams.get("prefill")?.trim();
+    if (!prefill) {
+      startedRef.current = false;
+      sentRef.current = false;
+      return;
+    }
+    if (startedRef.current) return;
     const rawJurisdiction = searchParams.get("jurisdiction") || searchParams.get("country") || "us";
     const country = getCountry(rawJurisdiction);
     const jurisdiction = (country?.code ?? "us").toLowerCase();

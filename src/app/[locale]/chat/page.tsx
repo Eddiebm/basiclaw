@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { Menu } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Navigation } from "@/components/sections/Navigation";
 import { Button } from "@/components/ui/Button";
 import { ChatInterface } from "@/components/chat/ChatInterface";
@@ -11,6 +12,7 @@ import { ChatSessionHydrator } from "@/components/chat/ChatSessionHydrator";
 
 export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const t = useTranslations("chat");
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -35,7 +37,7 @@ export default function ChatPage() {
               <Menu className="w-5 h-5" />
             </Button>
             <div className="flex-1">
-              <h1 className="font-semibold">Legal Chat</h1>
+              <h1 className="font-semibold">{t("pageTitle")}</h1>
             </div>
           </header>
 

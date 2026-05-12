@@ -6,6 +6,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { LocaleDirection } from "@/components/i18n/LocaleDirection";
+import { AnnouncerProvider } from "@/components/a11y/AnnouncerProvider";
 import { isClerkEnabled } from "@/lib/auth-config";
 
 type Props = {
@@ -50,6 +51,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     <>
       <LocaleDirection locale={locale} />
       <NextIntlClientProvider locale={locale} messages={messages}>
+        <AnnouncerProvider>
         {!isClerkEnabled() && (
           <div
             role="status"
@@ -71,6 +73,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         ) : (
           children
         )}
+        </AnnouncerProvider>
       </NextIntlClientProvider>
     </>
   );

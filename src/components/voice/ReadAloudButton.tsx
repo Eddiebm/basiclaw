@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Volume2, Square } from "lucide-react";
-import { useLocale } from "next-intl";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import type { VoiceAnalyticsSurface } from "@/lib/analytics";
@@ -31,6 +31,7 @@ export function ReadAloudButton({
   ariaLabel,
 }: ReadAloudButtonProps) {
   const locale = useLocale();
+  const pathname = usePathname();
   const t = useTranslations("voice");
 
   const synth = useSpeechSynthesis({
@@ -40,7 +41,14 @@ export function ReadAloudButton({
     onSpeakError: (message) => track("tts_error", { surface, message }),
   });
 
+  const cancelRef = useRef(synth.cancel);
+  cancelRef.current = synth.cancel;
+
   useEffect(() => () => synth.cancel(), [synth]);
+
+  useEffect(() => {
+    cancelRef.current();
+  }, [pathname]);
 
   if (!synth.isSupported) return null;
 

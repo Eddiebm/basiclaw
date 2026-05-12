@@ -13,6 +13,8 @@
     "popular": "Popular",
     "browseLibrary": "Browse the full library",
     "askNow": "Ask now",
+    "getStarted": "Get started",
+    "libraryLawSchoolDesc": "Short courses on rights, contracts, housing, and more.",
     "toggleMenu": "Toggle menu",
     "toggleTheme": "Toggle theme",
     "findLawyer": "Find a lawyer",
@@ -77,6 +79,7 @@
     "subtitle": "BasicLaw turns the constitution and core laws of every country in the world into clear answers anyone can read. No subscriptions to a lawyer just to know your rights.",
     "ctaAudit": "Audit my contract free",
     "ctaAsk": "Ask a question",
+    "ctaLearn": "Start learning",
     "ctaLegalIndex": "Legal Literacy Index",
     "ctaQuestions": "Browse citizen questions",
     "browseRich": "Or <link>browse all {count} constitutions</link> — free to read.",
@@ -156,11 +159,49 @@
     "builtFor": "Built for everyone, everywhere.",
     "closingLine": "Civic infrastructure for the digital age — clear law, no gatekeeping."
   },
+  "aboutPage": {
+    "title": "About BasicLaw",
+    "subtitle": "Plain-language civic law infrastructure for every country.",
+    "p1": "BasicLaw summarises constitutions and core legal concepts so anyone can understand their rights before they speak to a lawyer.",
+    "p2": "We are educational only: not a law firm, not legal advice, and not a substitute for counsel licensed in your jurisdiction.",
+    "explore": "Explore",
+    "chatLink": "the assistant",
+    "learnLink": "Law School lessons",
+    "or": "or",
+    "libraryLink": "the constitution library"
+  },
+  "blogPage": {
+    "title": "Blog",
+    "subtitle": "Updates and essays from the BasicLaw project.",
+    "p1": "We are building long-form guides and release notes. In the meantime, use the FAQ for product questions and the assistant for jurisdiction questions.",
+    "faqLink": "Visit the FAQ"
+  },
+  "termsPage": {
+    "title": "Terms of Service",
+    "subtitle": "How you may use BasicLaw.",
+    "p1": "BasicLaw provides educational summaries and tools. By using the site you agree you will not rely on it as legal advice and will consult a qualified professional for decisions that affect your rights or obligations.",
+    "p2": "We may change features, pricing, and these terms with reasonable notice where required. Continued use after changes means you accept the updated terms.",
+    "p3": "For questions about these terms, contact hello@basiclaw.app."
+  },
+  "disclaimerPage": {
+    "title": "Disclaimer",
+    "subtitle": "Educational use only.",
+    "p1": "BasicLaw is not a law firm and does not provide legal advice. Outputs may be incomplete, outdated, or wrong for your situation.",
+    "p2": "Always verify critical information with official sources and a lawyer licensed where you live or do business.",
+    "lawyerLink": "Find a lawyer directory"
+  },
+  "cookiesPage": {
+    "title": "Cookie Policy",
+    "subtitle": "How BasicLaw uses cookies and similar technologies.",
+    "p1": "We use cookies and local storage as needed for sign-in (when enabled), preferences such as theme, analytics where configured, and basic site function.",
+    "p2": "You can control cookies through your browser settings. Disabling some cookies may limit certain features.",
+    "privacyLink": "Read the Privacy Policy"
+  },
   "legalIndex": {
     "backToIndex": "Back to Legal Literacy Index",
     "shareHeading": "Share",
     "metaTitle": "Legal Literacy Index — every country scored | BasicLaw",
-    "metaDescription": "An educational, shareable ranking of every jurisdiction in our library across seven heuristic dimensions. Not an authoritative legal assessment — see methodology.",
+    "metaDescription": "An educational, shareable ranking of 195+ jurisdictions across seven heuristic dimensions. Not an authoritative legal assessment — see methodology.",
     "banner": "Educational index. Not an authoritative ranking. Methodology below.",
     "heroTitle": "The BasicLaw Legal Literacy Index",
     "heroSubtitle": "Every country in our library, scored on seven dimensions from the public data we already publish. Built to spark curiosity and conversation — not to declare legal truth.",
@@ -247,30 +288,12 @@
     "browseTopics": "Browse all topics",
     "askThis": "Ask this",
     "items": {
-      "q1": {
-        "category": "police",
-        "text": "What should I do if police pull me over?"
-      },
-      "q2": {
-        "category": "housing",
-        "text": "Can my landlord enter my apartment without notice?"
-      },
-      "q3": {
-        "category": "employment",
-        "text": "Am I entitled to overtime pay?"
-      },
-      "q4": {
-        "category": "contracts",
-        "text": "What happens if I sign a contract I don't understand?"
-      },
-      "q5": {
-        "category": "family",
-        "text": "How do I get a copy of my birth certificate?"
-      },
-      "q6": {
-        "category": "consumer",
-        "text": "Can I return a product if I changed my mind?"
-      }
+      "q1": { "category": "police", "text": "What should I do if police pull me over?" },
+      "q2": { "category": "housing", "text": "Can my landlord enter my apartment without notice?" },
+      "q3": { "category": "employment", "text": "Am I entitled to overtime pay?" },
+      "q4": { "category": "contracts", "text": "What happens if I sign a contract I don't understand?" },
+      "q5": { "category": "family", "text": "How do I get a copy of my birth certificate?" },
+      "q6": { "category": "consumer", "text": "Can I return a product if I changed my mind?" }
     },
     "categories": {
       "police": "Police & stops",
@@ -786,7 +809,11 @@
     "sendHint": "Press Enter to send, Shift+Enter for new line",
     "voiceReplaceLabel": "Replace input when dictating",
     "voiceAutoSendLabel": "Auto-send after dictation",
-    "voiceErrorBanner": "Voice input: {message}"
+    "voiceErrorBanner": "Voice input: {message}",
+    "quotaUpgradeCta": "View plans",
+    "dismissError": "Dismiss",
+    "copyAnnouncementSuccess": "Message copied to clipboard",
+    "copyAnnouncementFail": "Could not copy to clipboard"
   },
   "voice": {
     "micStartAria": "Start voice input",
@@ -827,6 +854,7 @@
     "generalBody": "BasicLaw is an educational tool. Review each feature’s in-product notices for how prompts and documents are processed."
   },
   "chat": {
+    "pageTitle": "Legal chat",
     "sidebar": {
       "jurisdiction": "Jurisdiction",
       "optgroupPopular": "Most-explored",
@@ -905,6 +933,9 @@
     "startingCheckout": "Starting checkout…",
     "subscribeTo": "Subscribe to {tier}",
     "checkoutError": "Could not start checkout. Please try again.",
+    "checkoutFallbackLead": "You can still use BasicLaw for free:",
+    "checkoutFallbackChat": "Open the assistant",
+    "checkoutFallbackFaq": "Read billing FAQ",
     "free": {
       "name": "Know Your Rights",
       "tagline": "Free forever",

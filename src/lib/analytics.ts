@@ -32,7 +32,9 @@ export type AnalyticsEvent =
   | "tts_stopped"
   | "tts_error"
   | "index_viewed"
-  | "index_filter_applied";
+  | "index_filter_applied"
+  | "form_submit_success"
+  | "form_submit_error";
 
 let initialised = false;
 
