@@ -1,0 +1,60 @@
+{
+  "expo": {
+    "name": "BasicLaw",
+    "slug": "basiclaw-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "basiclaw",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#f4e9d8"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "app.basiclaw.mobile",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Microphone access is used when you dictate in embedded web experiences that request it.",
+        "NSSpeechRecognitionUsageDescription": "Speech recognition may be used by embedded BasicLaw web flows on supported OS versions."
+      }
+    },
+    "android": {
+      "package": "app.basiclaw.mobile",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#f4e9d8"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [{ "scheme": "basiclaw" }],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#5c1424"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
