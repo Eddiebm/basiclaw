@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 120" role="img" aria-label="BasicLaw wordmark full colour">
+  <rect width="320" height="120" fill="#f4e9d8"/>
+  <text x="24" y="52" font-family="Georgia, serif" font-size="34" fill="#5c1424">Basic</text>
+  <text x="132" y="52" font-family="Georgia, serif" font-size="34" fill="#0f0a12">Law</text>
+  <rect x="24" y="68" width="272" height="6" rx="2" fill="#5c1424" opacity="0.85"/>
+</svg>
