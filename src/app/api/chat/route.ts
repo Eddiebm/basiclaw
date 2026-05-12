@@ -7,7 +7,10 @@ import { formatLandmarkCasesForPrompt, getRankedLandmarkCasesByEmbedding, loadLa
 import { getCurrentUserId } from "@/lib/auth-config";
 import { getUserPlanForUserId } from "@/lib/entitlements";
 import { quotaJsonBody, checkChatQuota } from "@/lib/quota-check";
+import { embedQueryForRag } from "@/lib/query-embed";
+import { getMeta, loadSnippetEmbeddingsFile } from "@/lib/rag-embeddings";
 import { clientIp, hashIpForUsage } from "@/lib/request-ip";
+import { findSimilarPublicAnswers, saveChatExchangeAsAnswer, type SavedCitation } from "@/lib/saved-answers";
 import { getUsage, incrementUsage } from "@/lib/storage";
 
 const SNIPPET_TOP_K = 4;
@@ -115,6 +118,34 @@ export async function POST(request: NextRequest) {
     }
 
     const country = getCountry((jurisdiction || "us").toLowerCase()) ?? getCountry("us")!;
+    const snippetEmbFile = await loadSnippetEmbeddingsFile();
+    const embMeta = getMeta(snippetEmbFile) ?? { dim: 384, model: "Xenova/all-MiniLM-L6-v2", provider: "xenova" as const };
+    const queryEmbedding = await embedQueryForRag(message, embMeta);
+    const { cache: cacheHit, related } = await findSimilarPublicAnswers(queryEmbedding, country.code.toLowerCase());
+    const relatedSavedAnswers = related.map((r) => ({ id: r.id, question: r.record.question, score: r.score }));
+
+    if (cacheHit) {
+      const c = cacheHit.record;
+      const citationsPayload = (c.citations ?? []).map((cite) => ({
+        id: cite.id,
+        title: cite.title,
+        source: cite.source,
+        snippet: cite.snippet,
+        url: cite.url,
+        kind: (cite.kind === "case" ? "case" : "snippet") as "snippet" | "case",
+      }));
+      await incrementUsage("chat", userId, ipHash).catch(() => {
+        /* non-fatal */
+      });
+      return NextResponse.json({
+        response: c.answer,
+        citations: citationsPayload,
+        cachedFrom: c.id,
+        cachedAtScore: cacheHit.score,
+        relatedSavedAnswers,
+      });
+    }
+
     const snippets = await loadSnippetsForCountry(country.code);
     const cases = await loadLandmarkCasesForCountry(country.code);
     const q = ragQueryText(message, country);
@@ -171,9 +202,37 @@ export async function POST(request: NextRequest) {
       await incrementUsage("chat", userId, ipHash).catch(() => {
         /* non-fatal */
       });
+      const fallbackText = `I understand you're asking about ${jurisdictionInfo.name} law. However, the AI service is not configured properly. Please ensure the OPENROUTER_API_KEY environment variable is set.\n\nFor educational purposes regarding ${jurisdictionInfo.name} (${jurisdictionInfo.legalSystem}): ${jurisdictionInfo.description}`;
+      let savedAnswerId: string | undefined;
+      let isPublicSaved = false;
+      if (userId) {
+        const citationsForSave: SavedCitation[] = citationsPayload.map((c) => ({
+          id: c.id,
+          title: c.title,
+          source: c.source,
+          snippet: c.snippet,
+          url: c.url,
+          kind: c.kind,
+        }));
+        const saved = await saveChatExchangeAsAnswer({
+          question: message,
+          answer: fallbackText,
+          jurisdiction: country.code.toLowerCase(),
+          locale: (locale || "en").split("-")[0] || "en",
+          citations: citationsForSave,
+          userId,
+        }).catch(() => null);
+        if (saved) {
+          savedAnswerId = saved.id;
+          isPublicSaved = saved.isPublic;
+        }
+      }
       return NextResponse.json({
-        response: `I understand you're asking about ${jurisdictionInfo.name} law. However, the AI service is not configured properly. Please ensure the OPENROUTER_API_KEY environment variable is set.\n\nFor educational purposes regarding ${jurisdictionInfo.name} (${jurisdictionInfo.legalSystem}): ${jurisdictionInfo.description}`,
+        response: fallbackText,
         citations: citationsPayload,
+        relatedSavedAnswers,
+        savedAnswerId,
+        isPublicSaved,
       });
     }
 
@@ -209,9 +268,37 @@ export async function POST(request: NextRequest) {
       /* non-fatal */
     });
 
+    let savedAnswerId: string | undefined;
+    let isPublicSaved = false;
+    if (userId) {
+      const citationsForSave: SavedCitation[] = citationsPayload.map((c) => ({
+        id: c.id,
+        title: c.title,
+        source: c.source,
+        snippet: c.snippet,
+        url: c.url,
+        kind: c.kind,
+      }));
+      const saved = await saveChatExchangeAsAnswer({
+        question: message,
+        answer: assistantResponse,
+        jurisdiction: country.code.toLowerCase(),
+        locale: (locale || "en").split("-")[0] || "en",
+        citations: citationsForSave,
+        userId,
+      }).catch(() => null);
+      if (saved) {
+        savedAnswerId = saved.id;
+        isPublicSaved = saved.isPublic;
+      }
+    }
+
     return NextResponse.json({
       response: assistantResponse,
       citations: citationsPayload,
+      relatedSavedAnswers,
+      savedAnswerId,
+      isPublicSaved,
     });
   } catch (error) {
     console.error("Chat API error:", error);

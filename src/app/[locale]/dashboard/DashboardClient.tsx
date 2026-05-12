@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
 import { track } from "@/lib/analytics";
+import { DashboardSavedAnswers } from "./DashboardSavedAnswers";
 import type { BillingPlan } from "@/lib/entitlements";
 import type { PlanLimits } from "@/lib/limits";
 import type { StoredChat, UsageSnapshot } from "@/lib/storage";
@@ -41,6 +42,7 @@ export function DashboardClient({
   usageSnapshot: { plan: BillingPlan; usage: UsageSnapshot; limits: PlanLimits };
 }) {
   const t = useTranslations("dashboardPage");
+  const tSaved = useTranslations("answers.dashboard");
   const locale = useLocale();
   const params = useSearchParams();
   const checkout = params.get("checkout");
@@ -50,6 +52,7 @@ export function DashboardClient({
   const [chats, setChats] = useState(initialChats);
   const [audits, setAudits] = useState(initialAudits);
   const [usageState, setUsageState] = useState(usageSnapshot);
+  const [tab, setTab] = useState<"overview" | "answers">("overview");
 
   useEffect(() => {
     if (checkout === "success") {
@@ -152,6 +155,29 @@ export function DashboardClient({
         </div>
       )}
 
+      <div className="flex flex-wrap gap-2 border-b border-[var(--border)] pb-3">
+        <button
+          type="button"
+          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+            tab === "overview" ? "bg-[var(--primary)] text-[var(--primary-foreground)]" : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+          }`}
+          onClick={() => setTab("overview")}
+        >
+          {t("tabOverview")}
+        </button>
+        <button
+          type="button"
+          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+            tab === "answers" ? "bg-[var(--primary)] text-[var(--primary-foreground)]" : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+          }`}
+          onClick={() => setTab("answers")}
+        >
+          {t("tabAnswers")}
+        </button>
+      </div>
+
+      {tab === "overview" ? (
+        <>
       <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
         <h2 className="text-lg font-semibold text-[var(--foreground)] flex items-center gap-2">
           <MessageSquare className="h-5 w-5 text-[var(--primary)]" aria-hidden />
@@ -291,6 +317,14 @@ export function DashboardClient({
           </li>
         </ul>
       </div>
+        </>
+      ) : (
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
+          <h2 className="text-lg font-semibold text-[var(--foreground)]">{tSaved("tabTitle")}</h2>
+          <p className="mt-2 text-sm text-[var(--muted-foreground)]">{tSaved("tabSubtitle")}</p>
+          <DashboardSavedAnswers />
+        </div>
+      )}
     </div>
   );
 }

@@ -971,7 +971,8 @@
       "unpublish": "Make private",
       "delete": "Delete",
       "votes": "{up}↑ {down}↓",
-      "publishConfirm": "Publish this anonymised Q&A to the public archive? Preview:"
+      "publishConfirm": "Publish this anonymised Q&A to the public archive? Preview:",
+      "delete": "Delete saved answer"
     }
   },
   "errors": {
@@ -990,6 +991,8 @@
     "metaDescription": "Saved chats, audits, and subscription",
     "title": "Your dashboard",
     "subtitle": "Saved chats from the assistant (when signed in) and your Stripe subscription.",
+    "tabOverview": "Overview",
+    "tabAnswers": "Saved answers",
     "disabledTitle": "Account dashboard",
     "disabledBody": "Clerk authentication is not configured on this deployment yet. You can still use the site anonymously.",
     "checkoutSuccessTitle": "Subscription started — thank you.",

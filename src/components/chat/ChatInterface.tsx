@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { Send, User, Bot, Copy, ExternalLink, Loader2 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
+import { useUser } from "@clerk/nextjs";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useAnnouncer } from "@/components/a11y/AnnouncerProvider";
 import { useChat } from "@/store/chat-context";
@@ -16,6 +17,7 @@ import { track } from "@/lib/analytics";
 import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
 import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
 import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
+import { AssistantChatActions } from "@/components/chat/AssistantChatActions";
 import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 
 function resolveJurisdictionFromParams(searchParams: { get: (key: string) => string | null }): string {
@@ -33,7 +35,9 @@ export function ChatInterface() {
   const tComposer = useTranslations("chatComposer");
   const tVoice = useTranslations("voice");
   const tCitations = useTranslations("chat.citations");
+  const tAns = useTranslations("answers.chat");
   const locale = useLocale();
+  const { isSignedIn } = useUser();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -120,9 +124,48 @@ export function ChatInterface() {
 
   const resolvedCountry = getCountry(composerJurisdiction);
 
+  const lastRelated = useMemo(() => {
+    if (!currentSession?.messages.length) return [];
+    for (let i = currentSession.messages.length - 1; i >= 0; i--) {
+      const m = currentSession.messages[i];
+      if (m.role === "assistant" && m.relatedSavedAnswers && m.relatedSavedAnswers.length > 0) {
+        return m.relatedSavedAnswers;
+      }
+    }
+    return [];
+  }, [currentSession?.messages]);
+
+  const [suggestions, setSuggestions] = useState<Array<{ id: string; question: string; upvotes?: number }>>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const empty = !currentSession || currentSession.messages.length > 0;
+    if (empty) {
+      void Promise.resolve().then(() => {
+        if (!cancelled) setSuggestions([]);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+    void (async () => {
+      try {
+        const res = await fetch(`/api/answers/suggest?country=${encodeURIComponent(composerJurisdiction)}`);
+        const j = (await res.json()) as { items?: Array<{ id: string; question: string; upvotes?: number }> };
+        if (!cancelled && j.items) setSuggestions(j.items);
+      } catch {
+        if (!cancelled) setSuggestions([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [currentSession, composerJurisdiction]);
+
   return (
-    <div className="flex flex-col flex-1 min-h-0 w-full">
-      <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
+    <div className="flex flex-col lg:flex-row flex-1 min-h-0 w-full">
+      <div className="flex flex-col flex-1 min-h-0 min-w-0">
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
         {!currentSession ? (
           <div className="flex flex-col items-center text-center max-w-lg mx-auto pt-4 pb-2">
             <motion.div
@@ -289,6 +332,20 @@ export function ChatInterface() {
                       </>
                     )}
                   </div>
+                  {message.role === "assistant" && currentSession ? (
+                    <AssistantChatActions
+                      message={message}
+                      prevUserText={
+                        index > 0 && currentSession.messages[index - 1]?.role === "user"
+                          ? currentSession.messages[index - 1].content
+                          : ""
+                      }
+                      jurisdiction={currentSession.jurisdiction}
+                      locale={locale}
+                      signInHref={signInHref}
+                      isSignedIn={Boolean(isSignedIn)}
+                    />
+                  ) : null}
                 </div>
               </motion.div>
             ))}
@@ -311,9 +368,9 @@ export function ChatInterface() {
         )}
 
         <div ref={messagesEndRef} />
-      </div>
+        </div>
 
-      <div className="border-t p-4 bg-background/80 backdrop-blur shrink-0 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="border-t p-4 bg-background/80 backdrop-blur shrink-0 pb-[max(1rem,env(safe-area-inset-bottom))]">
         {error && (
           <div
             role="alert"
@@ -413,9 +470,57 @@ export function ChatInterface() {
             {isTyping ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : <Send className="w-4 h-4" aria-hidden />}
           </Button>
         </div>
+        {currentSession && currentSession.messages.length === 0 && suggestions.length > 0 ? (
+          <div className="px-4 pb-2 max-w-4xl mx-auto w-full">
+            <div className="rounded-xl border border-border/60 bg-muted/20 p-3">
+              <p className="text-xs font-medium text-muted-foreground mb-2">{tAns("suggestTitle")}</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {suggestions.map((s) => (
+                  <div key={s.id} className="rounded-lg border border-border/50 bg-background/80 px-3 py-2 text-left text-xs space-y-1">
+                    <Link
+                      href={`/chat?prefill=${encodeURIComponent(s.question)}&country=${encodeURIComponent(composerJurisdiction)}`}
+                      className="block hover:border-primary/30 line-clamp-3 font-medium text-foreground hover:underline"
+                    >
+                      {s.question}
+                    </Link>
+                    <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11px]">
+                      <Link href={`/answers/${s.id}`} className="text-primary hover:underline">
+                        {tAns("suggestView")}
+                      </Link>
+                      <span className="text-muted-foreground">· {s.upvotes ?? 0}↑</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
         <VoicePrivacyHint className="text-xs text-center text-muted-foreground mt-2 max-w-2xl mx-auto leading-relaxed" />
         <p className="text-xs text-center text-muted-foreground mt-1">{tComposer("sendHint")}</p>
+        </div>
       </div>
+
+      {lastRelated.length > 0 ? (
+        <aside className="hidden lg:block w-72 shrink-0 border-l border-border/60 bg-muted/20 p-4 overflow-y-auto text-sm">
+          <p className="font-semibold text-xs text-muted-foreground mb-3">{tAns("relatedTitle")}</p>
+          <ul className="space-y-3">
+            {lastRelated.map((r) => (
+              <li key={r.id} className="rounded-lg border border-border/40 bg-background/60 p-2">
+                <Link href={`/answers/${r.id}`} className="font-medium text-foreground hover:underline block text-xs leading-snug">
+                  {r.question}
+                </Link>
+                <p className="text-[10px] text-muted-foreground mt-1">{tAns("relatedScore", { score: r.score.toFixed(2) })}</p>
+                <Link
+                  href={`/chat?prefill=${encodeURIComponent(r.question)}&country=${encodeURIComponent(composerJurisdiction)}`}
+                  className="text-[11px] text-primary mt-1 inline-block hover:underline"
+                >
+                  {tAns("suggestOpenChat")}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      ) : null}
     </div>
   );
 }

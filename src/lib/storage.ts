@@ -6,7 +6,7 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { Redis } from "@upstash/redis";
+import { getRedis } from "@/lib/redis-client";
 
 const FILE_PATH = path.join(process.cwd(), "tmp", "basiclaw-storage.json");
 
@@ -65,20 +65,6 @@ type FileStoreShape = {
   /** Arbitrary string counters, e.g. `chatday:u:user:2026-01-15` */
   usage: Record<string, number>;
 };
-
-let redisClient: Redis | null | undefined;
-
-function getRedis(): Redis | null {
-  if (redisClient !== undefined) return redisClient;
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (url && token) {
-    redisClient = new Redis({ url, token });
-  } else {
-    redisClient = null;
-  }
-  return redisClient;
-}
 
 function utcDay(): string {
   const d = new Date();

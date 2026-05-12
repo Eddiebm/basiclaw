@@ -29,6 +29,7 @@ const NAV_LINKS = [
   { href: "/us/states", key: "usStates" as const },
   { special: "auditTools" as const },
   { href: "/chat", key: "ask" as const },
+  { href: "/answers", key: "answers" as const },
   { special: "learnLibrary" as const },
   { special: "developersTools" as const },
   { href: "/pricing", key: "pricing" as const },

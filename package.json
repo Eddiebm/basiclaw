@@ -9,6 +9,7 @@
     "lint": "eslint",
     "verify:chat": "node scripts/verify-chat-json.mjs",
     "embed:snippets": "node scripts/embed-snippets.mjs",
+    "embed:answers": "node scripts/embed-answers.mjs",
     "build:index": "node scripts/compute-legal-index.mjs"
   },
   "dependencies": {

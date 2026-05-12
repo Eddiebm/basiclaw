@@ -3,6 +3,7 @@ import { COUNTRIES } from "@/data/countries";
 import { US_STATES, US_STATE_TOPIC_SLUGS } from "@/data/us-states";
 import { STAGES } from "@/data/questions/taxonomy";
 import { routing } from "@/i18n/routing";
+import { listAllPublicAnswerIds } from "@/lib/saved-answers";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
 
@@ -20,6 +21,7 @@ const LOCALIZED_STATIC = [
   "/lawyers/apply",
   "/chat",
   "/learn",
+  "/answers",
   "/documents",
   "/us/states",
   "/extension",
@@ -32,7 +34,7 @@ const LOCALIZED_STATIC = [
   "/cookies",
 ] as const;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const defaultLocale = routing.defaultLocale;
 
@@ -157,6 +159,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
+  let answerDetailUrls: MetadataRoute.Sitemap = [];
+  try {
+    const ids = await listAllPublicAnswerIds();
+    answerDetailUrls = routing.locales.flatMap((locale) =>
+      ids.map((id) => ({
+        url: `${SITE_URL}/${locale}/answers/${id}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.62,
+      }))
+    );
+  } catch {
+    answerDetailUrls = [];
+  }
+
   return [
     ...localizedPages,
     ...compareDefaultOnly,
@@ -167,5 +184,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...topicPages,
     ...usStateTopicPages,
     ...questionLibraryPages,
+    ...answerDetailUrls,
   ];
 }

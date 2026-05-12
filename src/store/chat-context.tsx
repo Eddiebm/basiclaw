@@ -12,6 +12,11 @@ export interface Message {
   content: string;
   timestamp: Date;
   citations?: Citation[];
+  savedAnswerId?: string;
+  cachedFrom?: string;
+  cachedAtScore?: number;
+  relatedSavedAnswers?: Array<{ id: string; question: string; score: number }>;
+  isPublicSaved?: boolean;
 }
 
 export interface Citation {
@@ -49,7 +54,8 @@ type ChatAction =
   | { type: "SET_TYPING"; payload: boolean }
   | { type: "SET_ERROR"; payload: { message: string | null; upgradePath?: string | null } }
   | { type: "LOAD_SESSIONS"; payload: ChatSession[] }
-  | { type: "UPSERT_SESSION"; payload: ChatSession };
+  | { type: "UPSERT_SESSION"; payload: ChatSession }
+  | { type: "PATCH_MESSAGE"; payload: { sessionId: string; messageId: string; patch: Partial<Message> } };
 
 const initialState: ChatState = {
   sessions: [],
@@ -113,6 +119,21 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
         currentSessionId: s.id,
       };
     }
+    case "PATCH_MESSAGE":
+      return {
+        ...state,
+        sessions: state.sessions.map((session) =>
+          session.id === action.payload.sessionId
+            ? {
+                ...session,
+                messages: session.messages.map((msg) =>
+                  msg.id === action.payload.messageId ? { ...msg, ...action.payload.patch } : msg
+                ),
+                updatedAt: new Date(),
+              }
+            : session
+        ),
+      };
     default:
       return state;
   }
@@ -126,6 +147,7 @@ interface ChatContextValue extends ChatState {
   setCurrentSession: (sessionId: string | null) => void;
   upsertSession: (session: ChatSession) => void;
   clearError: () => void;
+  patchMessage: (sessionId: string, messageId: string, patch: Partial<Message>) => void;
 }
 
 const ChatContext = createContext<ChatContextValue | null>(null);
@@ -159,6 +181,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   const upsertSession = useCallback((session: ChatSession) => {
     dispatch({ type: "UPSERT_SESSION", payload: session });
+  }, []);
+
+  const patchMessage = useCallback((sessionId: string, messageId: string, patch: Partial<Message>) => {
+    dispatch({ type: "PATCH_MESSAGE", payload: { sessionId, messageId, patch } });
   }, []);
 
   const sendMessage = useCallback(async (content: string, options?: { jurisdiction?: Jurisdiction }) => {
@@ -236,6 +262,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
       const data = await response.json();
 
+      if (data.cachedFrom) {
+        track("answer_cache_hit", {
+          score: typeof data.cachedAtScore === "number" ? data.cachedAtScore : null,
+          sourceAnswerId: String(data.cachedFrom),
+        });
+      }
+
       const rawCites = data.citations as unknown;
       const citations: Citation[] | undefined = Array.isArray(rawCites)
         ? rawCites.map((c: Record<string, unknown>) => {
@@ -252,15 +285,34 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           })
         : undefined;
 
+      const rawRelated = data.relatedSavedAnswers as unknown;
+      const relatedSavedAnswers = Array.isArray(rawRelated)
+        ? rawRelated
+            .map((r: Record<string, unknown>) => ({
+              id: String(r.id ?? ""),
+              question: String(r.question ?? ""),
+              score: typeof r.score === "number" ? r.score : 0,
+            }))
+            .filter((r) => r.id)
+        : undefined;
+
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
         content: data.response,
         timestamp: new Date(),
         citations,
+        savedAnswerId: typeof data.savedAnswerId === "string" ? data.savedAnswerId : undefined,
+        cachedFrom: typeof data.cachedFrom === "string" ? data.cachedFrom : undefined,
+        cachedAtScore: typeof data.cachedAtScore === "number" ? data.cachedAtScore : undefined,
+        relatedSavedAnswers,
+        isPublicSaved: Boolean(data.isPublicSaved),
       };
 
       dispatch({ type: "ADD_MESSAGE", payload: { sessionId, message: assistantMessage } });
+      if (assistantMessage.savedAnswerId) {
+        track("answer_saved", { auto: true, answer_id: assistantMessage.savedAnswerId });
+      }
       track("form_submit_success", { form: "chat_message" });
 
       const afterAssistant = [...priorMessages, userMessage, assistantMessage].map((m) => ({
@@ -304,6 +356,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setCurrentSession,
         upsertSession,
         clearError,
+        patchMessage,
       }}
     >
       {children}
