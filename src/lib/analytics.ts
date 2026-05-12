@@ -48,7 +48,7 @@ export function initAnalytics(): boolean {
   posthog.init(key, {
     api_host: host,
     person_profiles: "always",
-    capture_pageview: true,
+    capture_pageview: false,
     capture_pageleave: true,
     autocapture: true,
     loaded: (instance) => {
