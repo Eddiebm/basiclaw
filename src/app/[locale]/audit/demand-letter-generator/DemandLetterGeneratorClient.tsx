@@ -1,47 +1,23 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { ArrowRight, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
-import { COUNTRIES } from "@/data/countries";
+import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
+import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
 import { getPopularCountries } from "@/lib/jurisdictions";
 import { AuditReportCard } from "@/components/audit/AuditReportCard";
 import type { AuditReport } from "@/lib/audit-types";
 import { track } from "@/lib/analytics";
+import { COUNTRIES } from "@/data/countries";
 
-const STORAGE_KEY = "basiclaw_demand_letter_last_run_date";
 const MIN_COMPILED_CHARS = 200;
-
-function localCalendarDate(): string {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
-function hasFreeRunToday(): boolean {
-  if (typeof window === "undefined") return true;
-  try {
-    const last = window.localStorage.getItem(STORAGE_KEY);
-    return last !== localCalendarDate();
-  } catch {
-    return true;
-  }
-}
-
-function markFreeRunUsed(): void {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, localCalendarDate());
-  } catch {
-    /* ignore */
-  }
-}
 
 export function DemandLetterGeneratorClient() {
   const t = useTranslations("demandLetterGenerator");
+  const tComposer = useTranslations("chatComposer");
   const popularCountries = useMemo(() => getPopularCountries(8), []);
   const [fromParty, setFromParty] = useState("");
   const [toParty, setToParty] = useState("");
@@ -54,6 +30,7 @@ export function DemandLetterGeneratorClient() {
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<AuditReport | null>(null);
   const [paywall, setPaywall] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
 
   const compileText = useCallback(() => {
     const parts = [
@@ -88,11 +65,6 @@ export function DemandLetterGeneratorClient() {
       setError(t("validation"));
       return;
     }
-    if (!hasFreeRunToday()) {
-      setPaywall(true);
-      track("demand_letter_paywall", { jurisdiction });
-      return;
-    }
 
     setSubmitting(true);
     setReport(null);
@@ -113,9 +85,19 @@ export function DemandLetterGeneratorClient() {
           auditType: "demand_letter",
         }),
       });
-      const json = (await res.json()) as { report?: AuditReport; error?: string; message?: string };
+      const json = (await res.json()) as {
+        report?: AuditReport;
+        error?: string;
+        message?: string;
+        upgradeUrl?: string;
+      };
+      if (res.status === 429) {
+        setPaywall(true);
+        setError(json.message ?? t("paywallBody"));
+        track("demand_letter_paywall", { jurisdiction, reason: json.error ?? "quota" });
+        return;
+      }
       if (json.report) {
-        markFreeRunUsed();
         setReport(json.report);
         track("audit_completed", {
           audit_type: json.report.auditType,
@@ -263,31 +245,48 @@ export function DemandLetterGeneratorClient() {
           <label htmlFor="dl-facts" className="block text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-1">
             {t("factsLabel")}
           </label>
+          {voiceError && (
+            <p className="mb-2 text-xs text-amber-700 dark:text-amber-300" role="status">
+              {tComposer("voiceErrorBanner", { message: voiceError })}
+            </p>
+          )}
+          <div className="relative">
           <textarea
             id="dl-facts"
             rows={6}
             value={facts}
             onChange={(e) => setFacts(e.target.value)}
             placeholder={t("factsPlaceholder")}
-            className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 pr-12 text-sm"
           />
+          <div className="absolute right-2 top-2">
+            <VoiceDictationButton value={facts} onChange={setFacts} mode="append" surface="audit" disabled={submitting} onErrorMessage={setVoiceError} />
+          </div>
+          </div>
         </div>
         <div className="sm:col-span-2">
           <label htmlFor="dl-relief" className="block text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-1">
             {t("reliefLabel")}
           </label>
+          <div className="relative">
           <textarea
             id="dl-relief"
             rows={4}
             value={relief}
             onChange={(e) => setRelief(e.target.value)}
             placeholder={t("reliefPlaceholder")}
-            className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-2 pr-12 text-sm"
           />
+          <div className="absolute right-2 top-2">
+            <VoiceDictationButton value={relief} onChange={setRelief} mode="append" surface="audit" disabled={submitting} onErrorMessage={setVoiceError} />
+          </div>
+          </div>
         </div>
       </div>
 
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+
+      <VoicePrivacyHint className="text-xs text-[var(--muted-foreground)] leading-relaxed" />
 
       <div className="flex flex-col sm:flex-row gap-3 items-center">
         <Button onClick={submit} disabled={submitting} className="gap-2">

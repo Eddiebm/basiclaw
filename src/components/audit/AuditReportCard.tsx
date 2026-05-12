@@ -1,11 +1,15 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { ArrowRight, Check, Copy, Flag, Lightbulb, Scale, ShieldAlert, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check, Copy, Flag, Lightbulb, Scale, ShieldAlert, ShieldCheck, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { RISK_GRADE_COLOR, RISK_GRADE_LABEL, type AuditFocusSlot, type AuditReport } from "@/lib/audit-types";
+import { buildAuditReportSpeechText } from "@/lib/audit-report-speech";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
+import { track } from "@/lib/analytics";
 
 interface Props {
   report: AuditReport;
@@ -23,18 +27,30 @@ function encodeReport(report: AuditReport): string {
 
 function FocusSlotCard({ label, slot }: { label: string; slot: AuditFocusSlot }) {
   return (
-    <li className="rounded-2xl border border-[var(--border)]/60 p-4">
-      <p className="text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-2">{label}</p>
-      <p className="text-sm text-[var(--foreground)]">{slot.summary}</p>
-      <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-        <strong className="font-medium text-[var(--foreground)]">Push back:</strong> {slot.pushback}
-      </p>
+    <li className="rounded-2xl border border-[var(--border)]/70 bg-[var(--muted)]/15 p-5">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--muted-foreground)]">{label}</p>
+      <p className="mt-2 text-sm leading-relaxed text-[var(--foreground)]">{slot.summary}</p>
+      <figure className="mt-5 border-l-2 border-[var(--primary)]/45 pl-4">
+        <figcaption className="sr-only">Push back</figcaption>
+        <blockquote className="font-editorial text-base italic leading-relaxed text-[var(--foreground)]">{slot.pushback}</blockquote>
+      </figure>
     </li>
   );
 }
 
 export function AuditReportCard({ report, showShareButton = true, onShared }: Props) {
+  const t = useTranslations("auditReportCard");
+  const tVoice = useTranslations("voice");
+  const locale = useLocale();
   const [copied, setCopied] = useState(false);
+
+  const speechText = useMemo(() => buildAuditReportSpeechText(report), [report]);
+  const synth = useSpeechSynthesis({
+    locale,
+    onSpeakStarted: () => track("tts_started", { surface: "audit" }),
+    onSpeakEnded: () => track("tts_stopped", { surface: "audit" }),
+    onSpeakError: (message) => track("tts_error", { surface: "audit", message }),
+  });
 
   const shareUrl = useMemo(() => {
     if (typeof window === "undefined") return "";
@@ -56,23 +72,47 @@ export function AuditReportCard({ report, showShareButton = true, onShared }: Pr
   }
 
   return (
-    <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
-      <div className="flex items-start justify-between flex-wrap gap-4 mb-6">
-        <div>
-          <p className="text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-1">
-            {report.documentType} \u00b7 {report.jurisdictionName}
-            {report.auditType !== "general" ? ` \u00b7 ${report.auditType} audit` : ""}
+    <div className="overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--card)]/95 shadow-paper backdrop-blur-sm">
+      <div className="flex flex-col gap-6 border-b border-[var(--border)]/80 bg-[var(--muted)]/10 p-6 sm:flex-row sm:items-start sm:justify-between sm:gap-8 sm:p-8">
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+            {report.documentType} · {report.jurisdictionName}
+            {report.auditType !== "general" ? ` · ${report.auditType} audit` : ""}
           </p>
-          <h2 className="text-2xl font-bold text-[var(--foreground)]">{report.oneLineSummary}</h2>
+          <h2 className="mt-3 font-editorial text-2xl leading-snug text-[var(--foreground)] sm:text-3xl">{report.oneLineSummary}</h2>
         </div>
-        <span
-          className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-semibold ${RISK_GRADE_COLOR[report.overallRiskGrade]}`}
-        >
-          <Scale className="h-4 w-4" aria-hidden />
-          {RISK_GRADE_LABEL[report.overallRiskGrade]}
-        </span>
+        <div className="flex shrink-0 flex-col items-stretch gap-3 sm:items-end">
+          <div
+            className={`flex flex-col items-center justify-center rounded-2xl border px-6 py-5 text-center sm:min-w-[9.5rem] ${RISK_GRADE_COLOR[report.overallRiskGrade]}`}
+          >
+            <span className="text-[10px] font-semibold uppercase tracking-[0.2em] opacity-80">Grade</span>
+            <span className="mt-1 flex items-center gap-2 font-editorial text-4xl sm:text-5xl">
+              <Scale className="h-7 w-7 opacity-70" aria-hidden />
+              {RISK_GRADE_LABEL[report.overallRiskGrade]}
+            </span>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="gap-2"
+            onClick={() => {
+              if (synth.isSpeaking) {
+                synth.cancel();
+                return;
+              }
+              if (!synth.isSupported) return;
+              synth.speak(speechText, { dialectHints: [report.jurisdictionCode.toLowerCase()] });
+            }}
+            aria-label={tVoice("readSummaryAria")}
+          >
+            {synth.isSpeaking ? tVoice("stopSummary") : tVoice("readSummary")}
+            <Volume2 className="h-4 w-4" aria-hidden />
+          </Button>
+        </div>
       </div>
 
+      <div className="space-y-2 px-6 pb-8 pt-2 sm:px-8">
       {report.leaseStructured && (
         <Section icon={<Flag className="h-5 w-5 text-violet-500" aria-hidden />} title="Lease checklist (deposit, notice, renewal)">
           <ul className="space-y-3">
@@ -146,9 +186,10 @@ export function AuditReportCard({ report, showShareButton = true, onShared }: Pr
                 <p className="font-semibold text-[var(--foreground)]">{flag.title}</p>
                 <p className="mt-1 text-sm text-[var(--muted-foreground)]">{flag.why}</p>
                 {flag.pushback && (
-                  <p className="mt-2 text-sm text-[var(--foreground)]">
-                    <strong className="font-medium">Ask for:</strong> {flag.pushback}
-                  </p>
+                  <figure className="mt-4 border-l-2 border-[var(--primary)]/40 pl-4">
+                    <figcaption className="sr-only">Suggested ask</figcaption>
+                    <blockquote className="font-editorial text-sm italic leading-relaxed text-[var(--foreground)]">{flag.pushback}</blockquote>
+                  </figure>
                 )}
               </li>
             ))}
@@ -179,7 +220,7 @@ export function AuditReportCard({ report, showShareButton = true, onShared }: Pr
         title="Key clauses to push back on"
       >
         {report.keyClausesToPushBackOn.length === 0 ? (
-          <p className="text-sm text-[var(--muted-foreground)]">Nothing critical to renegotiate \u2014 still worth a careful read.</p>
+          <p className="text-sm text-[var(--muted-foreground)]">Nothing critical to renegotiate — still worth a careful read.</p>
         ) : (
           <ul className="space-y-3">
             {report.keyClausesToPushBackOn.map((c, idx) => (
@@ -187,9 +228,10 @@ export function AuditReportCard({ report, showShareButton = true, onShared }: Pr
                 <p className="text-sm text-[var(--foreground)]">
                   <strong className="font-semibold">Clause:</strong> {c.clause}
                 </p>
-                <p className="mt-2 text-sm text-[var(--muted-foreground)]">
-                  <strong className="font-medium text-[var(--foreground)]">Push back:</strong> {c.pushback}
-                </p>
+                <figure className="mt-4 border-l-2 border-[var(--foreground)]/15 pl-4">
+                  <figcaption className="sr-only">Push back</figcaption>
+                  <blockquote className="font-editorial text-sm italic leading-relaxed text-[var(--foreground)]">{c.pushback}</blockquote>
+                </figure>
               </li>
             ))}
           </ul>
@@ -198,16 +240,16 @@ export function AuditReportCard({ report, showShareButton = true, onShared }: Pr
 
       <Section
         icon={<Lightbulb className="h-5 w-5 text-blue-500" aria-hidden />}
-        title="Ask a lawyer if\u2026"
+        title="Ask a lawyer if…"
       >
         {report.askLawyerIfTriggers.length === 0 ? (
-          <p className="text-sm text-[var(--muted-foreground)]">No obvious triggers \u2014 a quick phone consult is still cheap insurance.</p>
+          <p className="text-sm text-[var(--muted-foreground)]">No obvious triggers — a quick phone consult is still cheap insurance.</p>
         ) : (
           <ul className="space-y-2">
-            {report.askLawyerIfTriggers.map((t, idx) => (
-              <li key={`${t.trigger}-${idx}`} className="text-sm">
-                <span className="font-medium text-[var(--foreground)]">{t.trigger}.</span>{" "}
-                <span className="text-[var(--muted-foreground)]">{t.why}</span>
+            {report.askLawyerIfTriggers.map((tr, idx) => (
+              <li key={`${tr.trigger}-${idx}`} className="text-sm">
+                <span className="font-medium text-[var(--foreground)]">{tr.trigger}.</span>{" "}
+                <span className="text-[var(--muted-foreground)]">{tr.why}</span>
               </li>
             ))}
           </ul>
@@ -215,16 +257,16 @@ export function AuditReportCard({ report, showShareButton = true, onShared }: Pr
       </Section>
 
       <div className="mt-6 rounded-2xl border border-[var(--primary)]/25 bg-[var(--primary)]/5 p-4">
-        <p className="text-sm font-medium text-[var(--foreground)] mb-2">Need advice you can act on?</p>
+        <p className="text-sm font-medium text-[var(--foreground)] mb-2">{t("askLawyerTitle")}</p>
         <p className="text-xs text-[var(--muted-foreground)] mb-3">
-          This panel is educational. A licensed lawyer in {report.jurisdictionName} can review your exact document and priorities.
+          {t("askLawyerBody", { jurisdiction: report.jurisdictionName })}
         </p>
         <LawyerCtaLink
           href={`/find-a-lawyer?country=${report.jurisdictionCode.toLowerCase()}`}
           source="audit_result_panel"
           className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--primary)] hover:underline underline-offset-4"
         >
-          Find a lawyer <ArrowRight className="h-4 w-4" aria-hidden />
+          {t("askLawyerCta")} <ArrowRight className="h-4 w-4" aria-hidden />
         </LawyerCtaLink>
       </div>
 
@@ -235,7 +277,7 @@ export function AuditReportCard({ report, showShareButton = true, onShared }: Pr
       <div className="mt-6 flex flex-col sm:flex-row gap-3">
         <Button asChild className="gap-2">
           <Link href={`/chat?country=${report.jurisdictionCode.toLowerCase()}`}>
-            Ask the assistant a follow-up
+            {t("followUpCta")}
             <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>
@@ -245,6 +287,7 @@ export function AuditReportCard({ report, showShareButton = true, onShared }: Pr
             {copied ? "Link copied" : "Share this audit"}
           </Button>
         )}
+      </div>
       </div>
     </div>
   );

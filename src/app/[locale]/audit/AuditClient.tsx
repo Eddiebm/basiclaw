@@ -10,7 +10,10 @@ import {
   Upload,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
+import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
+import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
 import { COUNTRIES } from "@/data/countries";
 import { getPopularCountries } from "@/lib/jurisdictions";
 import { AuditReportCard } from "@/components/audit/AuditReportCard";
@@ -22,6 +25,7 @@ const ACCEPTED = ".pdf,.txt,.md";
 
 export function AuditClient({ presetAuditType = "general" }: { presetAuditType?: AuditType }) {
   const t = useTranslations("auditClient");
+  const tComposer = useTranslations("chatComposer");
   const popularCountries = useMemo(() => getPopularCountries(8), []);
   const [text, setText] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -30,7 +34,9 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<AuditReport | null>(null);
+  const [quotaHint, setQuotaHint] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [voiceError, setVoiceError] = useState<string | null>(null);
 
   const auditType = presetAuditType;
 
@@ -66,6 +72,7 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
 
   async function submit() {
     setError(null);
+    setQuotaHint(null);
     if (!file && text.trim().length < 200) {
       setError(t("pasteMin"));
       return;
@@ -102,7 +109,12 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
           }),
         });
       }
-      const json = (await res.json()) as { report?: AuditReport; error?: string; message?: string };
+      const json = (await res.json()) as { report?: AuditReport; error?: string; message?: string; upgradeUrl?: string };
+      if (res.status === 429) {
+        setQuotaHint(json.message ?? json.error ?? t("auditFailed"));
+        setError(null);
+        return;
+      }
       if (json.report) {
         setReport(json.report);
         track("audit_completed", {
@@ -125,6 +137,7 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
   function reset() {
     setReport(null);
     setError(null);
+    setQuotaHint(null);
   }
 
   if (report) {
@@ -233,14 +246,32 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
         <label htmlFor="audit-text" className="block text-xs uppercase tracking-wider text-[var(--muted-foreground)] mb-1">
           {t("pasteLabel")}
         </label>
-        <textarea
-          id="audit-text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={10}
-          placeholder={t("pastePlaceholder")}
-          className="w-full rounded-2xl border border-[var(--border)] bg-[var(--background)] p-4 text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
-        />
+        {voiceError && (
+          <p className="mb-2 text-xs text-amber-700 dark:text-amber-300" role="status">
+            {tComposer("voiceErrorBanner", { message: voiceError })}
+          </p>
+        )}
+        <div className="relative">
+          <textarea
+            id="audit-text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            rows={10}
+            placeholder={t("pastePlaceholder")}
+            className="w-full rounded-2xl border border-[var(--border)] bg-[var(--background)] p-4 pr-14 text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/30"
+          />
+          <div className="absolute right-2 top-2">
+            <VoiceDictationButton
+              value={text}
+              onChange={setText}
+              mode="append"
+              surface="audit"
+              disabled={submitting}
+              onErrorMessage={setVoiceError}
+            />
+          </div>
+        </div>
+        <VoicePrivacyHint className="mt-2 text-xs text-[var(--muted-foreground)] leading-relaxed" />
         <p className="mt-1 text-xs text-[var(--muted-foreground)]">
           {t("charCount", { count: text.length.toLocaleString() })}
         </p>
@@ -250,6 +281,18 @@ export function AuditClient({ presetAuditType = "general" }: { presetAuditType?:
         <div className="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-900 dark:text-amber-200 flex items-start gap-3">
           <AlertTriangle className="h-4 w-4 mt-0.5" aria-hidden />
           <p>{error}</p>
+        </div>
+      )}
+
+      {quotaHint && (
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 text-sm text-[var(--foreground)] space-y-3">
+          <p>{quotaHint}</p>
+          <Button asChild>
+            <Link href="/pricing">
+              {t("quotaUpgradeCta")}
+              <ArrowRight className="ml-2 h-4 w-4" aria-hidden />
+            </Link>
+          </Button>
         </div>
       )}
 
