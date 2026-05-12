@@ -5,7 +5,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-const LIBRARY_PREFIXES = ["/constitutions", "/compare", "/learn", "/documents", "/questions"] as const;
+const LIBRARY_PREFIXES = ["/constitutions", "/compare", "/learn", "/documents", "/questions", "/the-index"] as const;
 
 export function LearnNavDropdown({
   variant,
@@ -35,6 +35,11 @@ export function LearnNavDropdown({
   }, [open]);
 
   const items = [
+    {
+      href: "/the-index",
+      label: t("libraryLegalIndex"),
+      desc: t("libraryLegalIndexDesc"),
+    },
     {
       href: "/constitutions",
       label: t("libraryConstitutions"),

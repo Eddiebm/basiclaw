@@ -356,6 +356,16 @@ export default async function ConstitutionDetailPage({
                     </Link>
                   </Button>
                 </div>
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--background)]/80 p-4">
+                  <p className="text-xs font-semibold text-[var(--foreground)] mb-1">{t("sidebarIndexTitle")}</p>
+                  <p className="text-xs text-[var(--muted-foreground)] leading-relaxed mb-3">{t("sidebarIndexBody")}</p>
+                  <Button asChild variant="ghost" size="sm" className="w-full justify-between px-0 h-auto text-[var(--primary)]">
+                    <Link href={`/the-index/${country.code.toLowerCase()}`}>
+                      {t("sidebarIndexCta")}
+                      <ArrowRight className="h-4 w-4" aria-hidden />
+                    </Link>
+                  </Button>
+                </div>
               </div>
             </aside>
           </div>

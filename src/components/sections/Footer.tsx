@@ -21,6 +21,7 @@ export function Footer() {
   const stats = countryStats();
 
   const productLinks = [
+    { name: tl("legalIndex"), href: "/the-index" },
     { name: tl("constitutions"), href: "/constitutions" },
     { name: tl("compareConstitutions"), href: "/compare?a=US&b=GH&topic=rights" },
     { name: tl("usStates"), href: "/us/states" },

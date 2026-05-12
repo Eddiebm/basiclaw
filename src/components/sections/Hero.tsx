@@ -70,6 +70,11 @@ export function Hero() {
                     {t("ctaAsk")} <MessageCircle className="h-4 w-4" />
                   </Link>
                 </Button>
+                <Button asChild size="lg" variant="outline" className="gap-2 border-dashed">
+                  <Link href="/the-index">
+                    {t("ctaLegalIndex")} <BookOpen className="h-4 w-4" />
+                  </Link>
+                </Button>
               </div>
               <RightOfDaySubscribe />
               <p className="mt-3 text-sm text-[var(--muted-foreground)]">
