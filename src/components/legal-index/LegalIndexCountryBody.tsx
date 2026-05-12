@@ -49,11 +49,7 @@ export function LegalIndexCountryBody({
             <h2 className="text-sm font-semibold uppercase tracking-wider text-[var(--muted-foreground)] mb-3">
               {t("detailWhyTitle")}
             </h2>
-            <p className="text-sm text-[var(--muted-foreground)] leading-relaxed mb-4">
-              Each paragraph below is generated only from BasicLaw&apos;s public fields (legal system, languages, constitution
-              summary, key principles, adoption/amendment years, and URLs we list). It is not a review of court practice or
-              compliance.
-            </p>
+            <p className="text-sm text-[var(--muted-foreground)] leading-relaxed mb-4">{t("detailMethodologyBody")}</p>
             <ul className="space-y-4">
               {LEGAL_INDEX_DIMENSION_ORDER.map((id) => (
                 <li key={id} className="rounded-xl border border-[var(--border)] bg-[var(--card)]/80 p-4">

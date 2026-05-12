@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { CitizenQuestion } from "@/data/questions/types";
 import { DOMAINS } from "@/data/questions/taxonomy";
@@ -15,6 +16,7 @@ interface QuestionsStageClientProps {
 }
 
 export function QuestionsStageClient({ stage, questions }: QuestionsStageClientProps) {
+  const t = useTranslations("questionsLibrary");
   const [activeCountry, setActiveCountry] = useState("us");
   const title = STAGE_LABEL[stage] ?? stage;
 
@@ -30,17 +32,15 @@ export function QuestionsStageClient({ stage, questions }: QuestionsStageClientP
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
       <header className="mb-8 space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--primary)]">Library</p>
-        <h1 className="text-3xl font-bold text-[var(--foreground)]">{title} — citizen questions</h1>
-        <p className="text-sm text-[var(--muted-foreground)] max-w-2xl">
-          Questions grouped by legal domain for this life stage. Use chat for jurisdiction-specific educational answers.
-        </p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--primary)]">{t("eyebrow")}</p>
+        <h1 className="text-3xl font-bold text-[var(--foreground)]">{t("stageHeading", { stage: title })}</h1>
+        <p className="text-sm text-[var(--muted-foreground)] max-w-2xl">{t("stageSubtitle")}</p>
         <div className="flex flex-wrap gap-2 text-xs">
           <Button asChild variant="outline" size="sm">
-            <Link href="/questions">All stages</Link>
+            <Link href="/questions">{t("allStagesLink")}</Link>
           </Button>
           <Button asChild variant="outline" size="sm">
-            <Link href="/chat">Open legal chat</Link>
+            <Link href="/chat">{t("openChat")}</Link>
           </Button>
           <Button asChild variant="outline" size="sm">
             <Link href="/audit/lease">Lease audit</Link>
@@ -56,7 +56,7 @@ export function QuestionsStageClient({ stage, questions }: QuestionsStageClientP
 
       <div className="mb-6 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4">
         <label className="text-xs font-medium text-[var(--muted-foreground)]">
-          Active country
+          {t("activeCountry")}
           <select
             value={activeCountry}
             onChange={(e) => setActiveCountry(e.target.value)}
@@ -67,7 +67,7 @@ export function QuestionsStageClient({ stage, questions }: QuestionsStageClientP
                 {code}
               </option>
             ))}
-            <option value="ie">Outside core coverage (example: Ireland)</option>
+            <option value="ie">{t("outsideCoverage")}</option>
           </select>
         </label>
       </div>

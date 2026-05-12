@@ -3,7 +3,7 @@
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ArrowRight, BarChart3, CheckCircle2, ExternalLink, MessageSquare, Pencil, Trash2, XCircle } from "lucide-react";
+import { ArrowRight, BarChart3, CheckCircle2, ExternalLink, Loader2, MessageSquare, Pencil, Trash2, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
@@ -98,12 +98,15 @@ export function DashboardClient({
       });
       const json = (await res.json()) as { url?: string; message?: string };
       if (json.url) {
+        track("form_submit_success", { form: "stripe_portal" });
         window.location.href = json.url;
         return;
       }
-      setError(json.message ?? "Could not open the customer portal.");
+      setError(json.message ?? t("portalErrorFallback"));
+      track("form_submit_error", { form: "stripe_portal", reason: "no_url" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Network error");
+      setError(err instanceof Error ? err.message : t("portalNetworkError"));
+      track("form_submit_error", { form: "stripe_portal", reason: "exception" });
     } finally {
       setLoading(false);
     }
@@ -265,9 +268,9 @@ export function DashboardClient({
       <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8">
         <h2 className="text-lg font-semibold text-[var(--foreground)]">{t("subscriptionTitle")}</h2>
         <p className="mt-2 text-sm text-[var(--muted-foreground)]">{t("subscriptionBody")}</p>
-        <Button onClick={openPortal} disabled={loading} className="mt-4 gap-2">
+        <Button onClick={() => void openPortal()} disabled={loading} className="mt-4 gap-2">
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <ExternalLink className="h-4 w-4" aria-hidden />}
           {loading ? t("openingPortal") : t("openPortal")}
-          <ExternalLink className="h-4 w-4" />
         </Button>
         {error && <p className="mt-3 text-sm text-red-600 dark:text-red-400">{error}</p>}
         {!sessionId && checkout !== "success" && (

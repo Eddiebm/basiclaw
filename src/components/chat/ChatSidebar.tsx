@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
@@ -29,15 +29,15 @@ export function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
     if (param && getCountry(param)) return param.toLowerCase();
     return "us";
   })();
-  const [selectedJurisdiction, setSelectedJurisdiction] = useState<Jurisdiction>(initialJurisdiction);
+  const [pickerJurisdiction, setPickerJurisdiction] = useState<Jurisdiction>(initialJurisdiction);
 
   const popular = useMemo(() => getPopularCountries(), []);
 
-  useEffect(() => {
-    if (!currentSessionId) return;
-    const active = sessions.find((s) => s.id === currentSessionId);
-    if (active) setSelectedJurisdiction(active.jurisdiction);
-  }, [currentSessionId, sessions]);
+  const activeSession = useMemo(
+    () => (currentSessionId ? sessions.find((s) => s.id === currentSessionId) : undefined),
+    [currentSessionId, sessions],
+  );
+  const selectedJurisdiction = activeSession?.jurisdiction ?? pickerJurisdiction;
 
   const handleNewChat = () => {
     createSession(selectedJurisdiction);
@@ -80,7 +80,7 @@ export function ChatSidebar({ isOpen, onClose }: ChatSidebarProps) {
             <span className="block text-xs font-medium text-muted-foreground mb-1.5">{t("jurisdiction")}</span>
             <select
               value={selectedJurisdiction}
-              onChange={(event) => setSelectedJurisdiction(event.target.value)}
+              onChange={(event) => setPickerJurisdiction(event.target.value as Jurisdiction)}
               className="w-full h-10 px-3 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             >
               <optgroup label={t("optgroupPopular")}>

@@ -56,11 +56,19 @@ export async function generateMetadata({
     flagB: cb?.flag,
     topic: topicLabel,
   });
+  const comparePath = `/${locale}/compare?a=${ca?.code ?? "US"}&b=${cb?.code ?? "GH"}&topic=${topic}`;
+  const compareAbs = `${site.replace(/\/$/, "")}${comparePath}`;
   return {
     title,
     description,
-    alternates: { canonical: `/${locale}/compare?a=${ca?.code ?? "US"}&b=${cb?.code ?? "GH"}&topic=${topic}` },
-    openGraph: { title, description, url: `/${locale}/compare`, type: "website", images: [{ url: og, width: 1200, height: 630, alt: title }] },
+    alternates: { canonical: comparePath },
+    openGraph: {
+      title,
+      description,
+      url: compareAbs,
+      type: "website",
+      images: [{ url: og, width: 1200, height: 630, alt: title }],
+    },
     twitter: { card: "summary_large_image", title, description, images: [og] },
   };
 }

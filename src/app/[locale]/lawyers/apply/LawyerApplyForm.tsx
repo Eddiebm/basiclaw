@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useAnnouncer } from "@/components/a11y/AnnouncerProvider";
 import { COUNTRIES } from "@/data/countries";
 import { track } from "@/lib/analytics";
 
 export function LawyerApplyForm({ defaultCountry }: { defaultCountry?: string }) {
   const t = useTranslations("lawyersApplyPage");
+  const announce = useAnnouncer();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [barNumber, setBarNumber] = useState("");
@@ -18,6 +21,7 @@ export function LawyerApplyForm({ defaultCountry }: { defaultCountry?: string })
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (status === "loading") return;
     setStatus("loading");
     try {
       const res = await fetch("/api/lawyer-applications", {
@@ -35,9 +39,13 @@ export function LawyerApplyForm({ defaultCountry }: { defaultCountry?: string })
       });
       if (!res.ok) throw new Error("fail");
       track("lawyer_application_submitted", { country });
+      track("form_submit_success", { form: "lawyer_application" });
+      announce(t("success"));
       setStatus("done");
     } catch {
       setStatus("error");
+      track("form_submit_error", { form: "lawyer_application", reason: "request_failed" });
+      announce(t("error"));
     }
   }
 
@@ -144,8 +152,9 @@ export function LawyerApplyForm({ defaultCountry }: { defaultCountry?: string })
       <button
         type="submit"
         disabled={status === "loading"}
-        className="rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] px-4 py-2 text-sm font-medium disabled:opacity-50"
+        className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] px-4 py-2 text-sm font-medium disabled:opacity-50"
       >
+        {status === "loading" ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
         {status === "loading" ? t("submitting") : t("submit")}
       </button>
     </form>

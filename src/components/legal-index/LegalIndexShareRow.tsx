@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Linkedin, Link2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
+import { useAnnouncer } from "@/components/a11y/AnnouncerProvider";
 
 function twitterSvg() {
   return (
@@ -15,6 +16,7 @@ function twitterSvg() {
 
 export function LegalIndexShareRow({ shareUrl, shareTitle }: { shareUrl: string; shareTitle: string }) {
   const t = useTranslations("legalIndex");
+  const announce = useAnnouncer();
   const [copied, setCopied] = useState(false);
 
   const encUrl = encodeURIComponent(shareUrl);
@@ -26,9 +28,11 @@ export function LegalIndexShareRow({ shareUrl, shareTitle }: { shareUrl: string;
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
+      announce(t("shareCopyAnnouncement"));
       setTimeout(() => setCopied(false), 2000);
     } catch {
       setCopied(false);
+      announce(t("shareCopyFailedAnnouncement"));
     }
   }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { Navigation } from "@/components/sections/Navigation";
@@ -47,10 +48,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function QuestionsStagePage({ params }: Props) {
-  const { stage } = await params;
+  const { locale, stage } = await params;
   if (!(STAGES as readonly string[]).includes(stage)) {
     notFound();
   }
+  const t = await getTranslations({ locale, namespace: "questionsLibrary" });
   const questions = getCitizenQuestionsByStage(stage as Stage);
   const sorted = [...questions].sort((a, b) => a.id.localeCompare(b.id));
   const topFaq = sorted.slice(0, 20);
@@ -64,9 +66,9 @@ export default async function QuestionsStagePage({ params }: Props) {
         <QuestionsStageClient stage={stage} questions={questions} />
         <div className="mx-auto max-w-5xl px-4 pb-16 sm:px-6 lg:px-8">
           <div className="mb-6 flex flex-wrap items-center gap-2 text-xs text-[var(--muted-foreground)]">
-            <span>Explore the constitution for your country:</span>
+            <span>{t("constitutionExploreLead")}</span>
             <Link href="/constitutions" className="font-medium text-[var(--primary)] hover:underline">
-              Browse constitutions
+              {t("browseConstitutions")}
             </Link>
           </div>
           <QuestionsEducationalDisclaimer />

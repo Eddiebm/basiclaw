@@ -17,7 +17,7 @@ interface QuestionsIndexClientProps {
 }
 
 export function QuestionsIndexClient({ questions }: QuestionsIndexClientProps) {
-  const tVoice = useTranslations("voice");
+  const t = useTranslations("questionsLibrary");
   const tComposer = useTranslations("chatComposer");
   const [query, setQuery] = useState("");
   const [voiceError, setVoiceError] = useState<string | null>(null);
@@ -56,17 +56,14 @@ export function QuestionsIndexClient({ questions }: QuestionsIndexClientProps) {
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
       <header className="mb-8 space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--primary)]">Library</p>
-        <h1 className="text-3xl font-bold text-[var(--foreground)]">Citizen questions</h1>
-        <p className="text-sm text-[var(--muted-foreground)] max-w-2xl">
-          Plain-language prompts you can ask in chat. Pick your country to see whether answers are likely to be more specific
-          (constitution + curated snippets) or more general for that topic.
-        </p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--primary)]">{t("eyebrow")}</p>
+        <h1 className="text-3xl font-bold text-[var(--foreground)]">{t("title")}</h1>
+        <p className="text-sm text-[var(--muted-foreground)] max-w-2xl">{t("subtitle")}</p>
       </header>
 
       <div className="mb-6 grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 sm:grid-cols-2 lg:grid-cols-4">
         <label className="text-xs font-medium text-[var(--muted-foreground)] sm:col-span-2 lg:col-span-1">
-          Active country
+          {t("activeCountry")}
           <select
             value={activeCountry}
             onChange={(e) => setActiveCountry(e.target.value)}
@@ -77,17 +74,17 @@ export function QuestionsIndexClient({ questions }: QuestionsIndexClientProps) {
                 {code}
               </option>
             ))}
-            <option value="ie">Outside core coverage (example: Ireland)</option>
+            <option value="ie">{t("outsideCoverage")}</option>
           </select>
         </label>
         <label className="text-xs font-medium text-[var(--muted-foreground)]">
-          Stage
+          {t("stage")}
           <select
             value={stageFilter}
             onChange={(e) => setStageFilter(e.target.value)}
             className="mt-1 w-full rounded-lg border border-[var(--border)] bg-background px-3 py-2 text-sm"
           >
-            <option value="">All stages</option>
+            <option value="">{t("allStages")}</option>
             {STAGES.map((s) => (
               <option key={s} value={s}>
                 {STAGE_LABEL[s] ?? s}
@@ -96,13 +93,13 @@ export function QuestionsIndexClient({ questions }: QuestionsIndexClientProps) {
           </select>
         </label>
         <label className="text-xs font-medium text-[var(--muted-foreground)]">
-          Domain
+          {t("domain")}
           <select
             value={domainFilter}
             onChange={(e) => setDomainFilter(e.target.value)}
             className="mt-1 w-full rounded-lg border border-[var(--border)] bg-background px-3 py-2 text-sm"
           >
-            <option value="">All domains</option>
+            <option value="">{t("allDomains")}</option>
             {DOMAINS.map((d) => (
               <option key={d} value={d}>
                 {DOMAIN_LABEL[d]}
@@ -111,13 +108,13 @@ export function QuestionsIndexClient({ questions }: QuestionsIndexClientProps) {
           </select>
         </label>
         <label className="text-xs font-medium text-[var(--muted-foreground)]">
-          Risk
+          {t("risk")}
           <select
             value={riskFilter}
             onChange={(e) => setRiskFilter(e.target.value)}
             className="mt-1 w-full rounded-lg border border-[var(--border)] bg-background px-3 py-2 text-sm"
           >
-            <option value="">All</option>
+            <option value="">{t("allRisk")}</option>
             {RISK_FLAGS.map((r) => (
               <option key={r} value={r}>
                 {r}
@@ -125,42 +122,39 @@ export function QuestionsIndexClient({ questions }: QuestionsIndexClientProps) {
             ))}
           </select>
         </label>
-        <div className="relative sm:col-span-2 lg:col-span-4 space-y-1">
+        <div className="flex flex-col gap-1 sm:col-span-2 lg:col-span-4">
           {voiceError && (
-            <p className="text-xs text-amber-700 dark:text-amber-300 px-1" role="status">
+            <p className="text-xs text-amber-700 dark:text-amber-300" role="status">
               {tComposer("voiceErrorBanner", { message: voiceError })}
             </p>
           )}
-          <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={tVoice("questionsSearchPlaceholder")}
-            aria-label={tVoice("questionsSearchAria")}
-            className="w-full rounded-lg border border-[var(--border)] bg-background py-2 pl-9 pr-12 text-sm"
-          />
-          <span className="absolute right-1 top-1/2 -translate-y-1/2">
+          <div className="relative flex gap-2 items-center">
+            <div className="relative flex-1 min-w-0">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted-foreground)]" />
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={t("searchPlaceholder")}
+                aria-label={t("searchAria")}
+                className="w-full rounded-lg border border-[var(--border)] bg-background py-2 pl-9 pr-12 text-sm"
+              />
+            </div>
             <VoiceDictationButton
               value={query}
               onChange={setQuery}
               mode="append"
               surface="questions"
               onErrorMessage={setVoiceError}
-              className="h-9 w-9"
             />
-          </span>
           </div>
         </div>
       </div>
 
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--muted-foreground)]">
-        <span>
-          Showing {filtered.length} of {questions.length} prompts
-        </span>
+        <span>{t("showingCounts", { filtered: filtered.length, total: questions.length })}</span>
         <Button asChild variant="outline" size="sm">
-          <Link href="/chat">Open legal chat</Link>
+          <Link href="/chat">{t("openChat")}</Link>
         </Button>
       </div>
 
@@ -178,7 +172,7 @@ export function QuestionsIndexClient({ questions }: QuestionsIndexClientProps) {
               >
                 <div>
                   <h2 className="text-lg font-semibold text-[var(--foreground)]">{STAGE_LABEL[stage] ?? stage}</h2>
-                  <p className="text-xs text-[var(--muted-foreground)]">{items.length} questions</p>
+                  <p className="text-xs text-[var(--muted-foreground)]">{t("questionCount", { count: items.length })}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Link
@@ -186,7 +180,7 @@ export function QuestionsIndexClient({ questions }: QuestionsIndexClientProps) {
                     className="text-xs font-medium text-[var(--primary)] hover:underline"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    Stage page
+                    {t("stagePage")}
                   </Link>
                   {open ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                 </div>

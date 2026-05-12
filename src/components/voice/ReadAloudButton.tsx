@@ -42,7 +42,9 @@ export function ReadAloudButton({
   });
 
   const cancelRef = useRef(synth.cancel);
-  cancelRef.current = synth.cancel;
+  useEffect(() => {
+    cancelRef.current = synth.cancel;
+  }, [synth]);
 
   useEffect(() => () => synth.cancel(), [synth]);
 

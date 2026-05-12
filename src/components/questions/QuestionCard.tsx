@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { AlertTriangle, MessageCircle } from "lucide-react";
 import type { CitizenQuestion } from "@/data/questions/types";
@@ -15,6 +16,7 @@ interface QuestionCardProps {
 }
 
 export function QuestionCard({ question, activeCountryCodeLower }: QuestionCardProps) {
+  const t = useTranslations("questionsLibrary");
   const rootRef = useRef<HTMLDivElement | null>(null);
   const viewedRef = useRef(false);
   const availability = answerAvailabilityForQuestion(
@@ -65,9 +67,7 @@ export function QuestionCard({ question, activeCountryCodeLower }: QuestionCardP
       {question.disclaimerTier === "elevated" && (
         <div className="mb-3 flex items-start gap-2 rounded-xl bg-amber-500/10 px-3 py-2 text-xs text-amber-950 dark:text-amber-100">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-          <p className="font-medium">
-            If this is urgent, contact a lawyer or local helpline now. BasicLaw is educational only and not for emergencies.
-          </p>
+          <p className="font-medium">{t("urgentDisclaimer")}</p>
         </div>
       )}
 
@@ -85,7 +85,7 @@ export function QuestionCard({ question, activeCountryCodeLower }: QuestionCardP
               : "bg-muted text-muted-foreground"
           )}
         >
-          {availability === "full" ? "Answer depth: Full" : "Answer depth: Limited"}
+          {availability === "full" ? t("availabilityFull") : t("availabilityLimited")}
         </span>
       </div>
 
@@ -94,13 +94,13 @@ export function QuestionCard({ question, activeCountryCodeLower }: QuestionCardP
       <div className="mt-4 flex flex-wrap gap-2">
         <ButtonLink href={chatHref}>
           <MessageCircle className="h-4 w-4" aria-hidden />
-          Ask in chat
+          {t("askInChat")}
         </ButtonLink>
         <Link
           href={`/constitutions/${activeCountryCodeLower}`}
           className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-background px-3 py-1.5 text-xs font-medium hover:bg-[var(--accent)]/40"
         >
-          Constitution overview
+          {t("constitutionOverview")}
         </Link>
       </div>
     </div>

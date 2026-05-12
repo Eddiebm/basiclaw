@@ -241,6 +241,9 @@
     "detailCompareCta": "Compare your country",
     "detailConstitutionCta": "Read the constitution",
     "detailWhyTitle": "Why these scores (from our dataset)",
+    "detailMethodologyBody": "Each paragraph below is generated only from BasicLaw’s public fields (legal system, languages, constitution summary, key principles, adoption/amendment years, and URLs we list). It is not a review of court practice or compliance.",
+    "shareCopyAnnouncement": "Profile link copied for sharing",
+    "shareCopyFailedAnnouncement": "Could not copy the link",
     "shareX": "Share on X",
     "shareLinkedIn": "Share on LinkedIn",
     "copyLink": "Copy link",
@@ -871,6 +874,11 @@
       "snippetRefLabel": "BasicLaw educational snippet (no external statute URL)"
     }
   },
+  "errors": {
+    "title": "Something went wrong",
+    "body": "This section hit an unexpected error. You can try again, or go back to the home page.",
+    "retry": "Try again"
+  },
   "auth": {
     "notConfiguredBanner": "Auth is not configured (missing Clerk keys). Sign-in and saved history are disabled until CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY are set.",
     "signInTitle": "Sign in — BasicLaw",
@@ -911,6 +919,8 @@
     "subscriptionBody": "Update payment method, change plan, or cancel anytime through the secure Stripe customer portal.",
     "openingPortal": "Opening…",
     "openPortal": "Open customer portal",
+    "portalErrorFallback": "Could not open the customer portal.",
+    "portalNetworkError": "Network error",
     "portalTip": "Tip: open this page right after subscribing and we can route you straight to your portal.",
     "comingTitle": "What’s next",
     "coming1": "Push saved audits from the contract tool into this list automatically.",
@@ -1175,6 +1185,35 @@
       "religious-freedom": "Religious freedom",
       "free-expression": "Free expression"
     }
+  },
+  "questionsLibrary": {
+    "eyebrow": "Library",
+    "title": "Citizen questions",
+    "subtitle": "Plain-language prompts you can ask in chat. Pick your country to see whether answers are likely to be more specific (constitution + curated snippets) or more general for that topic.",
+    "activeCountry": "Active country",
+    "stage": "Stage",
+    "domain": "Domain",
+    "risk": "Risk",
+    "allStages": "All stages",
+    "allDomains": "All domains",
+    "allRisk": "All",
+    "outsideCoverage": "Outside core coverage (example: Ireland)",
+    "showingCounts": "Showing {filtered} of {total} prompts",
+    "openChat": "Open legal chat",
+    "questionCount": "{count} questions",
+    "stagePage": "Stage page",
+    "searchPlaceholder": "Search questions…",
+    "searchAria": "Search citizen questions",
+    "stageHeading": "{stage} — citizen questions",
+    "stageSubtitle": "Questions grouped by legal domain for this life stage. Use chat for jurisdiction-specific educational answers.",
+    "allStagesLink": "All stages",
+    "constitutionExploreLead": "Explore the constitution for your country:",
+    "browseConstitutions": "Browse constitutions",
+    "availabilityFull": "Answer depth: Full",
+    "availabilityLimited": "Answer depth: Limited",
+    "askInChat": "Ask in chat",
+    "constitutionOverview": "Constitution overview",
+    "urgentDisclaimer": "If this is urgent, contact a lawyer or local helpline now. BasicLaw is educational only and not for emergencies."
   },
   "lawyersPage": {
     "metaTitle": "Verified lawyers — BasicLaw",
