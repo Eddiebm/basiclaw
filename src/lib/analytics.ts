@@ -30,6 +30,7 @@ export type AnalyticsEvent =
   | "comparison_viewed"
   | "lawyer_cta_clicked"
   | "lawyer_application_submitted"
+  | "partner_application_submitted"
   | "verified_lawyer_clicked"
   | "question_viewed"
   | "question_to_chat"
@@ -41,7 +42,10 @@ export type AnalyticsEvent =
   | "index_viewed"
   | "index_filter_applied"
   | "form_submit_success"
-  | "form_submit_error";
+  | "form_submit_error"
+  | "lawyer_card_viewed"
+  | "lawyer_contact_clicked"
+  | "lawyer_audit_referral_clicked";
 
 let initialised = false;
 

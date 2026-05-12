@@ -29,7 +29,7 @@ export function LawyerLeadForm({ prefCountry }: { prefCountry?: string }) {
     setError(null);
     setSubmitting(true);
     try {
-      const res = await fetch("/api/lawyer-leads", {
+      const res = await fetch("/api/partner-applications", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ name, email, barNumber, country, practiceAreas }),
@@ -39,7 +39,7 @@ export function LawyerLeadForm({ prefCountry }: { prefCountry?: string }) {
         setError(json.error ?? "Request failed");
         return;
       }
-      track("form_submit_success", { form: "lawyer_lead", country });
+      track("partner_application_submitted", { form: "partner_directory", country });
       setDone(true);
       setName("");
       setEmail("");
