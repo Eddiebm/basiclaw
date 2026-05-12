@@ -122,7 +122,7 @@ interface ChatContextValue extends ChatState {
   currentSession: ChatSession | null;
   createSession: (jurisdiction: Jurisdiction) => ChatSession;
   deleteSession: (sessionId: string) => void;
-  sendMessage: (content: string) => Promise<void>;
+  sendMessage: (content: string, options?: { jurisdiction?: Jurisdiction }) => Promise<void>;
   setCurrentSession: (sessionId: string | null) => void;
   upsertSession: (session: ChatSession) => void;
   clearError: () => void;
@@ -161,8 +161,27 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "UPSERT_SESSION", payload: session });
   }, []);
 
-  const sendMessage = useCallback(async (content: string) => {
-    if (!state.currentSessionId) return;
+  const sendMessage = useCallback(async (content: string, options?: { jurisdiction?: Jurisdiction }) => {
+    let sessionId = state.currentSessionId;
+    let jurisdiction: Jurisdiction = "us";
+
+    if (sessionId) {
+      jurisdiction = state.sessions.find((s) => s.id === sessionId)?.jurisdiction ?? options?.jurisdiction ?? "us";
+    } else {
+      jurisdiction = options?.jurisdiction ?? "us";
+      const session: ChatSession = {
+        id: crypto.randomUUID(),
+        title: `Chat ${new Date().toLocaleDateString()}`,
+        messages: [],
+        jurisdiction,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      dispatch({ type: "ADD_SESSION", payload: session });
+      dispatch({ type: "SET_CURRENT_SESSION", payload: session.id });
+      sessionId = session.id;
+      track("chat_session_started", { jurisdiction, source: "first_message" });
+    }
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
@@ -171,7 +190,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       timestamp: new Date(),
     };
 
-    dispatch({ type: "ADD_MESSAGE", payload: { sessionId: state.currentSessionId, message: userMessage } });
+    dispatch({ type: "ADD_MESSAGE", payload: { sessionId, message: userMessage } });
     dispatch({ type: "SET_TYPING", payload: true });
     dispatch({ type: "SET_ERROR", payload: { message: null, upgradePath: null } });
 
@@ -181,8 +200,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         : "en";
 
     try {
-      const active = state.sessions.find((s) => s.id === state.currentSessionId);
-      const jurisdiction = active?.jurisdiction || "us";
+      const priorMessages = state.sessions.find((s) => s.id === sessionId)?.messages ?? [];
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -190,7 +208,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           "x-basiclaw-locale": localeHeader,
         },
         body: JSON.stringify({
-          sessionId: state.currentSessionId,
+          sessionId,
           message: content,
           jurisdiction,
         }),
@@ -242,14 +260,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         citations,
       };
 
-      dispatch({ type: "ADD_MESSAGE", payload: { sessionId: state.currentSessionId, message: assistantMessage } });
+      dispatch({ type: "ADD_MESSAGE", payload: { sessionId, message: assistantMessage } });
       track("form_submit_success", { form: "chat_message" });
 
-      const afterAssistant = [...(active?.messages ?? []), userMessage, assistantMessage].map((m) => ({
+      const afterAssistant = [...priorMessages, userMessage, assistantMessage].map((m) => ({
         role: m.role,
         content: m.content,
       }));
-      void fetch(`/api/me/chats/${state.currentSessionId}`, {
+      void fetch(`/api/me/chats/${sessionId}`, {
         method: "PUT",
         headers: {
           "content-type": "application/json",

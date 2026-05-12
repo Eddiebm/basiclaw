@@ -40,7 +40,7 @@ export function ChatPrefillListener() {
       risk: searchParams.get("risk") ?? null,
       jurisdiction: currentSession.jurisdiction,
     });
-    void sendMessage(message);
+    void sendMessage(message, { jurisdiction: currentSession.jurisdiction });
   }, [searchParams, currentSession, sendMessage]);
 
   return null;

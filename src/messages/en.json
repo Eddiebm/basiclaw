@@ -824,12 +824,15 @@
     "body": "Ask questions about legal concepts, your rights, or how the law works in your jurisdiction.",
     "startCta": "Start a conversation",
     "startCtaCountryHint": "We’ll answer for {country}. You can change the country in the sidebar.",
+    "jurisdictionLabel": "Country for answers",
+    "noSessionLead": "Type your question below and press Send. We start a chat thread automatically.",
     "lawyerCta": "Need representation? Find a lawyer",
     "signInToSaveLead": "Want your threads on every device?",
     "signInToSaveCta": "Sign in to save chats"
   },
   "chatComposer": {
     "placeholder": "Ask a legal question…",
+    "inputLabel": "Ask your legal question",
     "sendHint": "Press Enter to send, Shift+Enter for new line",
     "voiceReplaceLabel": "Replace input when dictating",
     "voiceAutoSendLabel": "Auto-send after dictation",

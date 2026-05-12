@@ -18,14 +18,14 @@ export default function ChatPage() {
     <div className="min-h-screen flex flex-col bg-background">
       <Navigation />
 
-      <div className="flex-1 flex">
+      <div className="flex-1 flex min-h-0">
         <Suspense fallback={null}>
           <ChatSessionHydrator />
           <ChatPrefillListener />
           <ChatSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         </Suspense>
 
-        <main className="flex-1 flex flex-col min-w-0">
+        <main className="flex-1 flex flex-col min-w-0 min-h-0">
           {/* Header */}
           <header className="h-14 border-b flex items-center px-4 gap-4">
             <Button
@@ -42,7 +42,7 @@ export default function ChatPage() {
           </header>
 
           {/* Chat Area */}
-          <Suspense fallback={<div className="flex-1" />}>
+          <Suspense fallback={<div className="flex-1 min-h-[240px] bg-muted/10 animate-pulse rounded-none" aria-hidden />}>
             <ChatInterface />
           </Suspense>
         </main>
