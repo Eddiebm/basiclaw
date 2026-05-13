@@ -1,9 +1,9 @@
 # BasicLaw ship-readiness audit
 
 **Branch:** `master`  
-**Audited:** 2026-05-12  
+**Audited:** 2026-05-12 (ship-readiness refresh)  
 **Constraints:** No new dependencies; `eslint src --max-warnings 0` and clean `next build --webpack` required.  
-**Note:** `redesign-v3` was not touched. Parallel worker changes to chat empty-state were integrated via stash/pop before final push (see git log).
+**Note:** `redesign-v3` was not touched. Other parallel work (perf bundle analysis, US-state LLM unify) may land separately; this pass documents `master` only.
 
 ## Eddie pre-launch checklist
 
@@ -11,24 +11,33 @@
 
 | Variable | Required for | Where to get / notes |
 |----------|----------------|----------------------|
-| `OPENROUTER_API_KEY` | Chat + audit AI replies | [OpenRouter](https://openrouter.ai/) API keys |
+| `OPENROUTER_API_KEY` | Chat + audit AI when `AI_GATEWAY_API_KEY` is unset | [OpenRouter](https://openrouter.ai/) API keys |
+| `AI_GATEWAY_API_KEY` | Preferred LLM path for `/api/chat` and audits | [Vercel AI Gateway](https://vercel.com/docs/ai-gateway); optional — falls back to `OPENROUTER_API_KEY` |
 | `OPENROUTER_MODEL` | Optional model override | Default in code if unset |
-| `NEXT_PUBLIC_SITE_URL` | Canonical URLs, OG, emails, Stripe return URLs | Production domain, e.g. `https://basiclaw.app` |
+| `NEXT_PUBLIC_SITE_URL` | Canonical URLs, OG, emails, Stripe return URLs, internal health self-fetch | Production domain, e.g. `https://basiclaw.app` |
 | `NEXT_PUBLIC_POSTHOG_KEY` | Product analytics | PostHog project settings |
 | `NEXT_PUBLIC_POSTHOG_HOST` | PostHog region | Optional; defaults to US cloud |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Sign-in/up | Clerk dashboard |
 | `CLERK_SECRET_KEY` | Server auth | Clerk dashboard |
+| `ADMIN_EMAILS` | Comma-separated emails allowed for `/[locale]/admin/*` when Clerk is on (in addition to `publicMetadata.role === "admin"`) | Ops list; see `src/lib/admin-auth.ts` |
 | `STRIPE_SECRET_KEY` | Checkout + portal | Stripe dashboard |
 | `STRIPE_WEBHOOK_SECRET` | `POST /api/webhooks/stripe` | Stripe webhook signing secret |
-| Price IDs (see `src/lib/stripe-config.ts` or env names there) | Paid tiers | Stripe Products/Prices |
-| `RESEND_API_KEY` | Lawyer lead emails, cron digest | Resend |
+| `STRIPE_PRICE_PRO_MONTHLY`, `STRIPE_PRICE_PRO_ANNUAL`, `STRIPE_PRICE_PLUS_MONTHLY`, `STRIPE_PRICE_PLUS_ANNUAL` | Paid tiers | Stripe Products/Prices; mapped in `src/lib/stripe-plan.ts` |
+| `RESEND_API_KEY` | Transactional email | Resend |
 | `RESEND_FROM_EMAIL` | From address for Resend | Verified domain in Resend |
-| `LAWYER_LEADS_EMAIL` | Inbox for `/api/lawyer-leads` | Your ops email |
+| `LAWYER_LEADS_EMAIL` | Inbox for generic lawyer lead + some fallbacks | Your ops email |
+| `LAWYER_APPLICATIONS_EMAIL` | Optional override for verified-reviewer applications (`/api/lawyer-applications`) | Falls back to `LAWYER_LEADS_EMAIL` / `RESEND_FROM_EMAIL` |
+| `PRESS_EMAIL` | Press contact form (`/api/press-contact`, `/press`) | Inbox for press inquiries |
 | `RIGHT_OF_DAY_FROM_EMAIL` | Cron “right of the day” | Resend-verified sender |
 | `CRON_SECRET` | Non-Vercel cron `Authorization: Bearer …` | Generate a secret |
-| `SHARE_AUDIT_SECRET` or equivalent (see `shared-audit-url.ts`) | Shared audit HMAC links | Strong random secret |
-| `LAUNCH_KEY` | **Required in production** for `/launch` query `?key=` | Long random string; without it, `/launch` returns 404 in prod |
-| Redis / KV envs (if used) | `src/lib/storage.ts` fallbacks | Vercel KV / Upstash if configured |
+| `UNSUBSCRIBE_SECRET` | HMAC for `/api/unsubscribe?token=…` | Prefer dedicated secret in production |
+| `SHARED_AUDIT_SECRET` | Shared audit HMAC links (`src/lib/shared-audit-url.ts`) | Strong random secret; dev fallback may use `CLERK_SECRET_KEY` |
+| `EMBED_JWT_SECRET` | Optional HMAC for signed `POST /api/embed/event` attribution | See `docs/embed.md` |
+| `LAUNCH_KEY` | **Required in production** for `/launch` query `?key=` and for `/[locale]/internal/health?key=` | Long random string; without it, `/launch` returns 404 in prod; internal health returns 404 without matching key |
+| `NEXT_PUBLIC_SENTRY_DSN` | Browser + default server/edge DSN | Sentry project (client) |
+| `SENTRY_DSN` | Optional separate server DSN | Sentry; if unset, server uses `NEXT_PUBLIC_SENTRY_DSN` |
+| `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` | Source map upload during `next build` | CI / Vercel; when `SENTRY_AUTH_TOKEN` is unset, uploads are disabled (`next.config.ts`) |
+| Redis / KV envs (if used) | `src/lib/storage.ts` fallbacks | `KV_REST_*` or `UPSTASH_REDIS_*` per `.env.example` |
 
 ### Domain & SEO
 
@@ -44,6 +53,7 @@
 
 - Confirm PostHog receives `$pageview` and key custom events in staging.
 - Stripe webhook delivery 200s in dashboard after deploy.
+- With `NEXT_PUBLIC_SENTRY_DSN` set, confirm events appear in Sentry (see **Observability**).
 
 ### Store submissions
 
@@ -63,14 +73,41 @@
 
 ---
 
+## Observability
+
+- **Sentry:** `@sentry/nextjs` wired via `sentry.client.config.ts`, `sentry.server.config.ts`, `sentry.edge.config.ts`, and `src/instrumentation.ts` (`onRequestError` when a DSN is present). **Inactive** until `NEXT_PUBLIC_SENTRY_DSN` and/or `SENTRY_DSN` is set.
+- **Instrumented (high-signal):** `POST /api/chat`, `POST /api/audit` (+ extension), `audit-engine` LLM span, `POST /api/webhooks/stripe`, `POST /api/cron/right-of-the-day`, `src/app/global-error.tsx`, and internal health Sentry ping.
+- **Tags:** Shared helper enriches events with route / locale / jurisdiction where applicable (`sentry-tags.shared.ts`).
+- **Traces:** `tracesSampleRate` **1.0** in development, **0.2** in production (client, server, edge configs).
+- **Source maps:** Uploaded during build only when `SENTRY_AUTH_TOKEN` is set; `sourcemaps.disable` mirrors that (`next.config.ts`, `widenClientFileUpload: true`).
+
+---
+
+## Automated QA
+
+- **Runner:** Playwright (`@playwright/test`), **13** spec files under `tests/e2e/` (home, chat, compare, constitutions, questions, the-index, i18n, lawyers, pricing, audit, embed, answers, dead-links).
+- **CI:** `.github/workflows/e2e.yml` on `push` / `pull_request` to `master` — `npm ci` → `npm run build` → `npm run start` → `npm run test:e2e:chromium` with `BASE_URL=http://127.0.0.1:3000`.
+- **Coverage (smoke-level):** Core navigation, locale switches, embed shell, answers flows, lawyer/marketplace pages, pricing shell, and dead-link scan (see individual specs).
+- **Note:** The E2E step uses `continue-on-error: true` so CI stays **informational** until the suite is fully trusted; treat red E2E as signal, not a hard gate yet.
+
+---
+
+## Internal health
+
+- **Route:** `/[locale]/internal/health` (e.g. `/en/internal/health`).
+- **Gate:** `404` unless `LAUNCH_KEY` is set in the environment **and** query `?key=` matches (same pattern as `/launch`).
+- **Checks (sequential, ~5s timeout each):** `GET /api/embed/health`, Sentry test message + flush, storage round-trip, AI Gateway/OpenRouter completion probe, Stripe `products.list`, Resend `domains.list`, Clerk `users.getCount`. Implemented in `src/lib/internal-launch-health.ts`.
+
+---
+
 ## Public marketing routes
 
 ### `/` (locale home)
 
 - **Status:** 📝 **READY WITH NOTE**
-- **Issues:** Custom `home_view` event; pricing copy in `PricingClient` still largely English strings in source (separate from nav i18n). Hero/pricing content review deferred.
+- **Issues:** Custom `home_view` event; hero/pricing voice still benefits from native legal/marketing review.
 - **Fixes applied:** (see commits) PostHog duplicate `$pageview` mitigation.
-- **Blockers:** Full marketing localisation of pricing tier paragraphs is a content pass.
+- **Blockers:** None technical.
 
 ### `/learn`
 
@@ -81,15 +118,15 @@
 
 ### `/pricing`
 
-- **Status:** ⚙️ **NEEDS CONFIG** (Stripe) + 📝 **READY WITH NOTE** (copy/i18n)
-- **Issues:** Requires Stripe keys + price IDs for live checkout; tier marketing text hardcoded in English in `PricingClient.tsx`.
-- **Fixes applied:** None in this pass (flag only — large i18n extraction avoided as scope).
+- **Status:** ⚙️ **NEEDS CONFIG** (Stripe) + 📝 **READY WITH NOTE** (copy review)
+- **Issues:** Live checkout still needs Stripe keys + price envs; tier strings now come from `next-intl` (`pricingPage`) — remaining locale nuance tracked in [`docs/i18n-review-queue.md`](./i18n-review-queue.md).
+- **Fixes applied:** Pricing i18n extraction landed on `master`.
 - **Blockers:** Eddie: Stripe live mode + price env alignment.
 
 ### `/faq`
 
 - **Status:** ✅ **READY**
-- **Issues:** Meta description was English-only in `generateMetadata` regardless of locale.
+- **Issues:** Meta description was English-only in `generateMetadata` regardless of locale (historical).
 - **Fixes applied:** Localised `faqPage.metaDescription` + metadata wiring (commit: fixes-batch-1-public-routes).
 - **Blockers:** None.
 
@@ -114,6 +151,13 @@
 - **Fixes applied:** Success analytics for partner form (fixes-batch-3-api-and-forms).
 - **Blockers:** Resend + inbox env in production.
 
+### `/press`
+
+- **Status:** ⚙️ **NEEDS CONFIG** + 📝 **READY WITH NOTE**
+- **Issues:** `PRESS_EMAIL` must be set for Resend delivery; remaining Schema.org / OG line review in [`docs/i18n-review-queue.md`](./i18n-review-queue.md).
+- **Fixes applied:** Press page + `POST /api/press-contact` on `master`.
+- **Blockers:** Ops inbox + Resend.
+
 ---
 
 ## Functional routes
@@ -121,9 +165,9 @@
 ### `/chat`
 
 - **Status:** 📝 **READY WITH NOTE**
-- **Issues:** OpenRouter required for full AI; graceful fallback when key missing. Empty-state flow handled by parallel worker (stashed/pulled — do not redo).
-- **Fixes applied:** None here (avoid overlap with worker).
-- **Blockers:** `OPENROUTER_API_KEY` for production quality.
+- **Issues:** LLM quality needs `AI_GATEWAY_API_KEY` or `OPENROUTER_API_KEY`; graceful fallback when keys missing.
+- **Fixes applied:** Empty-state flow stabilised on `master` (parallel chat work).
+- **Blockers:** Production AI keys for quality.
 
 ### `/audit` + specialised `/audit/*`
 
@@ -137,7 +181,7 @@
 - **Status:** ✅ **READY** (token path depends on storage)
 - **Issues:** Requires valid share token + backend storage.
 - **Fixes applied:** None.
-- **Blockers:** `SHARE_AUDIT_SECRET` / storage backing in prod.
+- **Blockers:** `SHARED_AUDIT_SECRET` / storage backing in prod.
 
 ### `/constitutions`, `/constitutions/[code]`
 
@@ -146,12 +190,12 @@
 - **Fixes applied:** None.
 - **Blockers:** Content freshness is operational, not code.
 
-### `/<country>/rights`, `/police-stop`, `/landlord`
+### `/<country>/rights`, `/police-stop`, `/landlord`, `/employment`
 
 - **Status:** 📝 **READY WITH NOTE**
-- **Issues:** Spec mentioned `/<country>/employment`; **not implemented** — only `rights`, `police-stop`, `landlord` exist. Employment lives under `/audit/employment` and US state topics.
-- **Fixes applied:** None (product scope).
-- **Blockers:** If marketing promises per-country employment pages, add routes or fix copy.
+- **Issues:** Per-country employment is implemented at `/[locale]/[country]/employment` (plus `/[locale]/audit/employment` for the audit preset). Copy and i18n nuance: [`docs/i18n-review-queue.md`](./i18n-review-queue.md).
+- **Fixes applied:** Employment topic route added on `master`.
+- **Blockers:** None technical.
 
 ### `/us/states`, `/us/[state]/[topic]`
 
@@ -180,12 +224,19 @@
 - **Fixes applied:** None.
 - **Blockers:** None.
 
-### `/lawyers`, `/lawyers/apply`
+### `/lawyers`, `/lawyers/apply`, `/lawyers/[slug]`, `/lawyers/become-a-partner`
 
-- **Status:** ⚙️ **NEEDS CONFIG** (email) + ✅ **READY** (forms)
-- **Issues:** Application form needs Resend for notifications if desired.
-- **Fixes applied:** None beyond global analytics note.
-- **Blockers:** Ops email workflow.
+- **Status:** ⚙️ **NEEDS CONFIG** (email + data) + ✅ **READY** (UI/forms)
+- **Issues:** Marketplace v2 profile pages use `POST /api/lawyer-leads/[slug]`; partner programme uses `POST /api/partner-applications` / Resend paths. Lawyer directory content depends on import pipeline (`npm run import:lawyers`).
+- **Fixes applied:** Public lawyer matches API + listing UX on `master`.
+- **Blockers:** Resend + inbox envs; production lawyer dataset.
+
+### `/answers`, `/answers/[id]`
+
+- **Status:** ✅ **READY** + 📝 **READY WITH NOTE**
+- **Issues:** Public archive + detail are locale-aware; voting/auth flows depend on Clerk for write paths.
+- **Fixes applied:** Answers surfaces + APIs on `master`; E2E coverage in `tests/e2e/answers.spec.ts`.
+- **Blockers:** Clerk for signed-in publish/vote/delete; spam/moderation policy is ops.
 
 ### `/dashboard`
 
@@ -219,23 +270,70 @@
 - **Fixes applied:** None.
 - **Blockers:** Content review.
 
+### `/admin/answers`
+
+- **Status:** ⚙️ **NEEDS CONFIG** + 📝 **READY WITH NOTE**
+- **Issues:** Clerk + `isAdminUser` (`ADMIN_EMAILS` and/or `publicMetadata.role`); English-only UI by design (see i18n queue doc).
+- **Fixes applied:** Verify / unpublish / delete API wired.
+- **Blockers:** Production Clerk admin roster.
+
+### `/internal/health`
+
+- **Status:** ✅ **READY** + ⚙️ **NEEDS CONFIG** (gate + secrets to show green rows)
+- **Issues:** Same `LAUNCH_KEY` gate as `/launch`; rows reflect missing third-party envs.
+- **Fixes applied:** Full check matrix on `master`.
+- **Blockers:** Set `LAUNCH_KEY` + monitored integrations in Vercel.
+
+### Embed (app routes + static loader)
+
+- **Status:** ✅ **READY** + ⚙️ **NEEDS CONFIG** (tenant API keys in production) + 📝 **READY WITH NOTE**
+- **Surfaces:** `/embed/ask`, `/embed/audit` (iframe shells), `/[locale]/embed` landing, `public/embed/loader.js` (snippet host).
+- **Issues:** Tenant provisioning via `/api/embed/tenants` requires admin; optional signed telemetry via `EMBED_JWT_SECRET`.
+- **Fixes applied:** Embed v2 flows + CSP headers (`next.config.ts`); E2E `tests/e2e/embed.spec.ts`.
+- **Blockers:** Admin workflow for tenant API keys; see `docs/embed.md`.
+
+### Mobile (Expo)
+
+- **Status:** 📝 **READY WITH NOTE** (out-of-tree)
+- **Issues:** Lives under `mobile/` sibling workspace — not part of the Next.js bundle on Vercel.
+- **Fixes applied:** N/A in this repo’s CI.
+- **Blockers:** Follow `mobile/README.md` for store readiness.
+
 ---
 
 ## API surface
 
 | Route | Status | Notes |
 |-------|--------|--------|
-| `POST /api/chat` | ⚙️ **NEEDS CONFIG** | Validates input; quota; OpenRouter optional with fallback message. |
-| `POST /api/audit` (+ extension) | ⚙️ **NEEDS CONFIG** | Same family as chat. |
+| `POST /api/chat` | ⚙️ **NEEDS CONFIG** | Validates input; quota; Sentry spans; `AI_GATEWAY_API_KEY` or `OPENROUTER_API_KEY`. |
+| `POST /api/audit` (+ extension) | ⚙️ **NEEDS CONFIG** | Same family as chat; Sentry spans. |
 | `POST /api/lawyer-leads` | 📝 **READY WITH NOTE** | Always 200 on valid body; logs + optional Resend. |
-| `POST /api/lawyer-applications` | 📝 **READY WITH NOTE** | Same pattern. |
-| `POST /api/subscribe` / `unsubscribe` | ✅ **READY** | File/Redis storage fallback. |
+| `POST /api/lawyer-leads/[slug]` | ⚙️ **NEEDS CONFIG** | Lawyer profile lead form → Resend when configured. |
+| `POST /api/lawyer-applications` | 📝 **READY WITH NOTE** | Verified reviewer applications; inbox env fallbacks. |
+| `POST /api/partner-applications` | 📝 **READY WITH NOTE** | Become-a-partner flow; Resend path. |
+| `GET /api/public/lawyer-matches` | ✅ **READY** | Public directory/match payload for marketing surfaces. |
+| `POST /api/press-contact` | ⚙️ **NEEDS CONFIG** | Requires `PRESS_EMAIL` + Resend. |
+| `GET /api/admin/answers` | ⚙️ **NEEDS CONFIG** | Admin list + filters; Clerk admin. |
+| `POST /api/admin/answers/[id]/verify` | ⚙️ **NEEDS CONFIG** | Body: `lawyerId`, optional `statement`. |
+| `POST /api/admin/answers/[id]/unpublish` | ⚙️ **NEEDS CONFIG** | |
+| `POST /api/admin/answers/[id]/delete` | ⚙️ **NEEDS CONFIG** | Hard delete (admin). |
+| `POST /api/subscribe` / `unsubscribe` | ✅ **READY** | File/Redis storage fallback; `UNSUBSCRIBE_SECRET` for tokens in prod. |
 | `GET/POST/DELETE /api/me/chats*` | ⚙️ **NEEDS CONFIG** | Clerk + storage. |
+| `GET /api/me/answers` | ⚙️ **NEEDS CONFIG** | Clerk; signed-in list. |
 | `GET /api/me/audits/*`, usage | ⚙️ **NEEDS CONFIG** | Same. |
 | `POST /api/checkout`, `portal` | ⚙️ **NEEDS CONFIG** | Stripe. |
-| `POST /api/webhooks/stripe` | ⚙️ **NEEDS CONFIG** | Signing secret. |
-| `GET /api/share/audit` | ✅ **READY** | HMAC verify. |
-| `POST /api/cron/right-of-the-day` | ⚙️ **NEEDS CONFIG** | Resend + cron auth in prod. |
+| `POST /api/webhooks/stripe` | ⚙️ **NEEDS CONFIG** | Signing secret; Sentry instrumentation. |
+| `GET /api/share/audit` | ✅ **READY** | HMAC verify (`SHARED_AUDIT_SECRET`). |
+| `POST /api/cron/right-of-the-day` | ⚙️ **NEEDS CONFIG** | Resend + cron auth in prod; Sentry. |
+| `GET /api/answers/search` | ✅ **READY** | Public search. |
+| `GET /api/answers/suggest` | ✅ **READY** | Autosuggest. |
+| `POST /api/answers` | ⚙️ **NEEDS CONFIG** | Clerk required to save. |
+| `POST /api/answers/[id]/vote` | ⚙️ **NEEDS CONFIG** | Clerk. |
+| `POST /api/answers/[id]/publish` | ⚙️ **NEEDS CONFIG** | Clerk. |
+| `DELETE /api/answers/[id]` | ⚙️ **NEEDS CONFIG** | Owner delete; Clerk. |
+| `GET/POST /api/embed/tenants` | ⚙️ **NEEDS CONFIG** | Admin-only; issues API key + optional embed event token. |
+| `POST /api/embed/event` | ✅ **READY** | Telemetry; optional `Authorization: Bearer` signed JWT when `EMBED_JWT_SECRET` set. |
+| `GET /api/embed/health` | ✅ **READY** | JSON `{ ok: true }` for probes. |
 | `GET /og` | ✅ **READY** | Six `kind` variants in one route handler. |
 
 ---
@@ -247,13 +345,14 @@
 | Renders without 500 (no AI keys) | **Pass** — APIs return fallbacks or 503 where documented. |
 | CTAs real routes | **Pass** after extension anchor fix (no dead `href="#"` pattern for stores). |
 | Forms loading/success/error | **Pass** on audited forms; pricing shows checkout errors. |
-| i18n UI chrome | **Pass** on nav/FAQ meta; extension page still English-only body (flagged). |
+| i18n UI chrome + locale sweep | **Pass** with human-review queue — see [`docs/i18n-review-queue.md`](./i18n-review-queue.md) for keys needing native/legal pass (pricing, press, embed, legal index, etc.). |
 | SEO high-traffic | **Pass** with notes — compare/constitutions have metadata patterns; FAQ meta fixed. |
-| Mobile 360px | **Spot-check only** — no automated visual suite in this pass. |
+| Mobile 360px | **Spot-check only** — Playwright covers several flows; no full visual matrix. |
 | a11y | **Improved** — extension preview control non-focusable; further pass optional. |
 | Analytics | **Fixed** duplicate `$pageview` (init + manual). |
 | Voice | **Not exhaustively tested** in this pass — flag for manual QA. |
 | Error boundaries | **Present** on chat, audit, dashboard, compare, index detail, constitution detail. |
+| Observability | **Sentry** optional via DSN; **internal health** for integration smoke. |
 
 ---
 
@@ -261,29 +360,27 @@
 
 | Batch | Description | SHA |
 |-------|-------------|-----|
-| audit-report | This document (initial). | _TBD_ |
-| fixes-batch-1-public-routes | FAQ meta, extension CTAs + JSON-LD, `/launch` prod gate. | _TBD_ |
-| fixes-batch-2-functional-routes | Extension preview decorative control a11y. | _TBD_ |
-| fixes-batch-3-api-and-forms | Lawyer lead success analytics. | _TBD_ |
-| fixes-batch-4-a11y-and-i18n | PostHog `capture_pageview: false`; locale FAQ meta strings. | _TBD_ |
+| docs ship-readiness refresh | Observability, E2E, internal health, new routes/APIs, i18n queue link, env table. | 36b4f98 |
 
 ---
 
 ## Top 5 must-fix before broad launch
 
-1. **Production secrets:** `OPENROUTER_API_KEY`, Stripe live keys/webhook, Clerk keys, Resend (+ lawyer inbox), `LAUNCH_KEY` if playbook URL is shared.
-2. **`NEXT_PUBLIC_SITE_URL`** on the final domain (OG, emails, Stripe return URLs, JSON-LD).
-3. **Extension store URLs** — replace fragment CTAs with real Chrome/Firefox/Edge links when approved.
-4. **Legal / accuracy review** — disclaimers, constitutions, audit output (non-code).
-5. **Product copy alignment** — Per-country `/employment` is **not** a route; adjust marketing if it was promised.
+1. **Vercel env pack:** At minimum `AI_GATEWAY_API_KEY` *or* `OPENROUTER_API_KEY`, Clerk (`NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`), Stripe (`STRIPE_SECRET_KEY`, webhook secret, **`STRIPE_PRICE_*`** per `stripe-plan.ts`), Resend (`RESEND_API_KEY`, `RESEND_FROM_EMAIL`, lead inboxes), and `NEXT_PUBLIC_SENTRY_DSN` if you want production error data (plus `SENTRY_AUTH_TOKEN` / org / project in CI for readable stacks).
+2. **`NEXT_PUBLIC_SITE_URL`** on the final domain (OG, emails, Stripe return URLs, JSON-LD, internal health self-URL).
+3. **Ops email + admin access:** `LAWYER_LEADS_EMAIL` / `LAWYER_APPLICATIONS_EMAIL`, `PRESS_EMAIL`, and `ADMIN_EMAILS` (or Clerk `publicMetadata.role`) for `/admin/*` and forms.
+4. **`LAUNCH_KEY`** before sharing `/launch` or `/internal/health` URLs in production.
+5. **Extension store URLs + legal/content sign-off** — still placeholders / lawyer review outside code.
 
 ---
 
 ## Ready / not-ready counts (approximate)
 
-- **READY:** 18 surfaces  
-- **READY WITH NOTE:** 14  
-- **NEEDS CONFIG:** 12  
+Methodology: one line per major `###` route/feature group in this doc (marketing + functional + embed + mobile note). Dual-status rows are counted toward the **stricter** bucket first (e.g. ⚙️ before 📝).
+
+- **READY:** 24 surfaces  
+- **READY WITH NOTE:** 11  
+- **NEEDS CONFIG:** 18  
 - **BLOCKED:** 0  
 - **BROKEN:** 0  
 - **N/A:** 1 (`/account`)
@@ -300,3 +397,5 @@ rm -rf .next && npx next build --webpack
 ```
 
 Both green at audit time after `git pull --rebase origin master`. If `rm -rf .next` errors with “Directory not empty” on macOS, retry the remove or run `npx next build --webpack` once without deleting (the prior run may have left a partial `.next`).
+
+**Bundle size:** `npm run analyze` runs `@next/bundle-analyzer` (`ANALYZE=true next build --webpack`) — use after perf-related merges to inspect client/server chunks.
