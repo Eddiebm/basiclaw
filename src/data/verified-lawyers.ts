@@ -300,7 +300,7 @@ export const VERIFIED_LAWYERS: VerifiedLawyer[] = [
     jurisdictions: ["Kenya"],
     practiceAreas: ["Civil litigation", "Commercial contracts", "Constitutional law"],
     reviewedConstitutionForCountry: true,
-    reviewedTopicIds: ["ke:employment"],
+    reviewedTopicIds: ["ke:rights"],
     statement:
       "Senior Counsel profile on the firm’s official website. Appellate and commercial mandates should be confirmed with Oraro & Company.",
     verifiedAt: V1_VERIFIED_AT,
@@ -323,7 +323,7 @@ export const VERIFIED_LAWYERS: VerifiedLawyer[] = [
     jurisdictions: ["Kenya"],
     practiceAreas: ["Employment", "Commercial contracts", "Data protection"],
     reviewedConstitutionForCountry: true,
-    reviewedTopicIds: ["ke:employment"],
+    reviewedTopicIds: ["ke:rights"],
     statement:
       "Public profile on Oraro & Company’s site. Corporate and employment questions should be directed to the firm’s intake channels.",
     verifiedAt: V1_VERIFIED_AT,
@@ -346,7 +346,7 @@ export const VERIFIED_LAWYERS: VerifiedLawyer[] = [
     jurisdictions: ["Kenya"],
     practiceAreas: ["Dispute resolution", "Commercial contracts", "Civil litigation"],
     reviewedConstitutionForCountry: true,
-    reviewedTopicIds: ["ke:employment"],
+    reviewedTopicIds: ["ke:rights"],
     statement:
       "Listed on the firm’s official people pages with arbitration credentials noted on the public profile.",
     verifiedAt: V1_VERIFIED_AT,
@@ -369,7 +369,7 @@ export const VERIFIED_LAWYERS: VerifiedLawyer[] = [
     jurisdictions: ["Kenya"],
     practiceAreas: ["Commercial contracts", "Employment", "Civil litigation"],
     reviewedConstitutionForCountry: true,
-    reviewedTopicIds: ["ke:employment"],
+    reviewedTopicIds: ["ke:rights"],
     statement:
       "Advocate profile published on Oraro & Company’s website. Confirm instructions and availability with the firm.",
     verifiedAt: V1_VERIFIED_AT,
@@ -394,7 +394,7 @@ export const VERIFIED_LAWYERS: VerifiedLawyer[] = [
     jurisdictions: ["South Africa"],
     practiceAreas: ["Employment", "Civil litigation", "Commercial contracts"],
     reviewedConstitutionForCountry: true,
-    reviewedTopicIds: ["za:employment"],
+    reviewedTopicIds: ["za:rights"],
     statement:
       "Named author on a firm employment-law alert with structured data on the public article page. Specialist focus should be confirmed with CDH.",
     verifiedAt: V1_VERIFIED_AT,
@@ -418,7 +418,7 @@ export const VERIFIED_LAWYERS: VerifiedLawyer[] = [
     jurisdictions: ["South Africa"],
     practiceAreas: ["Employment", "Housing", "Civil litigation"],
     reviewedConstitutionForCountry: true,
-    reviewedTopicIds: ["za:employment"],
+    reviewedTopicIds: ["za:rights"],
     statement:
       "Co-author on the same publicly posted CDH employment alert; use the source article to audit the attribution.",
     verifiedAt: V1_VERIFIED_AT,
@@ -442,7 +442,7 @@ export const VERIFIED_LAWYERS: VerifiedLawyer[] = [
     jurisdictions: ["South Africa"],
     practiceAreas: ["Employment", "Commercial contracts", "Civil litigation"],
     reviewedConstitutionForCountry: true,
-    reviewedTopicIds: ["za:employment"],
+    reviewedTopicIds: ["za:rights"],
     statement:
       "Sector head and director featured on the firm’s public “About” content. Role descriptors are taken from that official page.",
     verifiedAt: V1_VERIFIED_AT,
@@ -465,7 +465,7 @@ export const VERIFIED_LAWYERS: VerifiedLawyer[] = [
     jurisdictions: ["South Africa"],
     practiceAreas: ["Civil litigation", "Commercial contracts", "Housing"],
     reviewedConstitutionForCountry: true,
-    reviewedTopicIds: ["za:employment"],
+    reviewedTopicIds: ["za:rights"],
     statement:
       "Listed as an author in JSON-LD metadata on a CDH dispute-resolution alert. Consumer and commercial disputes should be scoped with the firm.",
     verifiedAt: V1_VERIFIED_AT,
@@ -489,7 +489,7 @@ export const VERIFIED_LAWYERS: VerifiedLawyer[] = [
     jurisdictions: ["South Africa"],
     practiceAreas: ["Dispute resolution", "Commercial contracts", "Civil litigation"],
     reviewedConstitutionForCountry: true,
-    reviewedTopicIds: ["za:employment"],
+    reviewedTopicIds: ["za:rights"],
     statement:
       "Named contributor on the same public CDH dispute alert as other Johannesburg practitioners. Confirm current practice areas with CDH.",
     verifiedAt: V1_VERIFIED_AT,
