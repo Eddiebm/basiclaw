@@ -5,7 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
-import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
+import { VoiceDictationButton } from "@/components/voice/dynamic-voice-controls";
 import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
 import { getPopularCountries } from "@/lib/jurisdictions";
 import { AuditReportCard } from "@/components/audit/AuditReportCard";

@@ -1,10 +1,10 @@
 import type { NextConfig } from "next";
-import bundleAnalyzer from "@next/bundle-analyzer";
+import withBundleAnalyzer from "@next/bundle-analyzer";
 import { withSentryConfig } from "@sentry/nextjs";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
-const withBundleAnalyzer = bundleAnalyzer({ enabled: process.env.ANALYZE === "true" });
+const withAnalyzer = withBundleAnalyzer({ enabled: process.env.ANALYZE === "true" });
 
 const EMBED_CSP =
   "default-src 'self'; " +
@@ -42,7 +42,7 @@ const withIntl = withNextIntl(nextConfig);
 
 const sentryUploadEnabled = Boolean(process.env.SENTRY_AUTH_TOKEN?.trim());
 
-export default withSentryConfig(withBundleAnalyzer(withIntl), {
+export default withSentryConfig(withAnalyzer(withIntl), {
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
   authToken: process.env.SENTRY_AUTH_TOKEN,

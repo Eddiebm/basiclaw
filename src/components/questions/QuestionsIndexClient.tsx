@@ -10,7 +10,7 @@ import { STRONG_COVERAGE_COUNTRIES } from "@/data/questions/country-coverage";
 import { QuestionCard } from "./QuestionCard";
 import { DOMAIN_LABEL, STAGE_LABEL } from "./labels";
 import { Button } from "@/components/ui/Button";
-import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
+import { VoiceDictationButton } from "@/components/voice/dynamic-voice-controls";
 
 interface QuestionsIndexClientProps {
   questions: CitizenQuestion[];

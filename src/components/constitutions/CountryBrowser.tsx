@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Search, ChevronRight, Globe2, Scale } from "lucide-react";
-import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
+import { VoiceDictationButton } from "@/components/voice/dynamic-voice-controls";
 import type { Country, LegalSystem, Region } from "@/data/types";
 import { LEGAL_SYSTEM_LABELS } from "@/data/types";
 import { groupByRegion, REGIONS, LEGAL_SYSTEMS, searchCountries } from "@/lib/jurisdictions";

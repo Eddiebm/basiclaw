@@ -12,7 +12,7 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/Button";
-import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
+import { VoiceDictationButton } from "@/components/voice/dynamic-voice-controls";
 import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
 import { COUNTRIES } from "@/data/countries";
 import { getPopularCountries } from "@/lib/jurisdictions";

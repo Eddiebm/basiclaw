@@ -14,9 +14,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
 import { track } from "@/lib/analytics";
-import { VoiceDictationButton } from "@/components/voice/VoiceDictationButton";
+import { VoiceDictationButton, ReadAloudButton } from "@/components/voice/dynamic-voice-controls";
 import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
-import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
 import { AssistantChatActions } from "@/components/chat/AssistantChatActions";
 import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 

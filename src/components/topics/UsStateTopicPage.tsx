@@ -16,7 +16,7 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import { LawyerCtaLink } from "@/components/analytics/LawyerCtaLink";
-import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
+import { ReadAloudButton } from "@/components/voice/dynamic-voice-controls";
 import { MarkdownContent } from "@/components/markdown/MarkdownContent";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { ReadAloudButton } from "@/components/voice/ReadAloudButton";
+import { ReadAloudButton } from "@/components/voice/dynamic-voice-controls";
 
 export function ConstitutionPlainSummaryVoice({
   summary,

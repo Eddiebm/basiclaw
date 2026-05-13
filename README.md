@@ -19,7 +19,7 @@ BasicLaw turns the constitution and core rights of **every country in the world*
 
 ### Middleware / i18n / proxy
 
-BasicLaw uses **next-intl** with `src/proxy.ts` (Next.js 16 **proxy** convention; replaces deprecated `middleware.ts`) composed with **Clerk** on protected pages and `/api/me/*`. `/api/cron/*` is gated by `CRON_SECRET` / `x-vercel-cron` (not Clerk). The handler is still created with `createIntlMiddleware` from `next-intl/middleware` — only the **filename** and Next.js routing convention changed. See Next’s [`middleware-to-proxy` codemod](https://nextjs.org/docs/app/building-your-application/upgrading/codemods#middleware-to-proxy) and [`proxy` file convention](https://nextjs.org/docs/app/api-reference/file-conventions/proxy).
+BasicLaw uses **next-intl** with `src/middleware.ts` composed with **Clerk** on protected pages and `/api/me/*`. `/api/cron/*` is gated by `CRON_SECRET` / `x-vercel-cron` (not Clerk). The handler is created with `createIntlMiddleware` from `next-intl/middleware`. We keep the `middleware.ts` filename so `next build --webpack` finalizes correctly (Next 16’s `proxy.ts` path can omit `proxy.js` in some webpack builds).
 
 - **Styling:** Tailwind CSS v4, Radix UI, Framer Motion
 - **AI:** Vercel AI Gateway when `AI_GATEWAY_API_KEY` is set; otherwise OpenRouter (`OPENROUTER_API_KEY`) for `/api/chat` and audits.
@@ -90,7 +90,7 @@ src/
     api/chat/route.ts          # AI Gateway (preferred) or OpenRouter + constitution context
     api/lawyer-leads/route.ts  # lawyer marketplace submissions (+ optional Resend)
     sitemap.ts, robots.ts, og/ # SEO surfaces
-  i18n/                        # routing, messages merge, proxy.ts (Next 16) + navigation
+  i18n/                        # routing, messages merge, middleware + navigation
   messages/                    # locale JSON overlays
   components/
     constitutions/CountryBrowser.tsx
