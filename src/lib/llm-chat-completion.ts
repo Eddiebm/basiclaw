@@ -14,14 +14,18 @@ async function openRouterChat(params: {
   maxTokens: number;
   temperature: number;
   apiKey: string;
+  httpReferer?: string;
+  xTitle?: string;
 }): Promise<string> {
+  const referer = params.httpReferer ?? (process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app");
+  const title = params.xTitle ?? "BasicLaw - Legal Information Assistant";
   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${params.apiKey}`,
       "Content-Type": "application/json",
-      "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app",
-      "X-Title": "BasicLaw - Legal Information Assistant",
+      "HTTP-Referer": referer,
+      "X-Title": title,
     },
     body: JSON.stringify({
       model: params.model,
@@ -53,6 +57,15 @@ export async function generateChatCompletionText(opts: {
   temperature?: number;
   /** Overrides OPENROUTER_MODEL / audit-specific env */
   model?: string;
+  /**
+   * When AI Gateway is inactive, used for direct OpenRouter auth instead of OPENROUTER_API_KEY
+   * (e.g. BUILD_LLM_KEY at build time). Ignored when AI_GATEWAY_API_KEY is set.
+   */
+  openRouterApiKey?: string;
+  /** Optional OpenRouter HTTP-Referer header (direct OpenRouter path only). */
+  openRouterHttpReferer?: string;
+  /** Optional OpenRouter X-Title header (direct OpenRouter path only). */
+  openRouterTitle?: string;
 }): Promise<{ text: string; provider: "ai_gateway" | "openrouter" }> {
   const maxTokens = opts.maxTokens ?? 1500;
   const temperature = opts.temperature ?? 0.5;
@@ -72,7 +85,7 @@ export async function generateChatCompletionText(opts: {
     return { text, provider: "ai_gateway" };
   }
 
-  const orKey = process.env.OPENROUTER_API_KEY?.trim();
+  const orKey = opts.openRouterApiKey?.trim() || process.env.OPENROUTER_API_KEY?.trim();
   if (!orKey) {
     throw new Error("missing_llm_key");
   }
@@ -82,6 +95,8 @@ export async function generateChatCompletionText(opts: {
     maxTokens,
     temperature,
     apiKey: orKey,
+    httpReferer: opts.openRouterHttpReferer,
+    xTitle: opts.openRouterTitle,
   });
   return { text, provider: "openrouter" };
 }

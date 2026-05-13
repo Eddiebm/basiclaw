@@ -1,4 +1,5 @@
 import type { UsState, UsStateTopicSlug } from "@/data/us-states";
+import { generateChatCompletionText } from "@/lib/llm-chat-completion";
 
 /**
  * Optional build-time enrichment. Runs only when BUILD_LLM_KEY is set (never uses chat keys).
@@ -23,29 +24,24 @@ Topic: ${topic}.
 ${state.notes ? `Known local notes (may be incomplete): ${state.notes}` : ""}
 Write a concise state-specific summary card explaining how this topic often shows up differently in ${state.name} than nationally, and remind readers local codes and courts vary.`;
 
+  // TODO(llm-gateway): openRouterHttpReferer / openRouterTitle apply only on the direct OpenRouter
+  // path; when AI_GATEWAY_API_KEY is set, generateText does not forward those metadata headers.
+
   try {
-    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": site,
-        "X-Title": "BasicLaw build-time state summary",
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: "system", content: system },
-          { role: "user", content: user },
-        ],
-        max_tokens: 220,
-        temperature: 0.35,
-      }),
+    const { text } = await generateChatCompletionText({
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+      maxTokens: 220,
+      temperature: 0.35,
+      model,
+      openRouterApiKey: apiKey,
+      openRouterHttpReferer: site,
+      openRouterTitle: "BasicLaw build-time state summary",
     });
-    if (!res.ok) return null;
-    const data = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
-    const text = data.choices?.[0]?.message?.content?.trim();
-    return text && text.length > 40 ? text : null;
+    const trimmed = text.trim();
+    return trimmed.length > 40 ? trimmed : null;
   } catch {
     return null;
   }
