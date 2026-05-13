@@ -1055,6 +1055,7 @@
       "shareX": "Share on X",
       "shareLinkedIn": "Share on LinkedIn",
       "copyLink": "Copy link",
+      "copied": "Copied",
       "embedSnippet": "Embed snippet",
       "embedHelp": "Uses the BasicLaw embed widget with this answer id prefilled."
     },
@@ -1092,10 +1093,10 @@
       "open": "Open",
       "publish": "Publish",
       "unpublish": "Make private",
-      "delete": "Delete",
       "votes": "{up}↑ {down}↓",
       "publishConfirm": "Publish this anonymised Q&A to the public archive? Preview:",
-      "delete": "Delete saved answer"
+      "deleteAnswerAria": "Delete saved answer",
+      "loading": "Loading…"
     }
   },
   "errors": {

@@ -143,7 +143,7 @@ export function AnswerDetailClient({
         </Button>
         <Button type="button" size="sm" variant="outline" onClick={() => void copyPage()}>
           <Copy className="h-3.5 w-3.5 mr-1" aria-hidden />
-          {copied ? "Copied" : t("copyLink")}
+          {copied ? t("copied") : t("copyLink")}
         </Button>
         <Button type="button" size="sm" variant="secondary" onClick={() => void copyEmbed()}>
           {t("embedSnippet")}

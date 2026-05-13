@@ -441,5 +441,14 @@
     "useCase3": "University clinics and pro bono blogs — contract red-flag callouts without sending readers away.",
     "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
     "healthLink": "Health check endpoint: "
+  },
+  "answers": {
+    "detail": {
+      "copied": "Copiado"
+    },
+    "dashboard": {
+      "loading": "Cargando…",
+      "deleteAnswerAria": "Eliminar respuesta guardada"
+    }
   }
 }

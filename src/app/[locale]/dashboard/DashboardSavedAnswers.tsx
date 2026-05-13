@@ -69,7 +69,7 @@ export function DashboardSavedAnswers() {
     return (
       <div className="flex items-center gap-2 text-sm text-[var(--muted-foreground)]">
         <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-        Loading…
+        {tAns("loading")}
       </div>
     );
   }
@@ -116,7 +116,7 @@ export function DashboardSavedAnswers() {
                   {tAns("publish")}
                 </Button>
               )}
-              <Button size="sm" variant="ghost" disabled={busyId === r.id} onClick={() => void remove(r.id)} aria-label={tAns("delete")}>
+              <Button size="sm" variant="ghost" disabled={busyId === r.id} onClick={() => void remove(r.id)} aria-label={tAns("deleteAnswerAria")}>
                 <Trash2 className="h-4 w-4 text-red-600" />
               </Button>
             </div>
