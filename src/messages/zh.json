@@ -306,6 +306,16 @@
     "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
     "healthLink": "Health check endpoint: "
   },
+  "lawyersBecomePartner": {
+    "metaTitle": "成为合作伙伴 — BasicLaw 律师名录",
+    "metaDescription": "申请在人工审核后加入 BasicLaw 合作伙伴名录。",
+    "title": "成为名录合作伙伴",
+    "subtitle": "审核通过后，您的律所可与已验证审核员并列展示。BasicLaw 仍为教育用途；本版本不提供分成费用或案件管理。",
+    "body": "合作伙伴将按匹配度与准确性期望进行人工审核。请提交简短的合作申请表 — 我们会安全保存您的申请，且不会在公开页面展示待审核申请。",
+    "cta": "提交合作申请",
+    "secondary": "更偏好已验证审核员计划？",
+    "secondaryLink": "申请已验证徽章"
+  },
   "comparePage": {
     "panelHeadline": "{name} · {year}"
   },
