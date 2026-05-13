@@ -331,8 +331,8 @@
     "wordCount50": "50 शब्द",
     "wordCount100": "100 शब्द",
     "wordCount250": "250 शब्द",
-    "logoDownloadInkParchment": "पarchment पर स्याही (SVG)",
-    "logoDownloadParchmentOnInk": "स्याही पर parchment (SVG)",
+    "logoDownloadInkParchment": "चर्मपत्र पर स्याही (SVG)",
+    "logoDownloadParchmentOnInk": "स्याही पर चर्मपत्र (SVG)",
     "logoDownloadFullColour": "पूर्ण रंग (SVG)",
     "logoDownloadMonochrome": "एक रंग (SVG)",
     "ogImageAskTitle": "BasicLaw से पूछें",
@@ -347,7 +347,7 @@
     "screenshotAltAudit": "BasicLaw अनुबंध ऑडिट टूल का स्क्रीनशॉट",
     "screenshotAltConstitution": "BasicLaw संविधान अवलोकन का स्क्रीनशॉट",
     "screenshotAltQuestions": "BasicLaw नागरिक प्रश्न पुस्तकालय का स्क्रीनशॉट",
-    "jsonLdContactType": "जनसंपर्क"
+    "jsonLdContactType": "public relations"
   },
   "answers": {
     "detail": {

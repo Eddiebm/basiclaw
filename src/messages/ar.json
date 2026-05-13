@@ -318,13 +318,13 @@
     "detailDimensionScore": "الدرجة: {score} / 100",
     "detailJsonLdDatasetRowName": "{country} — صف مؤشر محو الأمية القانونية",
     "jsonLdTopTenListName": "مؤشر محو الأمية القانونية BasicLaw — أعلى عشر درجات إجمالية",
-    "jsonLdPropAccessibility": "إتاحة الوصول",
+    "jsonLdPropAccessibility": "سهولة الوصول",
     "jsonLdPropPlainLanguageConstitution": "دستور بلغة واضحة",
     "jsonLdPropRightsProtection": "حماية الحقوق",
     "jsonLdPropJudicialIndependence": "استقلال القضاء",
     "jsonLdPropCitizenEmpowerment": "تمكين المواطنين",
     "jsonLdPropConstitutionalClarity": "وضوح دستوري",
-    "jsonLdPropCrossJurisdictionInterop": "تشغيل بياني بين الولايات القضائية",
+    "jsonLdPropCrossJurisdictionInterop": "التوافق بين الولايات القضائية",
     "paginationNavAria": "ترقيم الصفحات"
   },
   "pressPage": {
@@ -347,7 +347,7 @@
     "screenshotAltAudit": "لقطة شاشة لأداة تدقيق العقود في BasicLaw",
     "screenshotAltConstitution": "لقطة شاشة لنظرة دستورية في BasicLaw",
     "screenshotAltQuestions": "لقطة شاشة لمكتبة أسئلة المواطنين في BasicLaw",
-    "jsonLdContactType": "العلاقات العامة"
+    "jsonLdContactType": "public relations"
   },
   "answers": {
     "detail": {
