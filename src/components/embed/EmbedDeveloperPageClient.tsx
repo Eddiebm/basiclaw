@@ -13,6 +13,13 @@ const SITE = (process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app").replac
 
 const AUDIT_TYPES = ["general", "lease", "employment", "terms"] as const;
 
+const AUDIT_TYPE_MESSAGE_KEY: Record<(typeof AUDIT_TYPES)[number], "auditTypes.general" | "auditTypes.lease" | "auditTypes.employment" | "auditTypes.terms"> = {
+  general: "auditTypes.general",
+  lease: "auditTypes.lease",
+  employment: "auditTypes.employment",
+  terms: "auditTypes.terms",
+};
+
 export function EmbedDeveloperPageClient() {
   const t = useTranslations("embedPage");
   const locale = useLocale();
@@ -47,7 +54,10 @@ export function EmbedDeveloperPageClient() {
   const iframePath = variant === "audit" ? "/embed/audit" : "/embed/ask";
   const previewSrc = `${SITE}${iframePath}?${query}`;
 
-  const iframeSnippet = `<iframe src="${previewSrc}"\n  style="width:100%;height:560px;border:0"\n  loading="lazy"\n  title="BasicLaw"></iframe>`;
+  const iframeSnippet = useMemo(() => {
+    const title = t("iframeSnippetTitle").replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+    return `<iframe src="${previewSrc}"\n  style="width:100%;height:560px;border:0"\n  loading="lazy"\n  title="${title}"></iframe>`;
+  }, [previewSrc, t]);
 
   const loaderAttrs = [
     "async",
@@ -73,7 +83,7 @@ export function EmbedDeveloperPageClient() {
       setCopied(kind);
       setTimeout(() => setCopied(null), 2000);
     } catch {
-      window.prompt("Copy:", text);
+      window.prompt(t("copyPromptLabel"), text);
     }
   }
 
@@ -138,7 +148,7 @@ export function EmbedDeveloperPageClient() {
                 >
                   {AUDIT_TYPES.map((a) => (
                     <option key={a} value={a}>
-                      {a}
+                      {t(AUDIT_TYPE_MESSAGE_KEY[a])}
                     </option>
                   ))}
                 </select>
@@ -203,7 +213,7 @@ export function EmbedDeveloperPageClient() {
           <div className="rounded-2xl border border-[var(--border)] bg-card p-4 shadow-sm">
             <h2 className="text-lg font-semibold text-foreground">{t("previewTitle")}</h2>
             <div className="mt-4 overflow-hidden rounded-xl border border-[var(--border)] bg-muted/20">
-              <iframe src={previewSrc} title="BasicLaw embed preview" className="h-[560px] w-full border-0" loading="lazy" />
+              <iframe src={previewSrc} title={t("iframePreviewTitle")} className="h-[560px] w-full border-0" loading="lazy" />
             </div>
           </div>
         </section>
@@ -215,7 +225,7 @@ export function EmbedDeveloperPageClient() {
             <h3 className="text-base font-semibold">{t("iframeTitle")}</h3>
             <Button type="button" variant="secondary" size="sm" className="gap-2" onClick={() => void copy("iframe")}>
               {copied === "iframe" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              Copy
+              {copied === "iframe" ? t("copiedButton") : t("copyButton")}
             </Button>
           </div>
           <pre className="max-h-64 overflow-auto rounded-xl border border-[var(--border)] bg-muted/30 p-4 text-xs leading-relaxed">{iframeSnippet}</pre>
@@ -225,7 +235,7 @@ export function EmbedDeveloperPageClient() {
             <h3 className="text-base font-semibold">{t("loaderTitle")}</h3>
             <Button type="button" variant="secondary" size="sm" className="gap-2" onClick={() => void copy("loader")}>
               {copied === "loader" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-              Copy
+              {copied === "loader" ? t("copiedButton") : t("copyButton")}
             </Button>
           </div>
           <pre className="max-h-64 overflow-auto rounded-xl border border-[var(--border)] bg-muted/30 p-4 text-xs leading-relaxed">{loaderSnippet}</pre>

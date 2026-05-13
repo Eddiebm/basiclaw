@@ -286,6 +286,17 @@
     "previewTitle": "Live preview",
     "iframeTitle": "Snippet — iframe",
     "loaderTitle": "Snippet — script loader (auto-resize)",
+    "copyButton": "复制",
+    "copiedButton": "已复制",
+    "iframePreviewTitle": "BasicLaw 嵌入预览",
+    "iframeSnippetTitle": "BasicLaw",
+    "copyPromptLabel": "复制：",
+    "auditTypes": {
+      "general": "一般合同",
+      "lease": "租赁",
+      "employment": "雇佣",
+      "terms": "服务条款"
+    },
     "copyHint": "Copy and paste into your HTML. The loader listens for resize messages only from the BasicLaw origin derived from the script URL.",
     "useCasesTitle": "Where this helps",
     "useCasesIntro": "Typical embed hosts:",
@@ -294,6 +305,9 @@
     "useCase3": "University clinics and pro bono blogs — contract red-flag callouts without sending readers away.",
     "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
     "healthLink": "Health check endpoint: "
+  },
+  "comparePage": {
+    "panelHeadline": "{name} · {year}"
   },
   "legalIndex": {
     "notFoundMetaTitle": "未找到 — BasicLaw",
@@ -312,6 +326,28 @@
     "jsonLdPropConstitutionalClarity": "宪法清晰度",
     "jsonLdPropCrossJurisdictionInterop": "跨法域互操作性",
     "paginationNavAria": "分页"
+  },
+  "pressPage": {
+    "wordCount50": "50 词",
+    "wordCount100": "100 词",
+    "wordCount250": "250 词",
+    "logoDownloadInkParchment": "羊皮纸上的墨迹（SVG）",
+    "logoDownloadParchmentOnInk": "墨迹上的羊皮纸（SVG）",
+    "logoDownloadFullColour": "全彩（SVG）",
+    "logoDownloadMonochrome": "单色（SVG）",
+    "ogImageAskTitle": "询问 BasicLaw",
+    "ogImageChatSubtitle": "简明法律对话",
+    "ogImageAuditTitle": "合同审查",
+    "ogImageAuditSubtitle": "风险点与应对提示",
+    "ogImageConstitutionTitle": "宪法概览",
+    "ogImageConstitutionSubtitle": "简明语言与来源",
+    "ogImageQuestionsTitle": "公民问题",
+    "ogImageQuestionsSubtitle": "按司法辖区提示",
+    "screenshotAltChat": "BasicLaw 聊天体验截图",
+    "screenshotAltAudit": "BasicLaw 合同审查工具截图",
+    "screenshotAltConstitution": "BasicLaw 宪法概览截图",
+    "screenshotAltQuestions": "BasicLaw 公民问题库截图",
+    "jsonLdContactType": "公共关系"
   },
   "answers": {
     "detail": {

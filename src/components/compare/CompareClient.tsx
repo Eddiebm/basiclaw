@@ -244,6 +244,7 @@ function CompareCard({
   sourcesHeading: string;
   lastVerifiedLabel: string;
 }) {
+  const t = useTranslations("comparePage");
   return (
     <article className="rounded-3xl border border-[var(--border)] bg-[var(--card)] overflow-hidden flex flex-col">
       <header className="border-b border-[var(--border)] bg-[var(--accent)]/30 px-6 py-4 flex flex-wrap items-center gap-3">
@@ -253,7 +254,7 @@ function CompareCard({
         <div className="min-w-0 flex-1">
           <p className="text-xs uppercase tracking-wider text-[var(--muted-foreground)]">{topicLabel}</p>
           <h2 className="text-lg font-semibold text-[var(--foreground)] truncate">
-            {panel.name} · {panel.yearAdopted}
+            {t("panelHeadline", { name: panel.name, year: panel.yearAdopted })}
           </h2>
           <p className="text-xs text-[var(--muted-foreground)] line-clamp-2">{panel.constitutionTitle}</p>
         </div>

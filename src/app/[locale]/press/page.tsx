@@ -54,7 +54,7 @@ export default async function PressPage({ params }: { params: Promise<{ locale: 
       ? [
           {
             "@type": "ContactPoint",
-            contactType: "public relations",
+            contactType: t("jsonLdContactType"),
             email: pressEmail,
           },
         ]
@@ -73,11 +73,11 @@ export default async function PressPage({ params }: { params: Promise<{ locale: 
           </header>
 
           <div className="space-y-4 text-[var(--foreground)] leading-relaxed">
-            <p className="text-sm font-medium text-[var(--muted-foreground)]">50 words</p>
+            <p className="text-sm font-medium text-[var(--muted-foreground)]">{t("wordCount50")}</p>
             <p>{t("blurb50")}</p>
-            <p className="text-sm font-medium text-[var(--muted-foreground)]">100 words</p>
+            <p className="text-sm font-medium text-[var(--muted-foreground)]">{t("wordCount100")}</p>
             <p>{t("blurb100")}</p>
-            <p className="text-sm font-medium text-[var(--muted-foreground)]">250 words</p>
+            <p className="text-sm font-medium text-[var(--muted-foreground)]">{t("wordCount250")}</p>
             <p>{t("blurb250")}</p>
           </div>
 
@@ -93,22 +93,22 @@ export default async function PressPage({ params }: { params: Promise<{ locale: 
             <ul className="grid sm:grid-cols-2 gap-3 text-sm">
               <li>
                 <a className="text-[var(--primary)] underline" href="/press/logo-ink-on-parchment.svg" download>
-                  Ink on parchment (SVG)
+                  {t("logoDownloadInkParchment")}
                 </a>
               </li>
               <li>
                 <a className="text-[var(--primary)] underline" href="/press/logo-parchment-on-ink.svg" download>
-                  Parchment on ink (SVG)
+                  {t("logoDownloadParchmentOnInk")}
                 </a>
               </li>
               <li>
                 <a className="text-[var(--primary)] underline" href="/press/logo-full-colour.svg" download>
-                  Full colour (SVG)
+                  {t("logoDownloadFullColour")}
                 </a>
               </li>
               <li>
                 <a className="text-[var(--primary)] underline" href="/press/logo-monochrome.svg" download>
-                  Monochrome (SVG)
+                  {t("logoDownloadMonochrome")}
                 </a>
               </li>
             </ul>
@@ -126,7 +126,7 @@ export default async function PressPage({ params }: { params: Promise<{ locale: 
                     title: t("ogImageAskTitle"),
                     subtitle: t("ogImageChatSubtitle"),
                   })}
-                  alt=""
+                  alt={t("screenshotAltChat")}
                   width={1200}
                   height={630}
                   unoptimized
@@ -141,7 +141,7 @@ export default async function PressPage({ params }: { params: Promise<{ locale: 
                     title: t("ogImageAuditTitle"),
                     subtitle: t("ogImageAuditSubtitle"),
                   })}
-                  alt=""
+                  alt={t("screenshotAltAudit")}
                   width={1200}
                   height={630}
                   unoptimized
@@ -156,7 +156,7 @@ export default async function PressPage({ params }: { params: Promise<{ locale: 
                     title: t("ogImageConstitutionTitle"),
                     subtitle: t("ogImageConstitutionSubtitle"),
                   })}
-                  alt=""
+                  alt={t("screenshotAltConstitution")}
                   width={1200}
                   height={630}
                   unoptimized
@@ -171,7 +171,7 @@ export default async function PressPage({ params }: { params: Promise<{ locale: 
                     title: t("ogImageQuestionsTitle"),
                     subtitle: t("ogImageQuestionsSubtitle"),
                   })}
-                  alt=""
+                  alt={t("screenshotAltQuestions")}
                   width={1200}
                   height={630}
                   unoptimized

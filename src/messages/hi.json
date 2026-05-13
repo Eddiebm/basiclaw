@@ -286,6 +286,17 @@
     "previewTitle": "Live preview",
     "iframeTitle": "Snippet — iframe",
     "loaderTitle": "Snippet — script loader (auto-resize)",
+    "copyButton": "कॉपी करें",
+    "copiedButton": "कॉपी हो गया",
+    "iframePreviewTitle": "BasicLaw एम्बेड पूर्वावलोकन",
+    "iframeSnippetTitle": "BasicLaw",
+    "copyPromptLabel": "कॉपी करें:",
+    "auditTypes": {
+      "general": "सामान्य अनुबंध",
+      "lease": "पट्टा",
+      "employment": "रोज़गार",
+      "terms": "सेवा की शर्तें"
+    },
     "copyHint": "Copy and paste into your HTML. The loader listens for resize messages only from the BasicLaw origin derived from the script URL.",
     "useCasesTitle": "Where this helps",
     "useCasesIntro": "Typical embed hosts:",
@@ -294,6 +305,9 @@
     "useCase3": "University clinics and pro bono blogs — contract red-flag callouts without sending readers away.",
     "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
     "healthLink": "Health check endpoint: "
+  },
+  "comparePage": {
+    "panelHeadline": "{name} · {year}"
   },
   "legalIndex": {
     "notFoundMetaTitle": "नहीं मिला — BasicLaw",
@@ -312,6 +326,28 @@
     "jsonLdPropConstitutionalClarity": "संवैधानिक स्पष्टता",
     "jsonLdPropCrossJurisdictionInterop": "अधिकार-क्षेत्रों के बीच अंतरसंचालन",
     "paginationNavAria": "पृष्ठ संख्या"
+  },
+  "pressPage": {
+    "wordCount50": "50 शब्द",
+    "wordCount100": "100 शब्द",
+    "wordCount250": "250 शब्द",
+    "logoDownloadInkParchment": "पarchment पर स्याही (SVG)",
+    "logoDownloadParchmentOnInk": "स्याही पर parchment (SVG)",
+    "logoDownloadFullColour": "पूर्ण रंग (SVG)",
+    "logoDownloadMonochrome": "एक रंग (SVG)",
+    "ogImageAskTitle": "BasicLaw से पूछें",
+    "ogImageChatSubtitle": "सरल भाषा में कानूनी चैट",
+    "ogImageAuditTitle": "अनुबंध ऑडिट",
+    "ogImageAuditSubtitle": "चेतावनियाँ और जवाब के संकेत",
+    "ogImageConstitutionTitle": "संविधान अवलोकन",
+    "ogImageConstitutionSubtitle": "सरल भाषा और स्रोत",
+    "ogImageQuestionsTitle": "नागरिक प्रश्न",
+    "ogImageQuestionsSubtitle": "अधिकार-क्षेत्र के अनुरूप संकेत",
+    "screenshotAltChat": "BasicLaw चैट अनुभव का स्क्रीनशॉट",
+    "screenshotAltAudit": "BasicLaw अनुबंध ऑडिट टूल का स्क्रीनशॉट",
+    "screenshotAltConstitution": "BasicLaw संविधान अवलोकन का स्क्रीनशॉट",
+    "screenshotAltQuestions": "BasicLaw नागरिक प्रश्न पुस्तकालय का स्क्रीनशॉट",
+    "jsonLdContactType": "जनसंपर्क"
   },
   "answers": {
     "detail": {

@@ -286,6 +286,17 @@
     "previewTitle": "Live preview",
     "iframeTitle": "Snippet — iframe",
     "loaderTitle": "Snippet — script loader (auto-resize)",
+    "copyButton": "نسخ",
+    "copiedButton": "تم النسخ",
+    "iframePreviewTitle": "معاينة أداة BasicLaw المدمجة",
+    "iframeSnippetTitle": "BasicLaw",
+    "copyPromptLabel": "نسخ:",
+    "auditTypes": {
+      "general": "عقد عام",
+      "lease": "إيجار",
+      "employment": "عمل",
+      "terms": "شروط الخدمة"
+    },
     "copyHint": "Copy and paste into your HTML. The loader listens for resize messages only from the BasicLaw origin derived from the script URL.",
     "useCasesTitle": "Where this helps",
     "useCasesIntro": "Typical embed hosts:",
@@ -294,6 +305,9 @@
     "useCase3": "University clinics and pro bono blogs — contract red-flag callouts without sending readers away.",
     "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
     "healthLink": "Health check endpoint: "
+  },
+  "comparePage": {
+    "panelHeadline": "{name} · {year}"
   },
   "legalIndex": {
     "notFoundMetaTitle": "غير موجود — BasicLaw",
@@ -312,6 +326,28 @@
     "jsonLdPropConstitutionalClarity": "وضوح دستوري",
     "jsonLdPropCrossJurisdictionInterop": "تشغيل بياني بين الولايات القضائية",
     "paginationNavAria": "ترقيم الصفحات"
+  },
+  "pressPage": {
+    "wordCount50": "50 كلمة",
+    "wordCount100": "100 كلمة",
+    "wordCount250": "250 كلمة",
+    "logoDownloadInkParchment": "حبر على رق (SVG)",
+    "logoDownloadParchmentOnInk": "رق على حبر (SVG)",
+    "logoDownloadFullColour": "ألوان كاملة (SVG)",
+    "logoDownloadMonochrome": "أحادي اللون (SVG)",
+    "ogImageAskTitle": "اسأل BasicLaw",
+    "ogImageChatSubtitle": "دردشة قانونية بلغة واضحة",
+    "ogImageAuditTitle": "تدقيق العقود",
+    "ogImageAuditSubtitle": "تنبيهات ومقترحات رد",
+    "ogImageConstitutionTitle": "نظرة على الدستور",
+    "ogImageConstitutionSubtitle": "لغة واضحة ومصادر",
+    "ogImageQuestionsTitle": "أسئلة المواطنين",
+    "ogImageQuestionsSubtitle": "مطالبات حسب الولاية القضائية",
+    "screenshotAltChat": "لقطة شاشة لتجربة الدردشة في BasicLaw",
+    "screenshotAltAudit": "لقطة شاشة لأداة تدقيق العقود في BasicLaw",
+    "screenshotAltConstitution": "لقطة شاشة لنظرة دستورية في BasicLaw",
+    "screenshotAltQuestions": "لقطة شاشة لمكتبة أسئلة المواطنين في BasicLaw",
+    "jsonLdContactType": "العلاقات العامة"
   },
   "answers": {
     "detail": {
