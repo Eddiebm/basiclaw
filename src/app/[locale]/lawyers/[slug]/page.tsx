@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
-import { getVerifiedLawyerBySlug, VERIFIED_LAWYERS } from "@/data/verified-lawyers";
+import { getVerifiedLawyerBySlug, VERIFIED_LAWYERS, LAWYER_VERIFIED_VIA_I18N_KEY } from "@/data/verified-lawyers";
 import { getPartnerLawyerBySlug } from "@/lib/partner-storage";
 import { mapPartnerToDirectoryRow, mapVerifiedToDirectoryRow } from "@/lib/lawyer-directory";
 import { LawyerConsultForm } from "./LawyerConsultForm";
@@ -66,6 +66,9 @@ export default async function LawyerProfilePage({ params }: { params: Promise<{ 
   const row = verified ? mapVerifiedToDirectoryRow(verified) : mapPartnerToDirectoryRow(partner!);
   const absoluteSite = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://basiclaw.app";
   const pageUrl = `${absoluteSite}/${locale}/lawyers/${row.slug}`;
+  const verifiedAtLabel = row.verifiedAt
+    ? new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" }).format(new Date(row.verifiedAt))
+    : null;
 
   const jsonLd = [
     {
@@ -95,6 +98,10 @@ export default async function LawyerProfilePage({ params }: { params: Promise<{ 
           <Link href="/lawyers" className="text-sm text-[var(--primary)] underline-offset-4 hover:underline">
             {t("backToDirectory")}
           </Link>
+
+          <p className="text-sm text-[var(--muted-foreground)] leading-relaxed rounded-xl border border-[var(--border)] bg-[var(--card)]/40 p-4">
+            {t("pageDisclaimer")}
+          </p>
 
           <header className="flex flex-col sm:flex-row gap-6 items-start">
             <div className="h-24 w-24 rounded-full overflow-hidden border border-[var(--border)] bg-[var(--muted)] shrink-0">
@@ -198,6 +205,44 @@ export default async function LawyerProfilePage({ params }: { params: Promise<{ 
               ) : null}
             </div>
           </div>
+
+          {row.kind === "verified" && row.sourceUrl && row.verifiedVia ? (
+            <div className="space-y-2 rounded-xl border border-[var(--border)] bg-[var(--card)]/40 p-4">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--muted-foreground)]">{t("verificationTitle")}</h2>
+              <dl className="space-y-2 text-sm">
+                <div>
+                  <dt className="text-xs text-[var(--muted-foreground)]">{t("verifiedViaLabel")}</dt>
+                  <dd className="text-[var(--foreground)]">{t(`verifiedVia.${LAWYER_VERIFIED_VIA_I18N_KEY[row.verifiedVia]}`)}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs text-[var(--muted-foreground)]">{t("sourceListingLabel")}</dt>
+                  <dd>
+                    <a
+                      className="text-[var(--primary)] underline-offset-4 hover:underline break-all"
+                      href={row.sourceUrl}
+                      target="_blank"
+                      rel="nofollow noopener noreferrer"
+                    >
+                      {row.sourceUrl}
+                    </a>
+                  </dd>
+                </div>
+                {verifiedAtLabel ? (
+                  <div>
+                    <dt className="text-xs text-[var(--muted-foreground)]">{t("verifiedAtLabel")}</dt>
+                    <dd className="text-[var(--foreground)]">{verifiedAtLabel}</dd>
+                  </div>
+                ) : null}
+              </dl>
+            </div>
+          ) : null}
+
+          {row.disclaimer ? (
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--muted)]/20 p-4 space-y-1">
+              <h2 className="text-sm font-semibold text-[var(--foreground)]">{t("profileDisclaimerTitle")}</h2>
+              <p className="text-sm text-[var(--muted-foreground)] leading-relaxed">{row.disclaimer}</p>
+            </div>
+          ) : null}
 
           <LawyerConsultForm slug={row.slug} />
         </div>

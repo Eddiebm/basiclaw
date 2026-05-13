@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { DirectoryLawyerRow } from "@/lib/lawyer-directory";
 import type { LawyerFeeStructure, LawyerPartnerTier } from "@/data/verified-lawyers";
+import { LAWYER_VERIFIED_VIA_I18N_KEY } from "@/data/verified-lawyers";
 import { REGIONS } from "@/lib/jurisdictions";
 import { track } from "@/lib/analytics";
 
@@ -107,6 +108,9 @@ export function LawyersDirectory({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       ) : null}
       <div className="space-y-6">
+        <p className="text-sm text-[var(--muted-foreground)] leading-relaxed rounded-xl border border-[var(--border)] bg-[var(--card)]/40 p-4">
+          {t("directoryDisclaimer")}
+        </p>
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)]/60 p-4 sm:p-5 space-y-4">
           <p className="text-sm font-medium text-[var(--foreground)]">{t("filtersTitle")}</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -212,7 +216,7 @@ export function LawyersDirectory({
         ) : (
           <ul className="grid gap-4 sm:grid-cols-2">
             {filtered.map((l) => (
-              <LawyerCard key={`${l.kind}-${l.id}`} lawyer={l} />
+              <LawyerCard key={`${l.kind}-${l.id}`} lawyer={l} locale={locale} />
             ))}
           </ul>
         )}
@@ -221,7 +225,7 @@ export function LawyersDirectory({
   );
 }
 
-function LawyerCard({ lawyer }: { lawyer: DirectoryLawyerWithRegion }) {
+function LawyerCard({ lawyer, locale }: { lawyer: DirectoryLawyerWithRegion; locale: string }) {
   const t = useTranslations("lawyersPage");
   const ref = useRef<HTMLElement | null>(null);
   const seen = useRef(false);
@@ -310,6 +314,31 @@ function LawyerCard({ lawyer }: { lawyer: DirectoryLawyerWithRegion }) {
             </span>
           ) : null}
         </div>
+        {lawyer.kind === "verified" && lawyer.sourceUrl && lawyer.verifiedVia ? (
+          <div className="mt-3 space-y-1.5 text-[10px] text-[var(--muted-foreground)] border-t border-[var(--border)] pt-3">
+            <p>
+              <span className="font-medium text-[var(--foreground)]">{t("verifiedViaLabel")}: </span>
+              {t(`verifiedVia.${LAWYER_VERIFIED_VIA_I18N_KEY[lawyer.verifiedVia]}`)}
+            </p>
+            <p className="min-w-0">
+              <a
+                href={lawyer.sourceUrl}
+                target="_blank"
+                rel="nofollow noopener noreferrer"
+                className="text-[var(--primary)] underline-offset-2 hover:underline break-all"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {t("sourceListingLabel")}
+              </a>
+            </p>
+            {lawyer.verifiedAt ? (
+              <p>
+                <span className="font-medium text-[var(--foreground)]">{t("verifiedAtLabel")}: </span>
+                {new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeZone: "UTC" }).format(new Date(lawyer.verifiedAt))}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
         <div className="mt-auto pt-4">
           <Link
             href={`/lawyers/${lawyer.slug}`}

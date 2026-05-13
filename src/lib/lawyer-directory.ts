@@ -1,4 +1,4 @@
-import type { VerifiedLawyer } from "@/data/verified-lawyers";
+import type { LawyerVerifiedVia, VerifiedLawyer } from "@/data/verified-lawyers";
 import type { PartnerLawyer } from "@/lib/partner-storage";
 import type { AuditType } from "@/lib/audit-types";
 
@@ -11,6 +11,7 @@ export type DirectoryLawyerRow = {
   name: string;
   country: string;
   jurisdiction: string;
+  jurisdictions?: string[];
   practiceAreas: string[];
   languages: string[];
   firmName?: string;
@@ -24,6 +25,10 @@ export type DirectoryLawyerRow = {
   referralCommissionPct?: number;
   partnerTier?: VerifiedLawyer["partnerTier"];
   statement?: string;
+  sourceUrl?: string;
+  verifiedVia?: LawyerVerifiedVia;
+  verifiedAt?: string;
+  disclaimer?: string;
 };
 
 const TIER_ORDER: Record<NonNullable<VerifiedLawyer["partnerTier"]>, number> = {
@@ -45,6 +50,7 @@ export function mapVerifiedToDirectoryRow(v: VerifiedLawyer): DirectoryLawyerRow
     name: v.name,
     country: v.country,
     jurisdiction: v.jurisdiction,
+    jurisdictions: v.jurisdictions,
     practiceAreas: v.practiceAreas,
     languages: v.languages,
     firmName: v.firmName,
@@ -58,6 +64,10 @@ export function mapVerifiedToDirectoryRow(v: VerifiedLawyer): DirectoryLawyerRow
     referralCommissionPct: v.referralCommissionPct,
     partnerTier: v.partnerTier,
     statement: v.statement,
+    sourceUrl: v.sourceUrl,
+    verifiedVia: v.verifiedVia,
+    verifiedAt: v.verifiedAt,
+    disclaimer: v.disclaimer,
   };
 }
 
