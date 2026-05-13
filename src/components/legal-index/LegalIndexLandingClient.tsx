@@ -280,7 +280,7 @@ export function LegalIndexLandingClient({
             </table>
           </div>
 
-          <nav className="mt-6 flex flex-wrap items-center justify-between gap-3" aria-label="Pagination">
+          <nav className="mt-6 flex flex-wrap items-center justify-between gap-3" aria-label={t("paginationNavAria")}>
             <button
               type="button"
               disabled={pageSafe <= 1}

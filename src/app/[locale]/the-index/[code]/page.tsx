@@ -9,10 +9,30 @@ import { LegalIndexCountryBody } from "@/components/legal-index/LegalIndexCountr
 import { COUNTRIES } from "@/data/countries";
 import { getCountry } from "@/lib/jurisdictions";
 import { getLegalIndexEntry } from "@/lib/legal-index-data";
+import { LEGAL_INDEX_DIMENSION_ORDER, type LegalIndexDimensionId } from "@/lib/legal-index";
 import { buildOgImageUrl } from "@/lib/og-image-url";
 import { routing } from "@/i18n/routing";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
+
+const DIMENSION_JSON_LD_KEY: Record<
+  LegalIndexDimensionId,
+  | "jsonLdPropAccessibility"
+  | "jsonLdPropPlainLanguageConstitution"
+  | "jsonLdPropRightsProtection"
+  | "jsonLdPropJudicialIndependence"
+  | "jsonLdPropCitizenEmpowerment"
+  | "jsonLdPropConstitutionalClarity"
+  | "jsonLdPropCrossJurisdictionInterop"
+> = {
+  accessibility: "jsonLdPropAccessibility",
+  plainLanguage: "jsonLdPropPlainLanguageConstitution",
+  rightsProtection: "jsonLdPropRightsProtection",
+  judicialIndependence: "jsonLdPropJudicialIndependence",
+  citizenEmpowerment: "jsonLdPropCitizenEmpowerment",
+  constitutionalClarity: "jsonLdPropConstitutionalClarity",
+  crossJurisdiction: "jsonLdPropCrossJurisdictionInterop",
+};
 
 type Params = { locale: string; code: string };
 
@@ -24,17 +44,19 @@ export function generateStaticParams(): Params[] {
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { locale, code } = await params;
+  const t = await getTranslations({ locale, namespace: "legalIndex" });
   const country = getCountry(code);
   const entry = getLegalIndexEntry(code);
-  if (!country || !entry) return { title: "Not found — BasicLaw" };
-  const t = await getTranslations({ locale, namespace: "legalIndex" });
+  if (!country || !entry) {
+    return { title: t("notFoundMetaTitle"), robots: { index: false, follow: false } };
+  }
   const site = SITE.replace(/\/$/, "");
   const title = t("detailMetaTitle", { country: country.name });
   const description = t("detailMetaDescription", { country: country.name });
   const og = buildOgImageUrl(site, {
     kind: "index",
     title: country.name,
-    subtitle: "Legal Literacy Index · educational only",
+    subtitle: t("ogSubtitleEducational"),
     flag: country.flag,
     grade: entry.grade,
     overall: String(entry.overall),
@@ -64,7 +86,11 @@ export default async function LegalIndexCountryPage({ params }: { params: Promis
   const site = SITE.replace(/\/$/, "");
   const path = `/${locale}/the-index/${country.code.toLowerCase()}`;
   const shareUrl = `${site}${path}`;
-  const shareTitle = `${country.name} — Legal Literacy Index ${entry.grade} (${entry.overall}/100)`;
+  const shareTitle = t("detailShareCardTitle", {
+    country: country.name,
+    grade: entry.grade,
+    overall: entry.overall,
+  });
   const compareB = country.code === "US" ? "GH" : "US";
   const compareHref = `/compare?a=${country.code}&b=${compareB}&topic=rights`;
   const constitutionHref = `/constitutions/${country.code.toLowerCase()}`;
@@ -85,14 +111,14 @@ export default async function LegalIndexCountryPage({ params }: { params: Promis
       {
         "@type": "Dataset",
         "@id": `${shareUrl}#row`,
-        name: `${country.name} — Legal Literacy Index row`,
+        name: t("detailJsonLdDatasetRowName", { country: country.name }),
         description: entry.rationales.accessibility.slice(0, 200),
         isPartOf: { "@id": datasetId },
         spatialCoverage: { "@type": "Country", name: country.name },
-        variableMeasured: Object.entries(entry.dimensions).map(([name, value]) => ({
-          "@type": "PropertyValue",
-          name,
-          value,
+        variableMeasured: LEGAL_INDEX_DIMENSION_ORDER.map((id) => ({
+          "@type": "PropertyValue" as const,
+          name: t(DIMENSION_JSON_LD_KEY[id]),
+          value: entry.dimensions[id],
         })),
       },
     ],
@@ -126,7 +152,9 @@ export default async function LegalIndexCountryPage({ params }: { params: Promis
             <div className="flex flex-col items-start sm:items-end gap-2">
               <span className="text-5xl font-bold text-[var(--foreground)] tabular-nums">{entry.grade}</span>
               <span className="text-lg text-[var(--muted-foreground)] tabular-nums">
-                Overall <strong className="text-[var(--foreground)]">{entry.overall}</strong> / 100
+                {t("detailOverallLabel")}{" "}
+                <strong className="text-[var(--foreground)]">{entry.overall}</strong>
+                {t("detailOverallSuffix")}
               </span>
             </div>
           </header>

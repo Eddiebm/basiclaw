@@ -295,6 +295,24 @@
     "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
     "healthLink": "Health check endpoint: "
   },
+  "legalIndex": {
+    "notFoundMetaTitle": "नहीं मिला — BasicLaw",
+    "ogSubtitleEducational": "कानूनी साक्षरता सूचकांक · केवल शैक्षिक",
+    "detailShareCardTitle": "{country} — कानूनी साक्षरता सूचकांक {grade} ({overall}/100)",
+    "detailOverallLabel": "कुल",
+    "detailOverallSuffix": " / 100",
+    "detailDimensionScore": "स्कोर: {score} / 100",
+    "detailJsonLdDatasetRowName": "{country} — कानूनी साक्षरता सूचकांक पंक्ति",
+    "jsonLdTopTenListName": "BasicLaw कानूनी साक्षरता सूचकांक — शीर्ष दस कुल स्कोर",
+    "jsonLdPropAccessibility": "पहुँच",
+    "jsonLdPropPlainLanguageConstitution": "सरल भाषा में संविधान",
+    "jsonLdPropRightsProtection": "अधिकारों की सुरक्षा",
+    "jsonLdPropJudicialIndependence": "न्यायपालिका की स्वतंत्रता",
+    "jsonLdPropCitizenEmpowerment": "नागरिक सशक्तिकरण",
+    "jsonLdPropConstitutionalClarity": "संवैधानिक स्पष्टता",
+    "jsonLdPropCrossJurisdictionInterop": "अधिकार-क्षेत्रों के बीच अंतरसंचालन",
+    "paginationNavAria": "पृष्ठ संख्या"
+  },
   "answers": {
     "detail": {
       "copied": "कॉपी किया गया"

@@ -295,6 +295,24 @@
     "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
     "healthLink": "Health check endpoint: "
   },
+  "legalIndex": {
+    "notFoundMetaTitle": "غير موجود — BasicLaw",
+    "ogSubtitleEducational": "مؤشر محو الأمية القانونية · لأغراض تعليمية فقط",
+    "detailShareCardTitle": "{country} — مؤشر محو الأمية القانونية {grade} ({overall}/100)",
+    "detailOverallLabel": "الإجمالي",
+    "detailOverallSuffix": " / 100",
+    "detailDimensionScore": "الدرجة: {score} / 100",
+    "detailJsonLdDatasetRowName": "{country} — صف مؤشر محو الأمية القانونية",
+    "jsonLdTopTenListName": "مؤشر محو الأمية القانونية BasicLaw — أعلى عشر درجات إجمالية",
+    "jsonLdPropAccessibility": "إتاحة الوصول",
+    "jsonLdPropPlainLanguageConstitution": "دستور بلغة واضحة",
+    "jsonLdPropRightsProtection": "حماية الحقوق",
+    "jsonLdPropJudicialIndependence": "استقلال القضاء",
+    "jsonLdPropCitizenEmpowerment": "تمكين المواطنين",
+    "jsonLdPropConstitutionalClarity": "وضوح دستوري",
+    "jsonLdPropCrossJurisdictionInterop": "تشغيل بياني بين الولايات القضائية",
+    "paginationNavAria": "ترقيم الصفحات"
+  },
   "answers": {
     "detail": {
       "copied": "تم النسخ"

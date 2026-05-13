@@ -55,7 +55,9 @@ export function LegalIndexCountryBody({
                 <li key={id} className="rounded-xl border border-[var(--border)] bg-[var(--card)]/80 p-4">
                   <h3 className="font-semibold text-[var(--foreground)]">{labels[id]}</h3>
                   <p className="mt-2 text-sm text-[var(--muted-foreground)] leading-relaxed">{entry.rationales[id]}</p>
-                  <p className="mt-2 text-xs text-[var(--muted-foreground)] tabular-nums">Score: {entry.dimensions[id]} / 100</p>
+                  <p className="mt-2 text-xs text-[var(--muted-foreground)] tabular-nums">
+                    {t("detailDimensionScore", { score: entry.dimensions[id] })}
+                  </p>
                 </li>
               ))}
             </ul>

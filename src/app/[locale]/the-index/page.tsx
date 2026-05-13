@@ -64,20 +64,27 @@ export default async function LegalIndexPage({ params }: { params: Promise<{ loc
         description: t("jsonLdDatasetDesc"),
         inLanguage: locale,
         temporalCoverage: String(LEGAL_INDEX_DATA.referenceYear),
-        variableMeasured: [
-          { "@type": "PropertyValue", name: "Accessibility", minValue: 0, maxValue: 100 },
-          { "@type": "PropertyValue", name: "Plain-language constitution", minValue: 0, maxValue: 100 },
-          { "@type": "PropertyValue", name: "Rights protection", minValue: 0, maxValue: 100 },
-          { "@type": "PropertyValue", name: "Judicial independence", minValue: 0, maxValue: 100 },
-          { "@type": "PropertyValue", name: "Citizen empowerment", minValue: 0, maxValue: 100 },
-          { "@type": "PropertyValue", name: "Constitutional clarity", minValue: 0, maxValue: 100 },
-          { "@type": "PropertyValue", name: "Cross-jurisdiction interoperability", minValue: 0, maxValue: 100 },
-        ],
+        variableMeasured: (
+          [
+            "jsonLdPropAccessibility",
+            "jsonLdPropPlainLanguageConstitution",
+            "jsonLdPropRightsProtection",
+            "jsonLdPropJudicialIndependence",
+            "jsonLdPropCitizenEmpowerment",
+            "jsonLdPropConstitutionalClarity",
+            "jsonLdPropCrossJurisdictionInterop",
+          ] as const
+        ).map((key) => ({
+          "@type": "PropertyValue" as const,
+          name: t(key),
+          minValue: 0,
+          maxValue: 100,
+        })),
         distribution: { "@type": "DataDownload", encodingFormat: "application/json", contentUrl: `${site}/` },
       },
       {
         "@type": "ItemList",
-        name: `${t("jsonLdDatasetName")} — top overall scores`,
+        name: t("jsonLdTopTenListName"),
         numberOfItems: topTen.length,
         itemListElement: itemList,
       },

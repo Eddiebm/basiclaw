@@ -295,6 +295,24 @@
     "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
     "healthLink": "Health check endpoint: "
   },
+  "legalIndex": {
+    "notFoundMetaTitle": "未找到 — BasicLaw",
+    "ogSubtitleEducational": "法律素养指数 · 仅供教育用途",
+    "detailShareCardTitle": "{country} — 法律素养指数 {grade}（{overall}/100）",
+    "detailOverallLabel": "总分",
+    "detailOverallSuffix": " / 100",
+    "detailDimensionScore": "得分：{score} / 100",
+    "detailJsonLdDatasetRowName": "{country} — 法律素养指数条目",
+    "jsonLdTopTenListName": "BasicLaw 法律素养指数 — 总分前十名",
+    "jsonLdPropAccessibility": "可及性",
+    "jsonLdPropPlainLanguageConstitution": "简明宪法文本",
+    "jsonLdPropRightsProtection": "权利保障",
+    "jsonLdPropJudicialIndependence": "司法独立",
+    "jsonLdPropCitizenEmpowerment": "公民赋权",
+    "jsonLdPropConstitutionalClarity": "宪法清晰度",
+    "jsonLdPropCrossJurisdictionInterop": "跨法域互操作性",
+    "paginationNavAria": "分页"
+  },
   "answers": {
     "detail": {
       "copied": "已复制"

@@ -360,6 +360,24 @@
     "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
     "healthLink": "Health check endpoint: "
   },
+  "legalIndex": {
+    "notFoundMetaTitle": "Não encontrado — BasicLaw",
+    "ogSubtitleEducational": "Índice de letramento jurídico · apenas educativo",
+    "detailShareCardTitle": "{country} — Índice de letramento jurídico {grade} ({overall}/100)",
+    "detailOverallLabel": "Geral",
+    "detailOverallSuffix": " / 100",
+    "detailDimensionScore": "Pontuação: {score} / 100",
+    "detailJsonLdDatasetRowName": "{country} — linha do Índice de letramento jurídico",
+    "jsonLdTopTenListName": "Índice de letramento jurídico BasicLaw — dez melhores pontuações gerais",
+    "jsonLdPropAccessibility": "Acessibilidade",
+    "jsonLdPropPlainLanguageConstitution": "Constituição em linguagem clara",
+    "jsonLdPropRightsProtection": "Proteção de direitos",
+    "jsonLdPropJudicialIndependence": "Independência judiciária",
+    "jsonLdPropCitizenEmpowerment": "Empoderamento cidadão",
+    "jsonLdPropConstitutionalClarity": "Clareza constitucional",
+    "jsonLdPropCrossJurisdictionInterop": "Interoperabilidade entre jurisdições",
+    "paginationNavAria": "Paginação"
+  },
   "answers": {
     "detail": {
       "copied": "Copiado"

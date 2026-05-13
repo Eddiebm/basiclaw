@@ -442,6 +442,24 @@
     "limitsNote": "Fair usage limits apply. Heavy traffic should link out to BasicLaw or contact us about partnerships.",
     "healthLink": "Health check endpoint: "
   },
+  "legalIndex": {
+    "notFoundMetaTitle": "No encontrado — BasicLaw",
+    "ogSubtitleEducational": "Índice de alfabetización jurídica · solo educativo",
+    "detailShareCardTitle": "{country} — Índice de alfabetización jurídica {grade} ({overall}/100)",
+    "detailOverallLabel": "Total",
+    "detailOverallSuffix": " / 100",
+    "detailDimensionScore": "Puntuación: {score} / 100",
+    "detailJsonLdDatasetRowName": "{country} — fila del Índice de alfabetización jurídica",
+    "jsonLdTopTenListName": "Índice de alfabetización jurídica BasicLaw — 10 mejores puntuaciones totales",
+    "jsonLdPropAccessibility": "Accesibilidad",
+    "jsonLdPropPlainLanguageConstitution": "Constitución en lenguaje claro",
+    "jsonLdPropRightsProtection": "Protección de derechos",
+    "jsonLdPropJudicialIndependence": "Independencia judicial",
+    "jsonLdPropCitizenEmpowerment": "Empoderamiento ciudadano",
+    "jsonLdPropConstitutionalClarity": "Claridad constitucional",
+    "jsonLdPropCrossJurisdictionInterop": "Interoperabilidad entre jurisdicciones",
+    "paginationNavAria": "Paginación"
+  },
   "answers": {
     "detail": {
       "copied": "Copiado"
