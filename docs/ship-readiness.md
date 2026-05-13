@@ -360,7 +360,7 @@
 
 | Batch | Description | SHA |
 |-------|-------------|-----|
-| docs ship-readiness refresh | Observability, E2E, internal health, new routes/APIs, i18n queue link, env table. | 36b4f98 |
+| docs ship-readiness refresh | Observability, E2E, internal health, new routes/APIs, i18n queue link, env table. | d03b65f |
 
 ---
 
