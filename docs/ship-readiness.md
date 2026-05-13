@@ -9,35 +9,51 @@
 
 ### Environment variables (where to set)
 
-| Variable | Required for | Where to get / notes |
-|----------|----------------|----------------------|
-| `OPENROUTER_API_KEY` | Chat + audit AI when `AI_GATEWAY_API_KEY` is unset | [OpenRouter](https://openrouter.ai/) API keys |
-| `AI_GATEWAY_API_KEY` | Preferred LLM path for `/api/chat` and audits | [Vercel AI Gateway](https://vercel.com/docs/ai-gateway); optional — falls back to `OPENROUTER_API_KEY` |
-| `OPENROUTER_MODEL` | Optional model override | Default in code if unset |
-| `NEXT_PUBLIC_SITE_URL` | Canonical URLs, OG, emails, Stripe return URLs, internal health self-fetch | Production domain, e.g. `https://basiclaw.app` |
-| `NEXT_PUBLIC_POSTHOG_KEY` | Product analytics | PostHog project settings |
-| `NEXT_PUBLIC_POSTHOG_HOST` | PostHog region | Optional; defaults to US cloud |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Sign-in/up | Clerk dashboard |
-| `CLERK_SECRET_KEY` | Server auth | Clerk dashboard |
-| `ADMIN_EMAILS` | Comma-separated emails allowed for `/[locale]/admin/*` when Clerk is on (in addition to `publicMetadata.role === "admin"`) | Ops list; see `src/lib/admin-auth.ts` |
-| `STRIPE_SECRET_KEY` | Checkout + portal | Stripe dashboard |
-| `STRIPE_WEBHOOK_SECRET` | `POST /api/webhooks/stripe` | Stripe webhook signing secret |
-| `STRIPE_PRICE_PRO_MONTHLY`, `STRIPE_PRICE_PRO_ANNUAL`, `STRIPE_PRICE_PLUS_MONTHLY`, `STRIPE_PRICE_PLUS_ANNUAL` | Paid tiers | Stripe Products/Prices; mapped in `src/lib/stripe-plan.ts` |
-| `RESEND_API_KEY` | Transactional email | Resend |
-| `RESEND_FROM_EMAIL` | From address for Resend | Verified domain in Resend |
-| `LAWYER_LEADS_EMAIL` | Inbox for generic lawyer lead + some fallbacks | Your ops email |
-| `LAWYER_APPLICATIONS_EMAIL` | Optional override for verified-reviewer applications (`/api/lawyer-applications`) | Falls back to `LAWYER_LEADS_EMAIL` / `RESEND_FROM_EMAIL` |
-| `PRESS_EMAIL` | Press contact form (`/api/press-contact`, `/press`) | Inbox for press inquiries |
-| `RIGHT_OF_DAY_FROM_EMAIL` | Cron “right of the day” | Resend-verified sender |
-| `CRON_SECRET` | Non-Vercel cron `Authorization: Bearer …` | Generate a secret |
-| `UNSUBSCRIBE_SECRET` | HMAC for `/api/unsubscribe?token=…` | Prefer dedicated secret in production |
-| `SHARED_AUDIT_SECRET` | Shared audit HMAC links (`src/lib/shared-audit-url.ts`) | Strong random secret; dev fallback may use `CLERK_SECRET_KEY` |
-| `EMBED_JWT_SECRET` | Optional HMAC for signed `POST /api/embed/event` attribution | See `docs/embed.md` |
-| `LAUNCH_KEY` | **Required in production** for `/launch` query `?key=` and for `/[locale]/internal/health?key=` | Long random string; without it, `/launch` returns 404 in prod; internal health returns 404 without matching key |
-| `NEXT_PUBLIC_SENTRY_DSN` | Browser + default server/edge DSN | Sentry project (client) |
-| `SENTRY_DSN` | Optional separate server DSN | Sentry; if unset, server uses `NEXT_PUBLIC_SENTRY_DSN` |
-| `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` | Source map upload during `next build` | CI / Vercel; when `SENTRY_AUTH_TOKEN` is unset, uploads are disabled (`next.config.ts`) |
-| Redis / KV envs (if used) | `src/lib/storage.ts` fallbacks | `KV_REST_*` or `UPSTASH_REDIS_*` per `.env.example` |
+> Mirrors `.env.example`. Full Vercel CLI runbook in [`docs/vercel-env-setup.md`](./vercel-env-setup.md).
+
+| Variable | Required for | Status | Where to get / notes |
+|----------|----------------|---------|----------------------|
+| `NEXT_PUBLIC_SITE_URL` | Canonical URLs, OG, emails, Stripe return URLs, internal health self-fetch | ⚙️ NEEDS CONFIG | Production domain, e.g. `https://basiclaw.app` |
+| `AI_GATEWAY_API_KEY` | Preferred LLM path for `/api/chat` and audits | ⚙️ NEEDS CONFIG | [Vercel AI Gateway](https://vercel.com/docs/ai-gateway); optional — falls back to `OPENROUTER_API_KEY` |
+| `OPENROUTER_API_KEY` | Chat + audit AI when `AI_GATEWAY_API_KEY` is unset | ⚙️ NEEDS CONFIG | [OpenRouter](https://openrouter.ai/) API keys |
+| `OPENROUTER_MODEL` | Chat model override | ✅ READY (default) | Default `openai/gpt-oss-20b:free` if unset |
+| `OPENROUTER_AUDIT_MODEL` | Audit-specific model override | ✅ READY (default) | Falls back to `OPENROUTER_MODEL` then default |
+| `OPENROUTER_EMBEDDING_MODEL` | Embeddings model when `query-embed.ts` provider=openrouter and for `scripts/embed-snippets.mjs` | ✅ READY (default) | Default `openai/text-embedding-3-small` |
+| `BUILD_LLM_KEY` | Build-time LLM enrichment for US-state pages (`src/lib/us-state-llm-summary.ts`) | ✅ READY (optional) | Optional — unset = no per-state summaries baked in |
+| `BUILD_LLM_MODEL` | Model override for `BUILD_LLM_KEY` runs | ✅ READY (default) | Default `openai/gpt-oss-20b:free` |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Sign-in/up; both Clerk envs must be set together | ⚙️ NEEDS CONFIG | Clerk dashboard |
+| `CLERK_SECRET_KEY` | Server auth | ⚙️ NEEDS CONFIG | Clerk dashboard |
+| `ADMIN_EMAILS` | Comma-separated emails allowed for `/[locale]/admin/*` when Clerk is on (in addition to `publicMetadata.role === "admin"`) | ⚙️ NEEDS CONFIG | Ops list; see `src/lib/admin-auth.ts` |
+| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | Vercel Marketplace KV (preferred) for storage / saved-answers / quotas | ⚙️ NEEDS CONFIG | `src/lib/redis-client.ts` — file fallback at `tmp/basiclaw-storage.json` |
+| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Classic Upstash storage (alternative) | ⚙️ NEEDS CONFIG | Set EITHER pair, not both |
+| `STRIPE_SECRET_KEY` | Checkout + portal + webhook + internal health | ⚙️ NEEDS CONFIG | Stripe dashboard |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Browser publishable key (`isPubKeyConfigured()`) | ⚙️ NEEDS CONFIG | Stripe dashboard |
+| `STRIPE_WEBHOOK_SECRET` | `POST /api/webhooks/stripe` | ⚙️ NEEDS CONFIG | Stripe webhook signing secret |
+| `STRIPE_PRODUCT_PRO`, `STRIPE_PRODUCT_PLUS` | Tier metadata in `src/lib/stripe-config.ts` | ⚙️ NEEDS CONFIG | Stripe Products |
+| `STRIPE_PRICE_PRO_MONTHLY`, `STRIPE_PRICE_PRO_ANNUAL` | Pro tier (read by `stripe-config.ts` AND `stripe-plan.ts`) | ⚙️ NEEDS CONFIG | Stripe Prices |
+| `STRIPE_PRICE_PLUS_MONTHLY`, `STRIPE_PRICE_PLUS_ANNUAL` | Plus tier (read by `src/lib/stripe-config.ts`) | ⚙️ NEEDS CONFIG | Set to same Stripe price IDs as the `PRO_PLUS` pair below |
+| `STRIPE_PRICE_PRO_PLUS_MONTHLY`, `STRIPE_PRICE_PRO_PLUS_ANNUAL` | Plus tier (read by `src/lib/stripe-plan.ts`) | ⚙️ NEEDS CONFIG | Naming drift with the `PLUS` pair above — set both until code is unified |
+| `RESEND_API_KEY` | Transactional email | ⚙️ NEEDS CONFIG | Resend |
+| `RESEND_FROM_EMAIL` | From address for Resend | ⚙️ NEEDS CONFIG | Verified domain in Resend |
+| `LAWYER_LEADS_EMAIL` | Inbox for `/api/lawyer-leads` + `/api/lawyer-leads/[slug]` + partner fallback | ⚙️ NEEDS CONFIG | Your ops email |
+| `LAWYER_APPLICATIONS_EMAIL` | Inbox for `/api/lawyer-applications` (verified-reviewer applications) | ⚙️ NEEDS CONFIG | Falls back to `LAWYER_LEADS_EMAIL` / `RESEND_FROM_EMAIL` |
+| `PRESS_EMAIL` | Press contact form (`/api/press-contact`, `/press`) | ⚙️ NEEDS CONFIG | Inbox for press inquiries |
+| `RIGHT_OF_DAY_FROM_EMAIL` | Cron "right of the day" digest | ⚙️ NEEDS CONFIG | Resend-verified sender |
+| `NEXT_PUBLIC_POSTHOG_KEY` | Product analytics (also baked into the WXT extension build) | ⚙️ NEEDS CONFIG | PostHog project settings |
+| `NEXT_PUBLIC_POSTHOG_HOST` | PostHog region | ✅ READY (default) | Optional; defaults to `https://us.i.posthog.com` |
+| `NEXT_PUBLIC_SENTRY_DSN` | Browser + default server/edge DSN | ⚙️ NEEDS CONFIG | Sentry project (client) |
+| `SENTRY_DSN` | Optional separate server DSN | ⚙️ NEEDS CONFIG | Sentry; if unset, server uses `NEXT_PUBLIC_SENTRY_DSN` |
+| `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` | Source map upload during `next build` | ⚙️ NEEDS CONFIG | CI / Vercel; uploads disabled when `SENTRY_AUTH_TOKEN` is unset (`next.config.ts`) |
+| `CRON_SECRET` | Non-Vercel cron `Authorization: Bearer …` | ⚙️ NEEDS CONFIG | Generate a secret |
+| `LAUNCH_KEY` | `/launch` query `?key=` and `/[locale]/internal/health?key=` gate | ⚙️ NEEDS CONFIG | **Required in production**; both routes 404 without a matching key |
+| `UNSUBSCRIBE_SECRET` | HMAC for `/api/unsubscribe?token=…` | ⚙️ NEEDS CONFIG | Prefer dedicated secret in production |
+| `NEWSLETTER_UNSUBSCRIBE_SECRET` | Alternative name accepted by `src/lib/newsletter-token.ts` | ⚙️ NEEDS CONFIG | Set EITHER `UNSUBSCRIBE_SECRET` or this, not both |
+| `SHARED_AUDIT_SECRET` | Shared audit HMAC links (`src/lib/shared-audit-url.ts`) | ⚙️ NEEDS CONFIG | Strong random secret; dev fallback may use `CLERK_SECRET_KEY` |
+| `EMBED_JWT_SECRET` | Optional HMAC for signed `POST /api/embed/event` attribution | ⚙️ NEEDS CONFIG | See `docs/embed.md` |
+| `BL_API_BASE` (extension build) | API origin baked into the WXT extension bundle | ✅ READY (default) | `extension/wxt.config.ts` — default `https://basiclaw.vercel.app`. Set in CI for prod hostname. |
+
+**Env tally (38 referenced keys):** ⚙️ **31 NEEDS CONFIG** · ✅ **7 READY (default / optional)**.
+Of the 31 NEEDS CONFIG, 3 are the [minimum viable boot](./vercel-env-setup.md#4-minimum-viable-boot) set: `NEXT_PUBLIC_SITE_URL`, one of `AI_GATEWAY_API_KEY` / `OPENROUTER_API_KEY`, and `LAUNCH_KEY`.
 
 ### Domain & SEO
 
