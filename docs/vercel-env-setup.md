@@ -78,9 +78,6 @@ vercel env add STRIPE_PRODUCT_PRO                production preview
 vercel env add STRIPE_PRODUCT_PLUS               production preview
 vercel env add STRIPE_PRICE_PRO_MONTHLY          production preview
 vercel env add STRIPE_PRICE_PRO_ANNUAL           production preview
-# Plus tier — set BOTH names to the same Stripe price ID until the code is unified
-vercel env add STRIPE_PRICE_PLUS_MONTHLY         production preview
-vercel env add STRIPE_PRICE_PLUS_ANNUAL          production preview
 vercel env add STRIPE_PRICE_PRO_PLUS_MONTHLY     production preview
 vercel env add STRIPE_PRICE_PRO_PLUS_ANNUAL     production preview
 ```
@@ -156,7 +153,7 @@ env:
 | `ADMIN_EMAILS` | recommended | recommended | optional |
 | `KV_REST_API_URL` + `KV_REST_API_TOKEN` (or Upstash equivalents) | required | recommended | optional (file fallback works) |
 | `STRIPE_SECRET_KEY` + `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` + `STRIPE_WEBHOOK_SECRET` | required for paid tiers | recommended (test mode) | optional |
-| `STRIPE_PRODUCT_*` / `STRIPE_PRICE_*` (all six) | required for paid tiers | recommended | optional |
+| `STRIPE_PRODUCT_*` / `STRIPE_PRICE_*` (two products + four price IDs) | required for paid tiers | recommended | optional |
 | `RESEND_API_KEY` + `RESEND_FROM_EMAIL` | required for email flows | recommended | optional |
 | `LAWYER_LEADS_EMAIL` / `LAWYER_APPLICATIONS_EMAIL` / `PRESS_EMAIL` / `RIGHT_OF_DAY_FROM_EMAIL` | required for those flows | recommended | optional |
 | `NEXT_PUBLIC_POSTHOG_KEY` (+ `NEXT_PUBLIC_POSTHOG_HOST` if non-US) | recommended | recommended | optional |
@@ -246,4 +243,3 @@ vercel env rm <NAME> production --yes # repeat per key
 - [ ] Decide between `KV_REST_*` (Marketplace KV — preferred) and `UPSTASH_REDIS_REST_*` (classic) and remove the unused pair.
 - [ ] Decide between `UNSUBSCRIBE_SECRET` and `NEWSLETTER_UNSUBSCRIBE_SECRET` — set one only.
 - [ ] Pick a real `LAUNCH_KEY` value and store it in 1Password before sharing `/launch` or `/internal/health` URLs.
-- [ ] Code follow-up (out of scope here): unify `STRIPE_PRICE_PLUS_*` (read by `src/lib/stripe-config.ts`) and `STRIPE_PRICE_PRO_PLUS_*` (read by `src/lib/stripe-plan.ts`) onto a single naming convention.

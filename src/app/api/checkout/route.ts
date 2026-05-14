@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
-import { STRIPE_TIERS, isStripeConfigured, type BillingCadence, type StripeTierId } from "@/lib/stripe-config";
+import {
+  STRIPE_TIERS,
+  isStripeConfigured,
+  stripePriceEnvVarName,
+  type BillingCadence,
+  type StripeTierId,
+} from "@/lib/stripe-config";
 
 export const runtime = "nodejs";
 
@@ -44,7 +50,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error: "price_not_configured",
-        message: `No Stripe price ID set for ${tier.name} (${cadence}). Set STRIPE_PRICE_${body.tier.toUpperCase()}_${cadence.toUpperCase()} in env.`,
+        message: `No Stripe price ID set for ${tier.name} (${cadence}). Set ${stripePriceEnvVarName(body.tier, cadence)} in env.`,
       },
       { status: 503 }
     );

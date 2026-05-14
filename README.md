@@ -61,7 +61,7 @@ npm run analyze
 | Storage | `KV_REST_API_URL` + `KV_REST_API_TOKEN` or `UPSTASH_REDIS_*` | Optional | Durable chats/audits/subscribers/usage + embed tenants. Falls back to `tmp/*.json`. |
 | Embed | `EMBED_JWT_SECRET` | Optional | HMAC for signed `POST /api/embed/event` attribution (`docs/embed.md`). |
 | Stripe | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | For billing | Checkout + webhooks. |
-| Stripe | `STRIPE_PRICE_PRO_MONTHLY`, `STRIPE_PRICE_PRO_ANNUAL`, `STRIPE_PRICE_PLUS_MONTHLY`, `STRIPE_PRICE_PLUS_ANNUAL` | Recommended | Maps subscriptions → `publicMetadata.plan` via webhook. |
+| Stripe | `STRIPE_PRICE_PRO_MONTHLY`, `STRIPE_PRICE_PRO_ANNUAL`, `STRIPE_PRICE_PRO_PLUS_MONTHLY`, `STRIPE_PRICE_PRO_PLUS_ANNUAL` | Recommended | Maps subscriptions → `publicMetadata.plan` via webhook. |
 | Email | `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | Optional | Lawyer leads + Right of the Day when configured. |
 | Cron | `CRON_SECRET` | Optional (prod manual) | Bearer gate for `/api/cron/*` outside Vercel cron. |
 | Cron | `RIGHT_OF_DAY_FROM_EMAIL` | When sending digest | Verified Resend sender for the newsletter cron. |

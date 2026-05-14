@@ -31,8 +31,7 @@
 | `STRIPE_WEBHOOK_SECRET` | `POST /api/webhooks/stripe` | ⚙️ NEEDS CONFIG | Stripe webhook signing secret |
 | `STRIPE_PRODUCT_PRO`, `STRIPE_PRODUCT_PLUS` | Tier metadata in `src/lib/stripe-config.ts` | ⚙️ NEEDS CONFIG | Stripe Products |
 | `STRIPE_PRICE_PRO_MONTHLY`, `STRIPE_PRICE_PRO_ANNUAL` | Pro tier (read by `stripe-config.ts` AND `stripe-plan.ts`) | ⚙️ NEEDS CONFIG | Stripe Prices |
-| `STRIPE_PRICE_PLUS_MONTHLY`, `STRIPE_PRICE_PLUS_ANNUAL` | Plus tier (read by `src/lib/stripe-config.ts`) | ⚙️ NEEDS CONFIG | Set to same Stripe price IDs as the `PRO_PLUS` pair below |
-| `STRIPE_PRICE_PRO_PLUS_MONTHLY`, `STRIPE_PRICE_PRO_PLUS_ANNUAL` | Plus tier (read by `src/lib/stripe-plan.ts`) | ⚙️ NEEDS CONFIG | Naming drift with the `PLUS` pair above — set both until code is unified |
+| `STRIPE_PRICE_PRO_PLUS_MONTHLY`, `STRIPE_PRICE_PRO_PLUS_ANNUAL` | Plus tier (read by `stripe-config.ts` AND `stripe-plan.ts`) | ⚙️ NEEDS CONFIG | Stripe Prices |
 | `RESEND_API_KEY` | Transactional email | ⚙️ NEEDS CONFIG | Resend |
 | `RESEND_FROM_EMAIL` | From address for Resend | ⚙️ NEEDS CONFIG | Verified domain in Resend |
 | `LAWYER_LEADS_EMAIL` | Inbox for `/api/lawyer-leads` + `/api/lawyer-leads/[slug]` + partner fallback | ⚙️ NEEDS CONFIG | Your ops email |

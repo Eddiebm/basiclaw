@@ -1,6 +1,13 @@
 export type StripeTierId = "pro" | "plus";
 export type BillingCadence = "monthly" | "annual";
 
+/** Documented `.env` name for the Stripe Price ID (tier id `plus` uses `STRIPE_PRICE_PRO_PLUS_*`). */
+export function stripePriceEnvVarName(tier: StripeTierId, cadence: BillingCadence): string {
+  const suffix = cadence === "annual" ? "ANNUAL" : "MONTHLY";
+  if (tier === "plus") return `STRIPE_PRICE_PRO_PLUS_${suffix}`;
+  return `STRIPE_PRICE_${tier.toUpperCase()}_${suffix}`;
+}
+
 export interface StripeTierConfig {
   id: StripeTierId;
   name: string;
@@ -31,12 +38,12 @@ export const STRIPE_TIERS: Record<StripeTierId, StripeTierConfig> = {
     name: "Operate With Confidence",
     productId: process.env.STRIPE_PRODUCT_PLUS,
     monthly: {
-      priceId: process.env.STRIPE_PRICE_PLUS_MONTHLY,
+      priceId: process.env.STRIPE_PRICE_PRO_PLUS_MONTHLY,
       amount: 39,
       label: "$39 / month",
     },
     annual: {
-      priceId: process.env.STRIPE_PRICE_PLUS_ANNUAL,
+      priceId: process.env.STRIPE_PRICE_PRO_PLUS_ANNUAL,
       amount: 390,
       label: "$390 / year",
       perMonth: 32.5,
