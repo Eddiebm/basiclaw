@@ -27,17 +27,19 @@ export default function ChatPage() {
 
         <main className="flex-1 flex flex-col min-w-0 min-h-0">
           {/* Header */}
-          <header className="h-14 border-b flex items-center px-4 gap-4">
+          <header className="border-b flex flex-col gap-1 px-4 py-3 sm:flex-row sm:items-center sm:gap-4">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden"
+              className="lg:hidden shrink-0 self-start sm:self-center"
             >
               <Menu className="w-5 h-5" />
             </Button>
-            <div className="flex-1">
-              <h1 className="font-semibold">{t("pageTitle")}</h1>
+            <div className="flex-1 min-w-0 space-y-1">
+              <h1 className="font-semibold text-base sm:text-lg leading-tight">{t("pageTitle")}</h1>
+              <p className="text-sm text-muted-foreground leading-snug">{t("valuePropLine")}</p>
+              <p className="text-xs text-muted-foreground leading-snug">{t("historyHint")}</p>
             </div>
           </header>
 

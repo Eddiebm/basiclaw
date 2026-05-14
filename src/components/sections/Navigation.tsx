@@ -23,12 +23,14 @@ import { searchCountries, getPopularCountries } from "@/lib/jurisdictions";
 import { AuditNavDropdown } from "@/components/navigation/AuditNavDropdown";
 import { DevelopersNavDropdown } from "@/components/navigation/DevelopersNavDropdown";
 import { LearnNavDropdown } from "@/components/navigation/LearnNavDropdown";
+import { trackAskEntryClick } from "@/lib/track-ask-entry";
 
 const NAV_LINKS = [
+  { href: "/chat", key: "ask" as const },
+  { href: "/questions", key: "questions" as const },
   { href: "/constitutions", key: "constitutions" as const },
   { href: "/us/states", key: "usStates" as const },
   { special: "auditTools" as const },
-  { href: "/chat", key: "ask" as const },
   { href: "/answers", key: "answers" as const },
   { special: "learnLibrary" as const },
   { special: "developersTools" as const },
@@ -85,8 +87,11 @@ export function Navigation() {
                 <Link
                   key={link.href}
                   href={link.href}
+                  onClick={link.href === "/chat" ? () => trackAskEntryClick("nav_desktop_link") : undefined}
                   className={`text-sm font-medium transition-colors ${
-                    pathname === link.href
+                    pathname === link.href ||
+                    (link.href === "/questions" && pathname.startsWith("/questions")) ||
+                    (link.href === "/constitutions" && pathname.startsWith("/constitutions"))
                       ? "text-[var(--foreground)]"
                       : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                   }`}
@@ -213,7 +218,7 @@ export function Navigation() {
               </AnimatePresence>
             </Toggle>
             <Button asChild className="hidden md:inline-flex">
-              <Link href="/chat">
+              <Link href="/chat" onClick={() => trackAskEntryClick("nav_desktop_cta")}>
                 {t("askNow")} <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
@@ -251,14 +256,17 @@ export function Navigation() {
                       key={link.href}
                       href={link.href}
                       className="text-sm font-medium text-[var(--foreground)]"
-                      onClick={() => setIsOpen(false)}
+                      onClick={() => {
+                        setIsOpen(false);
+                        if (link.href === "/chat") trackAskEntryClick("nav_mobile_link");
+                      }}
                     >
                       {t(link.key)}
                     </Link>
                   )
                 )}
                 <Button asChild className="w-full mt-2">
-                  <Link href="/chat">
+                  <Link href="/chat" onClick={() => trackAskEntryClick("nav_mobile_cta")}>
                     {t("askNow")} <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>

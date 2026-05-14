@@ -19,6 +19,7 @@ import { VoiceDictationButton, ReadAloudButton } from "@/components/voice/dynami
 import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
 import { AssistantChatActions } from "@/components/chat/AssistantChatActions";
 import { MarkdownContent } from "@/components/markdown/MarkdownContent";
+import { readChatPrefillFromSearchParams } from "@/lib/chat-query-prefill";
 
 function resolveJurisdictionFromParams(searchParams: { get: (key: string) => string | null }): string {
   const raw = searchParams.get("jurisdiction") ?? searchParams.get("country") ?? "";
@@ -68,7 +69,10 @@ function ChatInterfaceBody({ isSignedIn }: { isSignedIn: boolean }) {
     const sp = new URLSearchParams(searchKey);
     return resolveJurisdictionFromParams(sp);
   }, [searchKey]);
-  const prefillHint = searchParams.get("prefill")?.trim() ?? "";
+  const prefillHint = useMemo(() => {
+    const sp = new URLSearchParams(searchKey);
+    return readChatPrefillFromSearchParams(sp) ?? "";
+  }, [searchKey]);
 
   function replaceChatQuery(nextCountry: string) {
     const sp = new URLSearchParams(searchParams.toString());

@@ -1,6 +1,7 @@
 import type { CitizenQuestion } from "@/data/questions/types";
 import type { Domain } from "@/data/questions/taxonomy";
 import { domainHasFullCoverageForCountry, isStrongCountry } from "@/data/questions/country-coverage";
+import { normalizeChatQueryPrefill } from "@/lib/chat-query-prefill";
 
 export type AnswerAvailability = "full" | "limited";
 
@@ -21,7 +22,8 @@ export function buildChatPrefillHref(args: {
   risk?: string;
 }): string {
   const qs = new URLSearchParams();
-  qs.set("prefill", args.questionText);
+  const safeText = normalizeChatQueryPrefill(args.questionText) ?? "";
+  qs.set("prefill", safeText);
   qs.set("country", args.activeCountryCodeLower.toLowerCase());
   if (args.stage) qs.set("stage", args.stage);
   if (args.domain) qs.set("domain", args.domain);

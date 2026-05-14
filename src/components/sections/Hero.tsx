@@ -16,6 +16,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { countryStats } from "@/lib/jurisdictions";
 import { RightOfDaySubscribe } from "@/components/sections/RightOfDaySubscribe";
+import { trackAskEntryClick } from "@/lib/track-ask-entry";
 
 export function Hero() {
   const t = useTranslations("hero");
@@ -59,45 +60,51 @@ export function Hero() {
               <p className="text-lg sm:text-xl text-[var(--muted-foreground)] mb-8 max-w-xl mx-auto lg:mx-0">
                 {t("subtitle")}
               </p>
-              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 justify-center lg:justify-start">
-                <Button asChild size="lg" className="gap-2">
-                  <Link href="/chat">
+              <div className="flex flex-col gap-3 justify-center lg:justify-start max-w-lg mx-auto lg:mx-0">
+                <Button asChild size="lg" className="gap-2 w-full sm:w-auto">
+                  <Link href="/chat" onClick={() => trackAskEntryClick("hero_primary")}>
                     {t("ctaAsk")} <MessageCircle className="h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="gap-2">
-                  <Link href="/learn">
-                    {t("ctaLearn")} <BookOpen className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="gap-2">
-                  <Link href="/audit">
-                    {t("ctaAudit")} <FileText className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="gap-2 border-dashed">
-                  <Link href="/the-index">
-                    {t("ctaLegalIndex")} <BookOpen className="h-4 w-4" />
-                  </Link>
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center lg:justify-start">
+                  <Button asChild size="lg" variant="outline" className="gap-2">
+                    <Link href="/questions">{t("ctaBrowseQuestions")}</Link>
+                  </Button>
+                  <Button asChild size="lg" variant="outline" className="gap-2">
+                    <Link href="/constitutions">{t("ctaBrowseConstitutions")}</Link>
+                  </Button>
+                </div>
               </div>
-              <RightOfDaySubscribe />
-              <p className="mt-3 text-sm text-[var(--muted-foreground)]">
-                <Link href="/questions" className="font-medium text-[var(--primary)] hover:underline">
-                  {t("ctaQuestions")}
-                </Link>
-              </p>
-              <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+              <p className="mt-4 text-sm text-[var(--muted-foreground)] max-w-xl mx-auto lg:mx-0">
                 {t.rich("browseRich", {
                   count: stats.total,
                   link: (chunks) => (
-                    <Link href="/constitutions" className="underline underline-offset-4 hover:text-[var(--foreground)]">
+                    <Link href="/constitutions" className="font-medium text-[var(--primary)] hover:underline">
                       {chunks}
                     </Link>
                   ),
                 })}
               </p>
-              <p className="mt-2 text-sm text-[var(--muted-foreground)] flex flex-wrap items-center justify-center lg:justify-start gap-x-2 gap-y-1">
+              <p className="mt-3 text-sm text-[var(--muted-foreground)] flex flex-wrap items-center justify-center lg:justify-start gap-x-2 gap-y-1 max-w-xl mx-auto lg:mx-0">
+                <span className="text-[var(--muted-foreground)]">{t("moreToolsLabel")}</span>
+                <Link href="/learn" className="font-medium text-[var(--foreground)] underline underline-offset-4 hover:text-[var(--primary)]">
+                  {t("ctaLearn")}
+                </Link>
+                <span aria-hidden className="text-[var(--muted-foreground)]">
+                  ·
+                </span>
+                <Link href="/audit" className="font-medium text-[var(--foreground)] underline underline-offset-4 hover:text-[var(--primary)]">
+                  {t("ctaAudit")}
+                </Link>
+                <span aria-hidden className="text-[var(--muted-foreground)]">
+                  ·
+                </span>
+                <Link href="/the-index" className="font-medium text-[var(--foreground)] underline underline-offset-4 hover:text-[var(--primary)]">
+                  {t("ctaLegalIndex")}
+                </Link>
+              </p>
+              <RightOfDaySubscribe />
+              <p className="mt-3 text-sm text-[var(--muted-foreground)] flex flex-wrap items-center justify-center lg:justify-start gap-x-2 gap-y-1">
                 <span>{t("auditToolsLead")}</span>
                 <Link href="/audit/lease" className="underline underline-offset-4 hover:text-[var(--foreground)]">
                   {t("auditToolsLease")}
@@ -128,78 +135,73 @@ export function Hero() {
             </motion.div>
           </div>
           <div className="relative">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-4">
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="col-span-2 sm:col-span-1 p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] shadow-lg"
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="p-6 sm:p-8 rounded-2xl bg-[var(--card)] border border-[var(--primary)]/25 shadow-lg"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 rounded-lg bg-[var(--primary)]/10">
-                    <MessageCircle className="h-5 w-5 text-[var(--primary)]" />
+                    <MessageCircle className="h-6 w-6 text-[var(--primary)]" aria-hidden />
                   </div>
-                  <span className="font-semibold text-[var(--foreground)]">{t("cardQA_title")}</span>
+                  <span className="text-lg font-semibold text-[var(--foreground)]">{t("cardQA_title")}</span>
                 </div>
-                <p className="text-sm text-[var(--muted-foreground)]">{t("cardQA_body")}</p>
+                <p className="text-sm sm:text-base text-[var(--muted-foreground)] leading-relaxed">{t("cardQA_body")}</p>
                 <Link
                   href="/chat"
-                  className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-[var(--primary)] hover:underline"
+                  onClick={() => trackAskEntryClick("hero_card")}
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-foreground)] hover:opacity-95"
                 >
                   {t("ctaAsk")} <ArrowRight className="h-4 w-4" aria-hidden />
                 </Link>
               </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="col-span-2 sm:col-span-1 p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] shadow-lg"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-[var(--secondary)]/30">
-                    <FileText className="h-5 w-5 text-[var(--secondary-foreground)]" />
-                  </div>
-                  <span className="font-semibold text-[var(--foreground)]">{t("cardAudit_title")}</span>
-                </div>
-                <p className="text-sm text-[var(--muted-foreground)]">{t("cardAudit_body")}</p>
-                <Link
-                  href="/audit"
-                  className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[var(--primary)] hover:underline"
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <motion.div
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0.25 }}
+                  className="p-4 rounded-xl border border-[var(--border)] bg-[var(--card)]/80"
                 >
-                  {t("cardAudit_link")} <ArrowRight className="h-4 w-4" />
-                </Link>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="col-span-2 p-6 rounded-2xl bg-[var(--card)] border border-[var(--border)] shadow-lg"
-              >
-                <div className="flex items-center justify-between gap-4 flex-wrap">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-[var(--accent)]">
-                      <Library className="h-5 w-5 text-[var(--accent-foreground)]" />
-                    </div>
-                    <div>
-                      <span className="block font-semibold text-[var(--foreground)]">{t("cardLibrary_title")}</span>
-                      <span className="text-sm text-[var(--muted-foreground)]">{t("cardLibrary_body")}</span>
-                    </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <FileText className="h-4 w-4 text-[var(--secondary-foreground)]" aria-hidden />
+                    <span className="text-sm font-semibold text-[var(--foreground)]">{t("cardAudit_title")}</span>
                   </div>
+                  <p className="text-xs text-[var(--muted-foreground)] line-clamp-3">{t("cardAudit_body")}</p>
+                  <Link
+                    href="/audit"
+                    className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-[var(--primary)] hover:underline"
+                  >
+                    {t("cardAudit_link")} <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                  </Link>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0.32 }}
+                  className="p-4 rounded-xl border border-dashed border-[var(--border)] bg-[var(--accent)]/20"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Library className="h-4 w-4 text-[var(--muted-foreground)]" aria-hidden />
+                    <span className="text-sm font-medium text-[var(--foreground)]">{t("cardLibrary_title")}</span>
+                  </div>
+                  <p className="text-xs text-[var(--muted-foreground)] line-clamp-2">{t("cardLibrary_body")}</p>
                   <Link
                     href="/constitutions"
-                    className="inline-flex items-center gap-1 text-sm font-medium text-[var(--primary)] hover:underline"
+                    className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-[var(--primary)] hover:underline"
                   >
-                    {t("cardLibrary_link")} <ArrowRight className="h-4 w-4" />
+                    {t("cardLibrary_link")} <ArrowRight className="h-3.5 w-3.5" aria-hidden />
                   </Link>
-                </div>
-              </motion.div>
+                </motion.div>
+              </div>
             </div>
           </div>
         </div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.45 }}
           className="mt-16 pt-8 border-t border-[var(--border)]"
         >
           <div className="flex flex-wrap items-center justify-center gap-8 text-[var(--muted-foreground)]">

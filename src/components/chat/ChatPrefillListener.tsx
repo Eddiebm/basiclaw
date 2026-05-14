@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useChat } from "@/store/chat-context";
 import { getCountry } from "@/lib/jurisdictions";
 import { track } from "@/lib/analytics";
+import { readChatPrefillFromSearchParams } from "@/lib/chat-query-prefill";
 
 export function ChatPrefillListener() {
   const searchParams = useSearchParams();
@@ -13,7 +14,7 @@ export function ChatPrefillListener() {
   const sentRef = useRef(false);
 
   useEffect(() => {
-    const prefill = searchParams.get("prefill")?.trim();
+    const prefill = readChatPrefillFromSearchParams(searchParams);
     if (!prefill) {
       startedRef.current = false;
       sentRef.current = false;
@@ -28,10 +29,10 @@ export function ChatPrefillListener() {
   }, [searchParams, createSession]);
 
   useEffect(() => {
-    const prefill = searchParams.get("prefill");
+    const prefill = readChatPrefillFromSearchParams(searchParams);
     if (!prefill || sentRef.current) return;
     if (!currentSession || currentSession.messages.length > 0) return;
-    const message = prefill.trim();
+    const message = prefill;
     if (!message) return;
     sentRef.current = true;
     track("question_to_chat", {

@@ -103,6 +103,12 @@ export function QuestionCard({ question, activeCountryCodeLower }: QuestionCardP
           {t("constitutionOverview")}
         </Link>
       </div>
+      <p className="mt-4 text-xs text-[var(--muted-foreground)]">
+        <span>{t("discussionLead")}</span>{" "}
+        <Link href={chatHref} className="font-semibold text-[var(--primary)] hover:underline">
+          {t("openInAskLink")}
+        </Link>
+      </p>
     </div>
   );
 }

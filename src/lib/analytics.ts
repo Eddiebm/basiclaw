@@ -5,6 +5,7 @@ import posthog from "posthog-js";
 export type VoiceAnalyticsSurface = "chat" | "audit" | "constitution" | "questions" | "topics" | "compare";
 
 export type AnalyticsEvent =
+  | "ask_entry_clicked"
   | "hero_ask_prefill_submit"
   | "home_view"
   | "constitution_viewed"

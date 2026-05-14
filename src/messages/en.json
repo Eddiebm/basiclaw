@@ -3,7 +3,8 @@
     "brand": "BasicLaw",
     "constitutions": "Constitutions",
     "audit": "Audit",
-    "ask": "Ask",
+    "ask": "Ask & discuss",
+    "questions": "Questions",
     "learn": "Learn",
     "pricing": "Pricing",
     "country": "Country",
@@ -84,6 +85,9 @@
     "subtitle": "BasicLaw turns the constitution and core laws of every country in the world into clear answers anyone can read. No subscriptions to a lawyer just to know your rights.",
     "ctaAudit": "Audit my contract free",
     "ctaAsk": "Ask a question",
+    "ctaBrowseQuestions": "Browse questions",
+    "ctaBrowseConstitutions": "Browse constitutions",
+    "moreToolsLabel": "Also:",
     "ctaLearn": "Start learning",
     "ctaLegalIndex": "Legal Literacy Index",
     "ctaQuestions": "Browse citizen questions",
@@ -1024,7 +1028,9 @@
     "generalBody": "BasicLaw is an educational tool. Review each feature’s in-product notices for how prompts and documents are processed."
   },
   "chat": {
-    "pageTitle": "Legal chat",
+    "pageTitle": "Ask & discuss",
+    "valuePropLine": "Ask in plain language, get a jurisdiction-aware overview, then dig in with follow-ups — all educational, not legal advice.",
+    "historyHint": "You can ask without an account. Sign in to keep chat history and saved answers across devices.",
     "sidebar": {
       "jurisdiction": "Jurisdiction",
       "optgroupPopular": "Most-explored",
@@ -1458,6 +1464,8 @@
     "availabilityFull": "Answer depth: Full",
     "availabilityLimited": "Answer depth: Limited",
     "askInChat": "Ask in chat",
+    "discussionLead": "Still unsure?",
+    "openInAskLink": "Open in Ask",
     "constitutionOverview": "Constitution overview",
     "urgentDisclaimer": "If this is urgent, contact a lawyer or local helpline now. BasicLaw is educational only and not for emergencies."
   },
