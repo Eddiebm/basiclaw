@@ -57,15 +57,12 @@ vercel env add CLERK_SECRET_KEY                  production preview development
 vercel env add ADMIN_EMAILS                      production preview
 ```
 
-### 2d. Storage — Vercel Marketplace KV (recommended) **or** classic Upstash
+### 2d. Storage — Vercel Marketplace KV (Upstash REST)
 
 ```bash
-# If you provisioned KV through the Vercel Marketplace, these are auto-injected — skip ahead.
+# If you provisioned KV through the Vercel Marketplace, these are often auto-injected — skip ahead.
 vercel env add KV_REST_API_URL   production preview
 vercel env add KV_REST_API_TOKEN production preview
-# OR (classic Upstash):
-vercel env add UPSTASH_REDIS_REST_URL   production preview
-vercel env add UPSTASH_REDIS_REST_TOKEN production preview
 ```
 
 ### 2e. Stripe (skip until live billing)
@@ -121,9 +118,7 @@ vercel env add LAUNCH_KEY  production           # set BEFORE sharing /launch or 
 ### 2j. Newsletter / shared audit / embed (HMAC secrets)
 
 ```bash
-vercel env add UNSUBSCRIBE_SECRET            production preview
-# OR (alt name accepted by code; set ONE, not both):
-# vercel env add NEWSLETTER_UNSUBSCRIBE_SECRET production preview
+vercel env add NEWSLETTER_UNSUBSCRIBE_SECRET production preview
 vercel env add SHARED_AUDIT_SECRET           production preview
 vercel env add EMBED_JWT_SECRET              production preview
 ```
@@ -151,7 +146,7 @@ env:
 | `BUILD_LLM_KEY` / `BUILD_LLM_MODEL` | optional | optional | optional |
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` + `CLERK_SECRET_KEY` | required if you want sign-in | required | required if testing auth locally |
 | `ADMIN_EMAILS` | recommended | recommended | optional |
-| `KV_REST_API_URL` + `KV_REST_API_TOKEN` (or Upstash equivalents) | required | recommended | optional (file fallback works) |
+| `KV_REST_API_URL` + `KV_REST_API_TOKEN` | required | recommended | optional (file fallback works) |
 | `STRIPE_SECRET_KEY` + `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` + `STRIPE_WEBHOOK_SECRET` | required for paid tiers | recommended (test mode) | optional |
 | `STRIPE_PRODUCT_*` / `STRIPE_PRICE_*` (two products + four price IDs) | required for paid tiers | recommended | optional |
 | `RESEND_API_KEY` + `RESEND_FROM_EMAIL` | required for email flows | recommended | optional |
@@ -161,7 +156,7 @@ env:
 | `SENTRY_AUTH_TOKEN` + `SENTRY_ORG` + `SENTRY_PROJECT` | recommended (source maps) | recommended | not used |
 | `CRON_SECRET` | required for non-Vercel cron auth | recommended | optional |
 | `LAUNCH_KEY` | required before sharing `/launch` | recommended | not used |
-| `UNSUBSCRIBE_SECRET` *or* `NEWSLETTER_UNSUBSCRIBE_SECRET` | recommended | recommended | optional |
+| `NEWSLETTER_UNSUBSCRIBE_SECRET` | recommended | recommended | optional |
 | `SHARED_AUDIT_SECRET` | recommended | recommended | optional (Clerk secret is dev fallback) |
 | `EMBED_JWT_SECRET` | required if you sign embed events | recommended | optional |
 
@@ -221,10 +216,10 @@ npx eslint src --max-warnings 0
 | OpenRouter | https://openrouter.ai/keys → revoke + create new | re-add `OPENROUTER_API_KEY`; no redeploy needed if Vercel reads at request time, but redeploy for safety |
 | Vercel AI Gateway | https://vercel.com/dashboard → AI → Gateway → keys | re-add `AI_GATEWAY_API_KEY`; redeploy |
 | Resend | https://resend.com/api-keys → revoke + create new | re-add `RESEND_API_KEY`; redeploy |
-| Upstash / Vercel KV | Marketplace integration → rotate REST token | re-add `KV_REST_API_TOKEN` (and `UPSTASH_REDIS_REST_TOKEN` if used); redeploy; existing sessions stay intact (Redis-side) |
+| Upstash / Vercel KV | Marketplace integration → rotate REST token | re-add `KV_REST_API_TOKEN`; redeploy; existing sessions stay intact (Redis-side) |
 | Sentry | https://sentry.io → Settings → Auth Tokens for `SENTRY_AUTH_TOKEN`; project DSN page for DSN rotation | re-add the affected envs; trigger a new build to pick up DSN changes |
 | PostHog | https://app.posthog.com → Project Settings → API keys (rotation creates a new project key — be ready to update extension build too) | re-add `NEXT_PUBLIC_POSTHOG_KEY`; rebuild extension |
-| Internal (`CRON_SECRET`, `LAUNCH_KEY`, `UNSUBSCRIBE_SECRET`, `NEWSLETTER_UNSUBSCRIBE_SECRET`, `SHARED_AUDIT_SECRET`, `EMBED_JWT_SECRET`) | `openssl rand -hex 32` | re-add via `vercel env add`; redeploy. Note: rotating `UNSUBSCRIBE_SECRET` / `SHARED_AUDIT_SECRET` invalidates outstanding tokens (acceptable — re-issue from app). |
+| Internal (`CRON_SECRET`, `LAUNCH_KEY`, `NEWSLETTER_UNSUBSCRIBE_SECRET`, `SHARED_AUDIT_SECRET`, `EMBED_JWT_SECRET`) | `openssl rand -hex 32` | re-add via `vercel env add`; redeploy. Note: rotating `NEWSLETTER_UNSUBSCRIBE_SECRET` / `SHARED_AUDIT_SECRET` invalidates outstanding tokens (acceptable — re-issue from app). |
 | Admin emails | edit `ADMIN_EMAILS` | `vercel env rm ADMIN_EMAILS production && vercel env add …`; redeploy |
 
 To reset everything for a clean re-bootstrap:
@@ -240,6 +235,4 @@ vercel env rm <NAME> production --yes # repeat per key
 ## Follow-ups for the user (don't forget)
 
 - [ ] Paste real `STRIPE_WEBHOOK_SECRET` after creating the production webhook in Stripe (`https://dashboard.stripe.com/webhooks`).
-- [ ] Decide between `KV_REST_*` (Marketplace KV — preferred) and `UPSTASH_REDIS_REST_*` (classic) and remove the unused pair.
-- [ ] Decide between `UNSUBSCRIBE_SECRET` and `NEWSLETTER_UNSUBSCRIBE_SECRET` — set one only.
 - [ ] Pick a real `LAUNCH_KEY` value and store it in 1Password before sharing `/launch` or `/internal/health` URLs.

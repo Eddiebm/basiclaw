@@ -24,8 +24,7 @@
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Sign-in/up; both Clerk envs must be set together | ⚙️ NEEDS CONFIG | Clerk dashboard |
 | `CLERK_SECRET_KEY` | Server auth | ⚙️ NEEDS CONFIG | Clerk dashboard |
 | `ADMIN_EMAILS` | Comma-separated emails allowed for `/[locale]/admin/*` when Clerk is on (in addition to `publicMetadata.role === "admin"`) | ⚙️ NEEDS CONFIG | Ops list; see `src/lib/admin-auth.ts` |
-| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | Vercel Marketplace KV (preferred) for storage / saved-answers / quotas | ⚙️ NEEDS CONFIG | `src/lib/redis-client.ts` — file fallback at `tmp/basiclaw-storage.json` |
-| `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` | Classic Upstash storage (alternative) | ⚙️ NEEDS CONFIG | Set EITHER pair, not both |
+| `KV_REST_API_URL` / `KV_REST_API_TOKEN` | Vercel Marketplace KV (Upstash REST) for storage / saved-answers / quotas | ⚙️ NEEDS CONFIG | `src/lib/redis-client.ts` — file fallback at `tmp/basiclaw-storage.json` |
 | `STRIPE_SECRET_KEY` | Checkout + portal + webhook + internal health | ⚙️ NEEDS CONFIG | Stripe dashboard |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Browser publishable key (`isPubKeyConfigured()`) | ⚙️ NEEDS CONFIG | Stripe dashboard |
 | `STRIPE_WEBHOOK_SECRET` | `POST /api/webhooks/stripe` | ⚙️ NEEDS CONFIG | Stripe webhook signing secret |
@@ -45,14 +44,13 @@
 | `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` | Source map upload during `next build` | ⚙️ NEEDS CONFIG | CI / Vercel; uploads disabled when `SENTRY_AUTH_TOKEN` is unset (`next.config.ts`) |
 | `CRON_SECRET` | Non-Vercel cron `Authorization: Bearer …` | ⚙️ NEEDS CONFIG | Generate a secret |
 | `LAUNCH_KEY` | `/launch` query `?key=` and `/[locale]/internal/health?key=` gate | ⚙️ NEEDS CONFIG | **Required in production**; both routes 404 without a matching key |
-| `UNSUBSCRIBE_SECRET` | HMAC for `/api/unsubscribe?token=…` | ⚙️ NEEDS CONFIG | Prefer dedicated secret in production |
-| `NEWSLETTER_UNSUBSCRIBE_SECRET` | Alternative name accepted by `src/lib/newsletter-token.ts` | ⚙️ NEEDS CONFIG | Set EITHER `UNSUBSCRIBE_SECRET` or this, not both |
+| `NEWSLETTER_UNSUBSCRIBE_SECRET` | HMAC for `/api/unsubscribe?token=…` (`src/lib/newsletter-token.ts`) | ⚙️ NEEDS CONFIG | Dedicated secret recommended in production |
 | `SHARED_AUDIT_SECRET` | Shared audit HMAC links (`src/lib/shared-audit-url.ts`) | ⚙️ NEEDS CONFIG | Strong random secret; dev fallback may use `CLERK_SECRET_KEY` |
 | `EMBED_JWT_SECRET` | Optional HMAC for signed `POST /api/embed/event` attribution | ⚙️ NEEDS CONFIG | See `docs/embed.md` |
 | `BL_API_BASE` (extension build) | API origin baked into the WXT extension bundle | ✅ READY (default) | `extension/wxt.config.ts` — default `https://basiclaw.vercel.app`. Set in CI for prod hostname. |
 
-**Env tally (38 referenced keys):** ⚙️ **31 NEEDS CONFIG** · ✅ **7 READY (default / optional)**.
-Of the 31 NEEDS CONFIG, 3 are the [minimum viable boot](./vercel-env-setup.md#4-minimum-viable-boot) set: `NEXT_PUBLIC_SITE_URL`, one of `AI_GATEWAY_API_KEY` / `OPENROUTER_API_KEY`, and `LAUNCH_KEY`.
+**Env tally (36 referenced keys):** ⚙️ **29 NEEDS CONFIG** · ✅ **7 READY (default / optional)**.
+Of the 29 NEEDS CONFIG, 3 are the [minimum viable boot](./vercel-env-setup.md#4-minimum-viable-boot) set: `NEXT_PUBLIC_SITE_URL`, one of `AI_GATEWAY_API_KEY` / `OPENROUTER_API_KEY`, and `LAUNCH_KEY`.
 
 ### Domain & SEO
 
@@ -332,7 +330,7 @@ Of the 31 NEEDS CONFIG, 3 are the [minimum viable boot](./vercel-env-setup.md#4-
 | `POST /api/admin/answers/[id]/verify` | ⚙️ **NEEDS CONFIG** | Body: `lawyerId`, optional `statement`. |
 | `POST /api/admin/answers/[id]/unpublish` | ⚙️ **NEEDS CONFIG** | |
 | `POST /api/admin/answers/[id]/delete` | ⚙️ **NEEDS CONFIG** | Hard delete (admin). |
-| `POST /api/subscribe` / `unsubscribe` | ✅ **READY** | File/Redis storage fallback; `UNSUBSCRIBE_SECRET` for tokens in prod. |
+| `POST /api/subscribe` / `unsubscribe` | ✅ **READY** | File/Redis storage fallback; `NEWSLETTER_UNSUBSCRIBE_SECRET` for tokens in prod. |
 | `GET/POST/DELETE /api/me/chats*` | ⚙️ **NEEDS CONFIG** | Clerk + storage. |
 | `GET /api/me/answers` | ⚙️ **NEEDS CONFIG** | Clerk; signed-in list. |
 | `GET /api/me/audits/*`, usage | ⚙️ **NEEDS CONFIG** | Same. |

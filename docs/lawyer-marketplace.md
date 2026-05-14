@@ -5,7 +5,7 @@ This document describes how verified listings, partner directory records, leads,
 ## Data sources
 
 - **Verified lawyers** — manually curated in `src/data/verified-lawyers.ts`. These listings ship with the repo and are intended for reviewers you have explicitly onboarded.
-- **Partner lawyers** — approved partners stored via `src/lib/partner-storage.ts`. Persistence prefers Redis (`KV_REST_*` / `UPSTASH_*`); otherwise a local JSON file under `tmp/basiclaw-partners.json` for development.
+- **Partner lawyers** — approved partners stored via `src/lib/partner-storage.ts`. Persistence prefers Redis (`KV_REST_*`); otherwise a local JSON file under `tmp/basiclaw-partners.json` for development.
 
 Logical key namespaces (for operators and future Redis resharding):
 

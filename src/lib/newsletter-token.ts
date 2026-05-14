@@ -2,7 +2,6 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 function secret(): string {
   return (
-    process.env.UNSUBSCRIBE_SECRET?.trim() ||
     process.env.NEWSLETTER_UNSUBSCRIBE_SECRET?.trim() ||
     process.env.CRON_SECRET?.trim() ||
     process.env.CLERK_SECRET_KEY?.trim() ||

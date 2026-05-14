@@ -58,14 +58,14 @@ npm run analyze
 | Core | `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical URL, referer headers, email links. |
 | Clerk | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` | Optional | Sign-in, `/dashboard`, `/api/me/*`. App shows a banner when missing. |
 | Admin | `ADMIN_EMAILS` | Optional | Comma-separated emails allowed for `/[locale]/admin/*` when Clerk is enabled (in addition to `publicMetadata.role === "admin"`). |
-| Storage | `KV_REST_API_URL` + `KV_REST_API_TOKEN` or `UPSTASH_REDIS_*` | Optional | Durable chats/audits/subscribers/usage + embed tenants. Falls back to `tmp/*.json`. |
+| Storage | `KV_REST_API_URL` + `KV_REST_API_TOKEN` | Optional | Durable chats/audits/subscribers/usage + embed tenants. Falls back to `tmp/*.json`. |
 | Embed | `EMBED_JWT_SECRET` | Optional | HMAC for signed `POST /api/embed/event` attribution (`docs/embed.md`). |
 | Stripe | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | For billing | Checkout + webhooks. |
 | Stripe | `STRIPE_PRICE_PRO_MONTHLY`, `STRIPE_PRICE_PRO_ANNUAL`, `STRIPE_PRICE_PRO_PLUS_MONTHLY`, `STRIPE_PRICE_PRO_PLUS_ANNUAL` | Recommended | Maps subscriptions → `publicMetadata.plan` via webhook. |
 | Email | `RESEND_API_KEY`, `RESEND_FROM_EMAIL` | Optional | Lawyer leads + Right of the Day when configured. |
 | Cron | `CRON_SECRET` | Optional (prod manual) | Bearer gate for `/api/cron/*` outside Vercel cron. |
 | Cron | `RIGHT_OF_DAY_FROM_EMAIL` | When sending digest | Verified Resend sender for the newsletter cron. |
-| Newsletter | `UNSUBSCRIBE_SECRET` | Recommended | Signs `/api/unsubscribe` tokens. |
+| Newsletter | `NEWSLETTER_UNSUBSCRIBE_SECRET` | Recommended | Signs `/api/unsubscribe` tokens. |
 | Sharing | `SHARED_AUDIT_SECRET` | Recommended | HMAC for dashboard “open shared audit” links. |
 | Build | `BUILD_LLM_KEY` | Optional | US state card copy generation. |
 | Observability | `NEXT_PUBLIC_SENTRY_DSN` | Optional | Sentry DSN for browser, Node, and Edge. When unset, the SDK does not initialise (no-op). |
