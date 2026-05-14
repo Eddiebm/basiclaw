@@ -10,9 +10,22 @@ export function findVerifierForConstitution(countryCode: string): VerifiedLawyer
   );
 }
 
-export function findVerifierForCountryTopic(countryCode: string, topicSlug: string): VerifiedLawyer | null {
+
+const MAX_TOPIC_VERIFIERS = 3;
+
+function compareVerifiersForTopic(a: VerifiedLawyer, b: VerifiedLawyer): number {
+  const ta = new Date(a.verifiedAt).getTime();
+  const tb = new Date(b.verifiedAt).getTime();
+  if (tb !== ta) return tb - ta;
+  return a.name.localeCompare(b.name);
+}
+
+export function listVerifiersForCountryTopic(countryCode: string, topicSlug: string): VerifiedLawyer[] {
   const id = `${countryCode.toLowerCase()}:${topicSlug}`;
-  return VERIFIED_LAWYERS.find((l) => l.reviewedTopicIds?.includes(id)) ?? null;
+  return VERIFIED_LAWYERS.filter((l) => l.reviewedTopicIds?.includes(id))
+    .slice()
+    .sort(compareVerifiersForTopic)
+    .slice(0, MAX_TOPIC_VERIFIERS);
 }
 
 export function findVerifierForUsStateTopic(stateCode: string, topicSlug: string): VerifiedLawyer | null {

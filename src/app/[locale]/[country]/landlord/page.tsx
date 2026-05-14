@@ -7,7 +7,7 @@ import { routing } from "@/i18n/routing";
 import { getCountry } from "@/lib/jurisdictions";
 import { getTopicContent } from "@/lib/topic-content";
 import { buildOgImageUrl } from "@/lib/og-image-url";
-import { findVerifierForCountryTopic } from "@/lib/verified-lawyers-ui";
+import { listVerifiersForCountryTopic } from "@/lib/verified-lawyers-ui";
 
 type RouteParams = { locale: string; country: string };
 
@@ -66,14 +66,14 @@ export default async function CountryLandlordPage({
   const country = getCountry(code);
   if (!country) notFound();
   const content = getTopicContent(country, "landlord");
-  const v = findVerifierForCountryTopic(country.code, "landlord");
+  const verifiers = listVerifiersForCountryTopic(country.code, "landlord");
   return (
     <TopicPage
       country={country}
       topic="landlord"
       content={content}
       pageLocale={locale}
-      verifiedByLawyer={v ? { name: v.name, jurisdiction: v.jurisdiction } : undefined}
+      verifiedByLawyers={verifiers.map((v) => ({ name: v.name, jurisdiction: v.jurisdiction }))}
     />
   );
 }

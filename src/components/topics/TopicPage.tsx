@@ -67,14 +67,15 @@ export function TopicPage({
   topic,
   content,
   pageLocale = "en",
-  verifiedByLawyer,
+  verifiedByLawyers,
 }: {
   country: Country;
   topic: TopicSlug;
   content: TopicContent;
   /** BCP-47 locale from the route; non-English uses translated section headings where available. */
   pageLocale?: string;
-  verifiedByLawyer?: { name: string; jurisdiction: string };
+  /** Country-topic reviewers (max 3), newest verification first. */
+  verifiedByLawyers?: { name: string; jurisdiction: string }[];
 }) {
   const t = useTranslations("topicPage");
   const tVoice = useTranslations("voice");
@@ -171,11 +172,18 @@ export function TopicPage({
               <h1 className="text-3xl sm:text-4xl font-bold text-[var(--foreground)] leading-tight">
                 {pageHeading}
               </h1>
-              {verifiedByLawyer ? (
-                <p className="mt-3 text-sm text-[var(--muted-foreground)] flex items-center gap-2">
-                  <BadgeCheck className="h-4 w-4 text-[var(--primary)] shrink-0" aria-hidden />
-                  {t("verifiedByLawyer", verifiedByLawyer)}
-                </p>
+              {verifiedByLawyers && verifiedByLawyers.length > 0 ? (
+                <div className="mt-3 space-y-1.5">
+                  {verifiedByLawyers.map((lawyer) => (
+                    <p
+                      key={`${lawyer.name}-${lawyer.jurisdiction}`}
+                      className="text-sm text-[var(--muted-foreground)] flex items-center gap-2"
+                    >
+                      <BadgeCheck className="h-4 w-4 text-[var(--primary)] shrink-0" aria-hidden />
+                      {t("verifiedByLawyer", lawyer)}
+                    </p>
+                  ))}
+                </div>
               ) : null}
               <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="text-lg text-[var(--muted-foreground)] flex-1 min-w-0">
