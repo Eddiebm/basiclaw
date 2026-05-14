@@ -992,9 +992,12 @@
   "voice": {
     "micStartAria": "Start voice input",
     "micStopAria": "Stop voice input",
-    "micStartTitle": "Speak to type (browser speech recognition)",
+    "micStartTitle": "Speak to type — your browser may prompt for microphone access (Chrome uses Google’s speech service)",
     "micStopTitle": "Stop listening",
     "errorNotSupported": "Voice input is not supported in this browser.",
+    "errorNotSupportedSafari": "This browser does not expose Web Speech recognition (common on iPhone/iPad and some Safari builds). Use Chrome or Edge on desktop, or type your question.",
+    "errorLanguageNotSupported": "Speech recognition is not available for this language in your browser.",
+    "micUnavailableAria": "Voice input unavailable in this browser",
     "errorNoPermission": "Microphone permission was denied. Check browser settings.",
     "errorNetwork": "Speech recognition failed due to a network error.",
     "errorNoSpeech": "No speech was detected. Try again.",

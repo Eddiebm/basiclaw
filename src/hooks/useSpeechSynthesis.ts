@@ -57,6 +57,7 @@ function pickVoice(voices: SpeechSynthesisVoice[], preferredLang: string, hints:
 export function useSpeechSynthesis(options: UseSpeechSynthesisOptions) {
   const { locale, onSpeakStarted, onSpeakEnded, onSpeakError } = options;
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const speakVoiceWaitRef = useRef<{ cleanup: () => void } | null>(null);
   const [isSupported, setIsSupported] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -77,6 +78,8 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions) {
 
   const cancel = useCallback(() => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
+    speakVoiceWaitRef.current?.cleanup();
+    speakVoiceWaitRef.current = null;
     window.speechSynthesis.cancel();
     utteranceRef.current = null;
     setIsSpeaking(false);
@@ -93,35 +96,70 @@ export function useSpeechSynthesis(options: UseSpeechSynthesisOptions) {
       if (!trimmed) return;
 
       window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(trimmed);
-      utteranceRef.current = utter;
+      utteranceRef.current = null;
+      speakVoiceWaitRef.current?.cleanup();
+      speakVoiceWaitRef.current = null;
 
       const lang = speakOptions?.lang ?? locale;
-      utter.lang = lang;
-      utter.rate = speakOptions?.rate ?? 1;
-      utter.pitch = speakOptions?.pitch ?? 1;
+      const hints = normalizeHints(speakOptions?.dialectHints);
 
-      const list = window.speechSynthesis.getVoices();
-      const voice = pickVoice(list, lang, normalizeHints(speakOptions?.dialectHints));
-      if (voice) utter.voice = voice;
-
-      utter.onstart = () => {
-        setIsSpeaking(true);
-        onSpeakStarted?.();
-      };
-      utter.onend = () => {
-        utteranceRef.current = null;
-        setIsSpeaking(false);
-        onSpeakEnded?.();
-      };
-      utter.onerror = (e) => {
-        utteranceRef.current = null;
-        setIsSpeaking(false);
-        onSpeakError?.(e.error || "synthesis_error");
-        onSpeakEnded?.();
+      const attachHandlers = (utter: SpeechSynthesisUtterance) => {
+        utter.onstart = () => {
+          setIsSpeaking(true);
+          onSpeakStarted?.();
+        };
+        utter.onend = () => {
+          utteranceRef.current = null;
+          setIsSpeaking(false);
+          onSpeakEnded?.();
+        };
+        utter.onerror = (e) => {
+          utteranceRef.current = null;
+          setIsSpeaking(false);
+          onSpeakError?.(e.error || "synthesis_error");
+          onSpeakEnded?.();
+        };
       };
 
-      window.speechSynthesis.speak(utter);
+      const enqueue = () => {
+        const utter = new SpeechSynthesisUtterance(trimmed);
+        utteranceRef.current = utter;
+        utter.lang = lang;
+        utter.rate = speakOptions?.rate ?? 1;
+        utter.pitch = speakOptions?.pitch ?? 1;
+
+        const list = window.speechSynthesis.getVoices();
+        const voice = pickVoice(list, lang, hints);
+        if (voice) utter.voice = voice;
+
+        attachHandlers(utter);
+        window.speechSynthesis.speak(utter);
+      };
+
+      // Safari often returns an empty voice list until `voiceschanged` fires once.
+      if (window.speechSynthesis.getVoices().length === 0) {
+        const onVoices = () => {
+          speakVoiceWaitRef.current?.cleanup();
+          window.speechSynthesis.cancel();
+          enqueue();
+        };
+        const safety = window.setTimeout(() => {
+          speakVoiceWaitRef.current?.cleanup();
+          window.speechSynthesis.cancel();
+          enqueue();
+        }, 750);
+        speakVoiceWaitRef.current = {
+          cleanup: () => {
+            window.speechSynthesis.removeEventListener("voiceschanged", onVoices);
+            window.clearTimeout(safety);
+            speakVoiceWaitRef.current = null;
+          },
+        };
+        window.speechSynthesis.addEventListener("voiceschanged", onVoices);
+        return;
+      }
+
+      enqueue();
     },
     [locale, onSpeakEnded, onSpeakError, onSpeakStarted]
   );

@@ -19,7 +19,7 @@ import { VoiceDictationButton, ReadAloudButton } from "@/components/voice/dynami
 import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
 import { AssistantChatActions } from "@/components/chat/AssistantChatActions";
 import { MarkdownContent } from "@/components/markdown/MarkdownContent";
-import { readChatPrefillFromSearchParams } from "@/lib/chat-query-prefill";
+import { CHAT_QUERY_PREFILL_MAX_LEN, readChatPrefillFromSearchParams } from "@/lib/chat-query-prefill";
 
 function resolveJurisdictionFromParams(searchParams: { get: (key: string) => string | null }): string {
   const raw = searchParams.get("jurisdiction") ?? searchParams.get("country") ?? "";
@@ -59,6 +59,10 @@ function ChatInterfaceBody({ isSignedIn }: { isSignedIn: boolean }) {
   const [voiceReplace, setVoiceReplace] = useState(false);
   const [voiceAutoSend, setVoiceAutoSend] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
+
+  const setComposerInput = useCallback((next: string) => {
+    setInput(next.length > CHAT_QUERY_PREFILL_MAX_LEN ? next.slice(0, CHAT_QUERY_PREFILL_MAX_LEN) : next);
+  }, []);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lastSessionIdRef = useRef<string | null>(null);
@@ -438,7 +442,8 @@ function ChatInterfaceBody({ isSignedIn }: { isSignedIn: boolean }) {
               ref={textareaRef}
               data-testid="chat-composer-textarea"
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              maxLength={CHAT_QUERY_PREFILL_MAX_LEN}
+              onChange={(e) => setComposerInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={prefillHint || tComposer("placeholder")}
               className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 pr-24 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed min-h-[48px] max-h-[200px]"
@@ -448,9 +453,10 @@ function ChatInterfaceBody({ isSignedIn }: { isSignedIn: boolean }) {
             <div className="absolute right-2 bottom-2 flex items-center gap-1">
               <VoiceDictationButton
                 value={input}
-                onChange={setInput}
+                onChange={setComposerInput}
                 mode={voiceReplace ? "replace" : "append"}
                 surface="chat"
+                maxLength={CHAT_QUERY_PREFILL_MAX_LEN}
                 disabled={isTyping}
                 onErrorMessage={setVoiceError}
                 onDictationSessionEnd={(finalText) => {
