@@ -986,6 +986,7 @@
     "voiceErrorBanner": "Voice input: {message}",
     "quotaUpgradeCta": "View plans",
     "dismissError": "Dismiss",
+    "messageTrimmedNotice": "Only the first {max} characters are sent (assistant limit).",
     "copyAnnouncementSuccess": "Message copied to clipboard",
     "copyAnnouncementFail": "Could not copy to clipboard"
   },

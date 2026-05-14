@@ -13,7 +13,12 @@ export function pricingPathForLocale(locale: string | null | undefined): string 
 }
 
 export function quotaJsonBody(message: string, locale?: string | null) {
-  return { error: "quota_exceeded" as const, message, upgradeUrl: pricingPathForLocale(locale) };
+  return {
+    error: "quota_exceeded" as const,
+    code: "rate_limited" as const,
+    message,
+    upgradeUrl: pricingPathForLocale(locale),
+  };
 }
 
 export function checkChatQuotaAgainstLimits(

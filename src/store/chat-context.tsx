@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useReducer, useCallback, type ReactNode } from "react";
 import { track } from "@/lib/analytics";
+import { CHAT_USER_MESSAGE_MAX_CHARS, describeChatSendFailure } from "@/lib/chat-message-limits";
 
 export type Jurisdiction = string; // ISO alpha-2 code, lowercase
 export type MessageRole = "user" | "assistant" | "system";
@@ -55,7 +56,8 @@ type ChatAction =
   | { type: "SET_ERROR"; payload: { message: string | null; upgradePath?: string | null } }
   | { type: "LOAD_SESSIONS"; payload: ChatSession[] }
   | { type: "UPSERT_SESSION"; payload: ChatSession }
-  | { type: "PATCH_MESSAGE"; payload: { sessionId: string; messageId: string; patch: Partial<Message> } };
+  | { type: "PATCH_MESSAGE"; payload: { sessionId: string; messageId: string; patch: Partial<Message> } }
+  | { type: "REMOVE_MESSAGE"; payload: { sessionId: string; messageId: string } };
 
 const initialState: ChatState = {
   sessions: [],
@@ -134,6 +136,19 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
             : session
         ),
       };
+    case "REMOVE_MESSAGE":
+      return {
+        ...state,
+        sessions: state.sessions.map((session) =>
+          session.id === action.payload.sessionId
+            ? {
+                ...session,
+                messages: session.messages.filter((msg) => msg.id !== action.payload.messageId),
+                updatedAt: new Date(),
+              }
+            : session
+        ),
+      };
     default:
       return state;
   }
@@ -143,7 +158,7 @@ interface ChatContextValue extends ChatState {
   currentSession: ChatSession | null;
   createSession: (jurisdiction: Jurisdiction) => ChatSession;
   deleteSession: (sessionId: string) => void;
-  sendMessage: (content: string, options?: { jurisdiction?: Jurisdiction }) => Promise<void>;
+  sendMessage: (content: string, options?: { jurisdiction?: Jurisdiction }) => Promise<boolean>;
   setCurrentSession: (sessionId: string | null) => void;
   upsertSession: (session: ChatSession) => void;
   clearError: () => void;
@@ -187,7 +202,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "PATCH_MESSAGE", payload: { sessionId, messageId, patch } });
   }, []);
 
-  const sendMessage = useCallback(async (content: string, options?: { jurisdiction?: Jurisdiction }) => {
+  const sendMessage = useCallback(async (content: string, options?: { jurisdiction?: Jurisdiction }): Promise<boolean> => {
+    const outbound =
+      content.length > CHAT_USER_MESSAGE_MAX_CHARS ? content.slice(0, CHAT_USER_MESSAGE_MAX_CHARS) : content;
+
     let sessionId = state.currentSessionId;
     let jurisdiction: Jurisdiction = "us";
 
@@ -212,7 +230,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     const userMessage: Message = {
       id: crypto.randomUUID(),
       role: "user",
-      content,
+      content: outbound,
       timestamp: new Date(),
     };
 
@@ -235,7 +253,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         },
         body: JSON.stringify({
           sessionId,
-          message: content,
+          message: outbound,
           jurisdiction,
         }),
       });
@@ -252,12 +270,21 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         });
         track("form_submit_error", { form: "chat_message", reason: "quota_429" });
         dispatch({ type: "SET_TYPING", payload: false });
-        return;
+        return false;
       }
 
       if (!response.ok) {
-        track("form_submit_error", { form: "chat_message", reason: `http_${response.status}` });
-        throw new Error("Failed to send message");
+        const errJson = (await response.json().catch(() => null)) as Record<string, unknown> | null;
+        dispatch({ type: "REMOVE_MESSAGE", payload: { sessionId, messageId: userMessage.id } });
+        const userMsg = describeChatSendFailure(response.status, errJson);
+        track("form_submit_error", {
+          form: "chat_message",
+          reason: `http_${response.status}`,
+          code: typeof errJson?.code === "string" ? errJson.code : undefined,
+        });
+        dispatch({ type: "SET_ERROR", payload: { message: userMsg, upgradePath: null } });
+        dispatch({ type: "SET_TYPING", payload: false });
+        return false;
       }
 
       const data = await response.json();
@@ -332,10 +359,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       }).catch(() => {
         /* optional persistence when signed out or server 401 */
       });
+      return true;
     } catch (error) {
+      dispatch({ type: "REMOVE_MESSAGE", payload: { sessionId, messageId: userMessage.id } });
       const msg = error instanceof Error ? error.message : "Failed to send message";
       dispatch({ type: "SET_ERROR", payload: { message: msg, upgradePath: null } });
       track("form_submit_error", { form: "chat_message", reason: "exception" });
+      return false;
     } finally {
       dispatch({ type: "SET_TYPING", payload: false });
     }

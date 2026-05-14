@@ -19,7 +19,8 @@ import { VoiceDictationButton, ReadAloudButton } from "@/components/voice/dynami
 import { VoicePrivacyHint } from "@/components/voice/VoicePrivacyHint";
 import { AssistantChatActions } from "@/components/chat/AssistantChatActions";
 import { MarkdownContent } from "@/components/markdown/MarkdownContent";
-import { CHAT_QUERY_PREFILL_MAX_LEN, readChatPrefillFromSearchParams } from "@/lib/chat-query-prefill";
+import { readChatPrefillFromSearchParams } from "@/lib/chat-query-prefill";
+import { CHAT_USER_MESSAGE_MAX_CHARS } from "@/lib/chat-message-limits";
 
 function resolveJurisdictionFromParams(searchParams: { get: (key: string) => string | null }): string {
   const raw = searchParams.get("jurisdiction") ?? searchParams.get("country") ?? "";
@@ -59,13 +60,15 @@ function ChatInterfaceBody({ isSignedIn }: { isSignedIn: boolean }) {
   const [voiceReplace, setVoiceReplace] = useState(false);
   const [voiceAutoSend, setVoiceAutoSend] = useState(false);
   const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [composerNotice, setComposerNotice] = useState<string | null>(null);
 
   const setComposerInput = useCallback((next: string) => {
-    setInput(next.length > CHAT_QUERY_PREFILL_MAX_LEN ? next.slice(0, CHAT_QUERY_PREFILL_MAX_LEN) : next);
+    setInput(next.length > CHAT_USER_MESSAGE_MAX_CHARS ? next.slice(0, CHAT_USER_MESSAGE_MAX_CHARS) : next);
   }, []);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const lastSessionIdRef = useRef<string | null>(null);
+  const voiceAutoSendGuardRef = useRef(false);
 
   const popularCountries = getPopularCountries().slice(0, 12);
   const searchKey = searchParams.toString();
@@ -123,14 +126,20 @@ function ChatInterfaceBody({ isSignedIn }: { isSignedIn: boolean }) {
   const handleSend = async () => {
     if (!input.trim() || isTyping) return;
     const message = input.trim();
+    setComposerNotice(null);
+    if (message.length > CHAT_USER_MESSAGE_MAX_CHARS) {
+      setComposerNotice(tComposer("messageTrimmedNotice", { max: CHAT_USER_MESSAGE_MAX_CHARS }));
+    }
     track("chat_message_sent", {
       length: message.length,
       jurisdiction: currentSession?.jurisdiction ?? composerJurisdiction,
       session_id: currentSession?.id ?? null,
     });
-    await sendMessage(message, sendOpts());
-    setInput("");
-    textareaRef.current?.focus();
+    const ok = await sendMessage(message, sendOpts());
+    if (ok) {
+      setInput("");
+      textareaRef.current?.focus();
+    }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -412,6 +421,11 @@ function ChatInterfaceBody({ isSignedIn }: { isSignedIn: boolean }) {
             {tComposer("voiceErrorBanner", { message: voiceError })}
           </p>
         )}
+        {composerNotice && (
+          <p className="text-xs text-center text-muted-foreground mb-2" role="status">
+            {composerNotice}
+          </p>
+        )}
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mb-2 text-xs text-muted-foreground max-w-4xl mx-auto">
           <label className="inline-flex items-center gap-2 cursor-pointer select-none">
             <input
@@ -442,8 +456,11 @@ function ChatInterfaceBody({ isSignedIn }: { isSignedIn: boolean }) {
               ref={textareaRef}
               data-testid="chat-composer-textarea"
               value={input}
-              maxLength={CHAT_QUERY_PREFILL_MAX_LEN}
-              onChange={(e) => setComposerInput(e.target.value)}
+              maxLength={CHAT_USER_MESSAGE_MAX_CHARS}
+              onChange={(e) => {
+                setComposerInput(e.target.value);
+                setComposerNotice(null);
+              }}
               onKeyDown={handleKeyDown}
               placeholder={prefillHint || tComposer("placeholder")}
               className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 pr-24 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed min-h-[48px] max-h-[200px]"
@@ -456,12 +473,15 @@ function ChatInterfaceBody({ isSignedIn }: { isSignedIn: boolean }) {
                 onChange={setComposerInput}
                 mode={voiceReplace ? "replace" : "append"}
                 surface="chat"
-                maxLength={CHAT_QUERY_PREFILL_MAX_LEN}
+                maxLength={CHAT_USER_MESSAGE_MAX_CHARS}
                 disabled={isTyping}
                 onErrorMessage={setVoiceError}
                 onDictationSessionEnd={(finalText) => {
-                  if (voiceAutoSend && finalText.trim() && !isTyping) {
-                    void (async () => {
+                  if (!voiceAutoSend || !finalText.trim() || isTyping) return;
+                  if (voiceAutoSendGuardRef.current) return;
+                  voiceAutoSendGuardRef.current = true;
+                  void (async () => {
+                    try {
                       const msg = finalText.trim();
                       track("chat_message_sent", {
                         length: msg.length,
@@ -469,11 +489,15 @@ function ChatInterfaceBody({ isSignedIn }: { isSignedIn: boolean }) {
                         session_id: currentSession?.id ?? null,
                         voice_auto_send: true,
                       });
-                      await sendMessage(msg, sendOpts());
-                      setInput("");
-                      textareaRef.current?.focus();
-                    })();
-                  }
+                      const ok = await sendMessage(msg, sendOpts());
+                      if (ok) {
+                        setInput("");
+                        textareaRef.current?.focus();
+                      }
+                    } finally {
+                      voiceAutoSendGuardRef.current = false;
+                    }
+                  })();
                 }}
               />
             </div>

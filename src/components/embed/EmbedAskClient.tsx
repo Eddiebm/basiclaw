@@ -14,6 +14,7 @@ import { EmbedVisualShell } from "@/components/embed/EmbedVisualShell";
 import { EmbedPoweredBy } from "@/components/embed/EmbedPoweredBy";
 import { routing } from "@/i18n/routing";
 import type { EmbedTenantPlan } from "@/lib/embed-tenants";
+import { CHAT_USER_MESSAGE_MAX_CHARS, describeChatSendFailure } from "@/lib/chat-message-limits";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://basiclaw.app";
 
@@ -80,8 +81,9 @@ export function EmbedAskClient({
   );
 
   async function submit() {
-    const message = input.trim();
-    if (!message || loading) return;
+    const raw = input.trim();
+    if (!raw || loading) return;
+    const message = raw.length > CHAT_USER_MESSAGE_MAX_CHARS ? raw.slice(0, CHAT_USER_MESSAGE_MAX_CHARS) : raw;
     setError(null);
     setAnswer(null);
     setCitations(null);
@@ -119,7 +121,8 @@ export function EmbedAskClient({
         return;
       }
       if (!res.ok) {
-        setError({ message: "Something went wrong. Please try again." });
+        const errJson = (await res.json().catch(() => null)) as Record<string, unknown> | null;
+        setError({ message: describeChatSendFailure(res.status, errJson) });
         return;
       }
       const data = (await res.json()) as { response?: string; citations?: CitationLite[] };

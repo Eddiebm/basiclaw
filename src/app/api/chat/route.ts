@@ -17,6 +17,7 @@ import { getUsage, incrementUsage } from "@/lib/storage";
 import { generateChatCompletionText } from "@/lib/llm-chat-completion";
 import { usageSubjectForEmbed } from "@/lib/embed-usage-subject";
 import { resolveEmbedTenantForRequest } from "@/lib/embed-tenant-resolve";
+import { CHAT_USER_MESSAGE_MAX_CHARS } from "@/lib/chat-message-limits";
 
 const SNIPPET_TOP_K = 4;
 const CASE_TOP_K = 3;
@@ -100,7 +101,22 @@ When answering:
 export async function POST(request: NextRequest) {
   try {
     const locale = request.headers.get("x-basiclaw-locale")?.trim() ?? null;
-    const body = await request.json();
+
+    const contentLength = request.headers.get("content-length");
+    if (contentLength && /^\d+$/.test(contentLength) && Number(contentLength) > 4_500_000) {
+      return NextResponse.json(
+        { error: "Request body too large", code: "payload_too_large" },
+        { status: 413 }
+      );
+    }
+
+    let body: unknown;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON body", code: "invalid_body" }, { status: 400 });
+    }
+
     const { message, jurisdiction = "us", sessionId } = body as {
       message: string;
       jurisdiction?: string;
@@ -110,13 +126,29 @@ export async function POST(request: NextRequest) {
     void sessionId;
 
     if (!message || typeof message !== "string") {
-      return NextResponse.json({ error: "Message is required" }, { status: 400 });
+      return NextResponse.json({ error: "Message is required", code: "validation_error" }, { status: 400 });
+    }
+
+    if (message.length > CHAT_USER_MESSAGE_MAX_CHARS) {
+      return NextResponse.json(
+        {
+          error: `Message exceeds maximum length of ${CHAT_USER_MESSAGE_MAX_CHARS} characters`,
+          code: "payload_too_large",
+        },
+        { status: 413 }
+      );
     }
 
     const bodyRecord = body as Record<string, unknown>;
     const embedRes = await resolveEmbedTenantForRequest(request, bodyRecord);
     if (!embedRes.ok) {
-      return NextResponse.json({ error: embedRes.error }, { status: embedRes.status });
+      return NextResponse.json(
+        {
+          error: embedRes.error,
+          code: embedRes.status === 403 ? "embed_forbidden" : "embed_unauthorized",
+        },
+        { status: embedRes.status }
+      );
     }
     const embedTenant = embedRes.tenant;
 
@@ -131,6 +163,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(quotaJsonBody(cq.message, locale), { status: 429 });
     }
 
+    /** Unknown `jurisdiction` codes fall back to US — never hard-fail on tenant/geo mismatch. */
     const country = getCountry((jurisdiction || "us").toLowerCase()) ?? getCountry("us")!;
     Sentry.setTag("route", "/api/chat");
     Sentry.setTag("jurisdiction", country.code.toLowerCase());
@@ -278,7 +311,7 @@ export async function POST(request: NextRequest) {
       assistantResponse = text;
     } catch (e) {
       Sentry.captureException(e);
-      return NextResponse.json({ error: "Failed to get response from AI service" }, { status: 500 });
+      return NextResponse.json({ error: "Failed to get response from AI service", code: "llm_failed" }, { status: 502 });
     }
 
     const persist = await Sentry.startSpan({ name: "chat.storage_persist", op: "db.write" }, async () => {
@@ -321,6 +354,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     Sentry.captureException(error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Internal server error", code: "internal_error" }, { status: 500 });
   }
 }
