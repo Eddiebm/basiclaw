@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { notFound } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
 import { getTranslations } from "next-intl/server";
+import { getCurrentUserId } from "@/lib/auth-config";
 import { Link } from "@/i18n/navigation";
 import { Navigation } from "@/components/sections/Navigation";
 import { Footer } from "@/components/sections/Footer";
@@ -18,8 +18,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, id } = await params;
   const t = await getTranslations({ locale, namespace: "answers.detail" });
-  const { userId } = await auth();
-  const row = await getAnswerPublicOrOwner(id, userId ?? null);
+  const userId = await getCurrentUserId();
+  const row = await getAnswerPublicOrOwner(id, userId);
   if (!row) {
     return { title: t("notFoundTitle"), robots: { index: false, follow: false } };
   }
@@ -36,8 +36,8 @@ export async function generateMetadata({
 export default async function AnswerDetailPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
   const { locale, id } = await params;
   const t = await getTranslations({ locale, namespace: "answers.detail" });
-  const { userId } = await auth();
-  const row = await getAnswerPublicOrOwner(id, userId ?? null);
+  const userId = await getCurrentUserId();
+  const row = await getAnswerPublicOrOwner(id, userId);
   if (!row) notFound();
 
   const publicRow = row.isPublic ? toPublicAnswer(row) : toPublicAnswer({ ...row, isPublic: false });

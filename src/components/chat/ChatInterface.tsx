@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Send, User, Bot, Copy, ExternalLink, Loader2 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { useUser } from "@clerk/nextjs";
+import { useClerkEnabled } from "@/contexts/ClerkEnabledContext";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useAnnouncer } from "@/components/a11y/AnnouncerProvider";
 import { useChat } from "@/store/chat-context";
@@ -29,14 +30,24 @@ function resolveJurisdictionFromParams(searchParams: { get: (key: string) => str
   return "us";
 }
 
+function ChatInterfaceClerk() {
+  const { isSignedIn } = useUser();
+  return <ChatInterfaceBody isSignedIn={Boolean(isSignedIn)} />;
+}
+
 export function ChatInterface() {
+  const clerkEnabled = useClerkEnabled();
+  if (clerkEnabled) return <ChatInterfaceClerk />;
+  return <ChatInterfaceBody isSignedIn={false} />;
+}
+
+function ChatInterfaceBody({ isSignedIn }: { isSignedIn: boolean }) {
   const tc = useTranslations("chatEmpty");
   const tComposer = useTranslations("chatComposer");
   const tVoice = useTranslations("voice");
   const tCitations = useTranslations("chat.citations");
   const tAns = useTranslations("answers.chat");
   const locale = useLocale();
-  const { isSignedIn } = useUser();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -342,7 +353,7 @@ export function ChatInterface() {
                       jurisdiction={currentSession.jurisdiction}
                       locale={locale}
                       signInHref={signInHref}
-                      isSignedIn={Boolean(isSignedIn)}
+                      isSignedIn={isSignedIn}
                     />
                   ) : null}
                 </div>

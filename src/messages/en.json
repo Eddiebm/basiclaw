@@ -1121,10 +1121,12 @@
     "retry": "Try again"
   },
   "auth": {
-    "notConfiguredBanner": "Auth is not configured (missing Clerk keys). Sign-in and saved history are disabled until CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY are set.",
+    "notConfiguredBanner": "Auth is not configured (missing Clerk keys). Sign-in and saved history are disabled until NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY are set in your environment (for example Vercel project settings).",
     "signInTitle": "Sign in — BasicLaw",
     "signUpTitle": "Create account — BasicLaw",
-    "backHome": "Back to BasicLaw"
+    "backHome": "Back to BasicLaw",
+    "clerkUnavailableTitle": "Sign-in unavailable",
+    "clerkUnavailableBody": "Clerk authentication is not configured on this deployment. You can still browse and use the assistant anonymously."
   },
   "dashboardPage": {
     "metaTitle": "Dashboard — BasicLaw",
@@ -1464,16 +1466,6 @@
     "metaDescription": "Verified reviewers and approved partner counsel by jurisdiction. Educational listings only — BasicLaw is not a law firm.",
     "title": "Lawyer directory",
     "subtitle": "Verified BasicLaw reviewers and approved partner listings. Informational only — not legal advice and not an endorsement.",
-    "directoryDisclaimer": "BasicLaw is not affiliated with any listed lawyer or firm. A “verified” listing means we matched this profile to a public source at the date shown; it is not a guarantee of current bar status, specialisation, or fitness for your matter. You must independently verify credentials, conflicts, and regulatory standing before engaging counsel.",
-    "verifiedViaLabel": "Verified via",
-    "sourceListingLabel": "Public source",
-    "verifiedAtLabel": "Listing checked",
-    "verifiedVia": {
-      "barAssociationLookup": "Bar association / roll lookup",
-      "officialFirmSite": "Official firm or organisation website",
-      "lawSocietyListing": "Law society or regulator listing",
-      "selfSubmitted": "Self-submitted (BasicLaw review)"
-    },
     "filterLabel": "Filter by jurisdiction or country",
     "filterPlaceholder": "e.g. California, Ghana, UK…",
     "filtersTitle": "Filters",
@@ -1520,7 +1512,6 @@
   "lawyerDetail": {
     "metaTitleSuffix": "BasicLaw directory",
     "metaFallback": "{name} — {jurisdiction}. Educational directory listing on BasicLaw.",
-    "pageDisclaimer": "BasicLaw is not a law firm and is not affiliated with any listed lawyer. Directory information is educational only. Verification reflects a public web listing at the date shown — not an endorsement, not a conflicts check, and not a substitute for your own due diligence on admission, insurance, and suitability.",
     "notFoundTitle": "Lawyer not found",
     "backToDirectory": "← Back to directory",
     "badgeVerified": "Verified reviewer",
@@ -1534,17 +1525,6 @@
     "callCta": "Call",
     "emailCta": "Email",
     "websiteCta": "Website",
-    "verificationTitle": "Public listing & verification",
-    "verifiedViaLabel": "Verified via",
-    "sourceListingLabel": "Source URL",
-    "verifiedAtLabel": "Checked at",
-    "profileDisclaimerTitle": "Note on this listing",
-    "verifiedVia": {
-      "barAssociationLookup": "Bar association / roll lookup",
-      "officialFirmSite": "Official firm or organisation website",
-      "lawSocietyListing": "Law society or regulator listing",
-      "selfSubmitted": "Self-submitted (BasicLaw review)"
-    },
     "consultForm": {
       "title": "Request a consultation",
       "hint": "Your message is sent to BasicLaw operations and, when an email is on file for this listing, forwarded to the lawyer. No legal relationship is created with BasicLaw.",
